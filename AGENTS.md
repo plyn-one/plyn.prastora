@@ -8,8 +8,13 @@ Work is checked before each commit, and the check costs nothing on GitHub: with 
 
 ## What is here
 
+- `demo/` (1.2 miaža): pages laid out with the core, which the check passes
 - `pračytańnie/` (1.2 miaža): the readings of this place, one file per language
 - `AGENTS.md` (2.1 čakańnie): the orientation of this place, written by plyn.dojlid
+- `MANIFEST.md` (2.1 čakańnie): the manifest for agents: the whole vocabulary, its rules and patterns, read before laying a page out
+- `check.mjs` (2.2 uvaha): the check of a page by rendering: both edges of every step in both colour schemes, and whether the composition moved within a step
+- `core.css` (1.3 stan): the core stylesheet: the ladder of steps, the tokens, plain HTML styled and the eight relations; the page is U rem wide and keeps its composition within a step
+- `demo/index.html` (1.2 miaža): the first demonstration page
 - `miesca.toml` (1.1 asiarodździe): the registry of this place: the answers of its constituents
 - `pračytańnie/en.toml` (1.2 miaža): the readings of this place in English
 - `śled.toml` (3.2 pierachod): the work of this place, one zapis per krok

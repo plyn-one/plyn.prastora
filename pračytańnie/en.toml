@@ -12,3 +12,8 @@
 "file:śled.toml" = "the work of this place, one zapis per krok"
 "dir:pračytańnie" = "the readings of this place, one file per language"
 "file:pračytańnie/en.toml" = "the readings of this place in English"
+"file:core.css" = "the core stylesheet: the ladder of steps, the tokens, plain HTML styled and the eight relations; the page is U rem wide and keeps its composition within a step"
+"file:MANIFEST.md" = "the manifest for agents: the whole vocabulary, its rules and patterns, read before laying a page out"
+"file:check.mjs" = "the check of a page by rendering: both edges of every step in both colour schemes, and whether the composition moved within a step"
+"dir:demo" = "pages laid out with the core, which the check passes"
+"file:demo/index.html" = "the first demonstration page"

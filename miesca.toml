@@ -6,6 +6,11 @@ kola = "usie"
 "file:śled.toml" = { faza = "ściah", rola = "ruch" }
 "dir:pračytańnie" = { faza = "ściah", rola = "prajava" }
 "file:pračytańnie/en.toml" = { faza = "ściah", rola = "prajava" }
+"file:core.css" = { faza = "asadak", rola = "prajava" }
+"file:MANIFEST.md" = { faza = "dadzienaść", rola = "sens" }
+"file:check.mjs" = { faza = "ściah", rola = "sens" }
+"dir:demo" = { faza = "ściah", rola = "prajava" }
+"file:demo/index.html" = { faza = "ściah", rola = "prajava" }
 
 [kanon."prastora"]
 "čaść" = "nazoŭnik"
