@@ -20,8 +20,9 @@ import { readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 const html = readFileSync(page, 'utf8');
 const href = html.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/)?.[1] ?? html.match(/<link[^>]+href="([^"]+)"[^>]+rel="stylesheet"/)?.[1];
-const FRAMES = JSON.parse(readFileSync(resolve(dirname(page), href), 'utf8').match(/frames: (\[.*\])/)[1]);
-const EDGES = FRAMES.map(f => ({ u: f.name, lo: Math.max(f.from, 320), hi: (f.to ?? 3841) - 1 }));
+const FRAMES = JSON.parse(readFileSync(resolve(dirname(page), href), 'utf8').match(/frames[^:]*: (\[.*\])/)[1]);
+// frames are in rem of the window; 16 px to the rem at the browser's default
+const EDGES = FRAMES.map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
 
 const VOCAB = {
   'data-l': ['page', 'canvas', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],

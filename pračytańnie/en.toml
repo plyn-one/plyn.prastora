@@ -16,6 +16,6 @@
 "file:demo/index.html" = "the demonstration page: a picture bound to the heading and reaching into the next band, columns of the canvas"
 "dir:src" = "the sources the core is built from"
 "file:src/base.css" = "the part of the core that does not depend on frames: tokens, plain HTML styled, relations, surfaces, tones"
-"file:variants.mjs" = "builds core.css from the frames of a variant, and the lab that shows every variant in typical windows"
+"file:variants.mjs" = "builds core.css from the frames of a variant, and a lab page for each variant, to be looked at by resizing or zooming the window"
 "dir:lab" = "the lab: variants of frames compared on the same page"
 "file:lab/variants.json" = "the variants of frames: where each frame begins, its units and columns, and how its canvas follows the window"

@@ -21,7 +21,7 @@ Work is checked before each commit, and the check costs nothing on GitHub: with 
 - `miesca.toml` (1.1 asiarodździe): the registry of this place: the answers of its constituents
 - `pračytańnie/en.toml` (1.2 miaža): the readings of this place in English
 - `src/base.css` (1.1 asiarodździe): the part of the core that does not depend on frames: tokens, plain HTML styled, relations, surfaces, tones
-- `variants.mjs` (3.2 pierachod): builds core.css from the frames of a variant, and the lab that shows every variant in typical windows
+- `variants.mjs` (3.2 pierachod): builds core.css from the frames of a variant, and a lab page for each variant, to be looked at by resizing or zooming the window
 - `śled.toml` (3.2 pierachod): the work of this place, one zapis per krok
 
 ## How to check

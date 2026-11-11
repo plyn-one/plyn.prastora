@@ -49,7 +49,7 @@
      A classic scrollbar lies over the margin or the gutter instead of narrowing the canvas. */
   :where(html) { overflow-x: hidden; background: var(--paper); }
   :where(body) {
-    inline-size: var(--canvas); margin-inline: auto; min-block-size: 100dvh;
+    inline-size: calc(var(--units) * 1rem); margin-inline: auto; min-block-size: 100dvh;
     font-family: var(--font); font-size: var(--t0); line-height: 1.5;
     color: var(--ink); background: var(--paper);
     -webkit-font-smoothing: antialiased;

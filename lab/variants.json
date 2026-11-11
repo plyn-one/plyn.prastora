@@ -6,21 +6,21 @@
     "frames": [
       {
         "name": "portrait",
-        "from": 0,
+        "from": 0.0,
         "units": 22,
         "cols": 4,
         "grow": "pure"
       },
       {
         "name": "landscape",
-        "from": 800,
+        "from": 50.0,
         "units": 80,
         "cols": 12,
         "grow": "pure"
       },
       {
         "name": "wide",
-        "from": 2000,
+        "from": 125.0,
         "units": 100,
         "cols": 12,
         "grow": "pure"
@@ -34,7 +34,7 @@
     "frames": [
       {
         "name": "portrait",
-        "from": 0,
+        "from": 0.0,
         "units": 22,
         "cols": 4,
         "grow": {
@@ -43,7 +43,7 @@
       },
       {
         "name": "landscape",
-        "from": 800,
+        "from": 50.0,
         "units": 64,
         "cols": 12,
         "grow": {
@@ -52,7 +52,7 @@
       },
       {
         "name": "wide",
-        "from": 1800,
+        "from": 112.5,
         "units": 80,
         "cols": 12,
         "grow": {
@@ -68,29 +68,29 @@
     "frames": [
       {
         "name": "portrait",
-        "from": 0,
+        "from": 0.0,
         "units": 22,
         "cols": 4,
         "grow": {
-          "cap": 520
+          "cap": 32.5
         }
       },
       {
         "name": "landscape",
-        "from": 900,
+        "from": 56.25,
         "units": 72,
         "cols": 12,
         "grow": {
-          "cap": 1500
+          "cap": 93.75
         }
       },
       {
         "name": "wide",
-        "from": 1800,
+        "from": 112.5,
         "units": 96,
         "cols": 12,
         "grow": {
-          "cap": 2300
+          "cap": 143.75
         }
       }
     ]
@@ -102,16 +102,16 @@
     "frames": [
       {
         "name": "portrait",
-        "from": 0,
+        "from": 0.0,
         "units": 22,
         "cols": 4,
         "grow": {
-          "cap": 560
+          "cap": 35.0
         }
       },
       {
         "name": "landscape",
-        "from": 1100,
+        "from": 68.75,
         "units": 72,
         "cols": 12,
         "grow": {
@@ -120,7 +120,7 @@
       },
       {
         "name": "wide",
-        "from": 2000,
+        "from": 125.0,
         "units": 96,
         "cols": 12,
         "grow": {

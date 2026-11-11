@@ -78,4 +78,4 @@ Wide table: `<div data-l="reel"><table>…</table></div>`. Status: `<mark data-t
 
 ## Problems the check reports
 
-`composition-moves` an element stands elsewhere on the canvas at the two edges of one frame: something is sized outside the vocabulary · `page-scroll-x` the page is wider than the window · `escapes-parent` · `narrow-measure` prose in a column under 15 em: change the relation · `text-too-small` · `body-below-reader-size` · `target-too-small` under 24×24 px · `contrast` · `vocabulary` an attribute, value, `class` or `style` outside this manifest.
+`composition-moves` an element stands elsewhere on the canvas at the two edges of one frame: something is sized outside the vocabulary · `page-scroll-x` the page is wider than the window · `escapes-parent` · `narrow-measure` prose in a column under 15 em: change the relation · `text-too-small` · `body-text-small` · `target-too-small` under 24×24 px · `contrast` · `vocabulary` an attribute, value, `class` or `style` outside this manifest.
