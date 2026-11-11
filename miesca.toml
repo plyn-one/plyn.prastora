@@ -17,5 +17,3 @@ kola = "usie"
 "dir:lab" = { faza = "ściah", rola = "sens" }
 "file:lab/variants.json" = { faza = "ściah", rola = "sens" }
 
-[kanon."prastora"]
-"čaść" = "nazoŭnik"
