@@ -1,0 +1,133 @@
+[
+  {
+    "id": "a",
+    "title": "pure scaling, frames at 800 and 2000 px",
+    "note": "As in A-Rozum/prastora: the canvas is the window in every frame, so there are no margins and text grows with the window inside each frame.",
+    "frames": [
+      {
+        "name": "portrait",
+        "from": 0,
+        "units": 22,
+        "cols": 4,
+        "grow": "pure"
+      },
+      {
+        "name": "landscape",
+        "from": 800,
+        "units": 80,
+        "cols": 12,
+        "grow": "pure"
+      },
+      {
+        "name": "wide",
+        "from": 2000,
+        "units": 100,
+        "cols": 12,
+        "grow": "pure"
+      }
+    ]
+  },
+  {
+    "id": "b",
+    "title": "slowed growth: the canvas grows by half of the window, the rest is margin",
+    "note": "Each frame starts edge to edge; past its start the canvas takes a share of each new pixel and the margins take the rest, so text keeps growing, more slowly, and the margins widen gradually.",
+    "frames": [
+      {
+        "name": "portrait",
+        "from": 0,
+        "units": 22,
+        "cols": 4,
+        "grow": {
+          "slow": 0.5
+        }
+      },
+      {
+        "name": "landscape",
+        "from": 800,
+        "units": 64,
+        "cols": 12,
+        "grow": {
+          "slow": 0.6
+        }
+      },
+      {
+        "name": "wide",
+        "from": 1800,
+        "units": 80,
+        "cols": 12,
+        "grow": {
+          "slow": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "id": "c",
+    "title": "capped growth: the canvas stops at a width, beyond it only margins grow",
+    "note": "The canvas follows the window up to a cap in each frame, then holds; text never exceeds the size it has at the cap.",
+    "frames": [
+      {
+        "name": "portrait",
+        "from": 0,
+        "units": 22,
+        "cols": 4,
+        "grow": {
+          "cap": 520
+        }
+      },
+      {
+        "name": "landscape",
+        "from": 900,
+        "units": 72,
+        "cols": 12,
+        "grow": {
+          "cap": 1500
+        }
+      },
+      {
+        "name": "wide",
+        "from": 1800,
+        "units": 96,
+        "cols": 12,
+        "grow": {
+          "cap": 2300
+        }
+      }
+    ]
+  },
+  {
+    "id": "d",
+    "title": "late landscape: the upright composition up to 1100 px",
+    "note": "Tablets held upright and narrow windows keep the upright composition, capped so text stays moderate; the landscape composition begins where its text is no smaller than 15 px.",
+    "frames": [
+      {
+        "name": "portrait",
+        "from": 0,
+        "units": 22,
+        "cols": 4,
+        "grow": {
+          "cap": 560
+        }
+      },
+      {
+        "name": "landscape",
+        "from": 1100,
+        "units": 72,
+        "cols": 12,
+        "grow": {
+          "slow": 0.7
+        }
+      },
+      {
+        "name": "wide",
+        "from": 2000,
+        "units": 96,
+        "cols": 12,
+        "grow": {
+          "slow": 0.6
+        }
+      }
+    ],
+    "core": true
+  }
+]

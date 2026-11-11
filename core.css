@@ -1,17 +1,6 @@
-/*
- * prastora core: a page that keeps its composition across screens, laid out by agents.
- *
- * The page is U units wide, and 1rem is one unit: font-size of the root = 100vw / U.
- * U takes values of a ladder (20, 25, 32, 40, 50, 64, 80, 100, 128). A step is chosen by the
- * width of the window in em, that is in the reader's own text size: the step is the widest whose
- * body text is not smaller than that size. Hence:
- *   - within a step the page scales as a whole: every length is in rem, the page is always U rem
- *     wide, so every relation below resolves the same way and nothing moves relative to anything;
- *   - body text stays between the reader's size and 1.28 of it on every screen;
- *   - browser zoom and the reader's font setting move the page to a narrower step, so text grows.
- * Composition changes only between steps, by the relations themselves, never by hand.
- */
-@layer reset, tokens, base, relation, surface, tone;
+/* prastora core, variant d: late landscape: the upright composition up to 1100 px. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
+   frames: [{"name":"portrait","from":0,"to":1100,"units":22,"cols":4,"grow":{"cap":560}},{"name":"landscape","from":1100,"to":2000,"units":72,"cols":12,"grow":{"slow":0.7}},{"name":"wide","from":2000,"to":null,"units":96,"cols":12,"grow":{"slow":0.6}}] */
+@layer reset, tokens, base, relation, frame, surface, tone;
 
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
@@ -24,8 +13,6 @@
 
 @layer tokens {
   :root {
-    --u: 20;
-    font-size: calc(100vw / var(--u));
     color-scheme: light dark;
 
     --hue: 250;
@@ -41,29 +28,15 @@
     --veil:      color-mix(in oklch, var(--ink) 4.5%, transparent);
 
     /* type and space: plain rem, so they scale with the page and keep proportion */
-    /* headings grow with the step, body text does not: a wider page is a larger composition, not a longer line */
-    --t-1: .875rem; --t0: 1rem;
-    --t1: calc(1.1rem + var(--u) * .004rem);
-    --t2: calc(1.25rem + var(--u) * .01rem);
-    --t3: calc(1.4rem + var(--u) * .018rem);
-    --t4: calc(1.5rem + var(--u) * .03rem);
+    --t-1: .875rem; --t0: 1rem; --t1: 1.25rem; --t2: 1.6rem; --t3: 2.25rem; --t4: 3.25rem;
     --s-2: .25rem; --s-1: .5rem; --s0: 1rem; --s1: 1.5rem; --s2: 2.5rem; --s3: 4rem;
     --radius: .5rem;
     --target: 2.75rem;
-    --gutter: max(1.25rem, calc(var(--u) * .035rem));
+    --gutter: 2rem;
 
     --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", monospace;
   }
-  /* the ladder: one block, widths in em (the reader's text size), each step ×1.25 */
-  @media (width >= 25em)  { :root { --u: 25; } }
-  @media (width >= 32em)  { :root { --u: 32; } }
-  @media (width >= 40em)  { :root { --u: 40; } }
-  @media (width >= 50em)  { :root { --u: 50; } }
-  @media (width >= 64em)  { :root { --u: 64; } }
-  @media (width >= 80em)  { :root { --u: 80; } }
-  @media (width >= 100em) { :root { --u: 100; } }
-  @media (width >= 128em) { :root { --u: 128; } }
 
   :where([data-theme=light]) { color-scheme: light; }
   :where([data-theme=dark])  { color-scheme: dark; }
@@ -74,10 +47,11 @@
 }
 
 @layer base {
-  /* the page is exactly U rem wide; a classic scrollbar lies over the right gutter instead of narrowing it */
-  :where(html) { overflow-x: hidden; }
+  /* the canvas is exactly U rem wide, centred; what the window has beyond it is margin.
+     A classic scrollbar lies over the margin or the gutter instead of narrowing the canvas. */
+  :where(html) { overflow-x: hidden; background: var(--paper); }
   :where(body) {
-    inline-size: 100vw; min-block-size: 100dvh;
+    inline-size: var(--canvas); margin-inline: auto; min-block-size: 100dvh;
     font-family: var(--font); font-size: var(--t0); line-height: 1.5;
     color: var(--ink); background: var(--paper);
     -webkit-font-smoothing: antialiased;
@@ -216,4 +190,268 @@
   :where(button[data-tone=accent]) { background: var(--accent); color: var(--on-accent); border-color: transparent; }
   :where(button[data-tone=danger]) { background: var(--danger); color: var(--on-accent); border-color: transparent; }
   :where(button[data-tone=quiet])  { background: transparent; border-color: transparent; color: var(--ink); }
+}
+@layer relation {
+  /* canvas: the grid of the frame; a child takes columns by data-x (data-xw on wide, data-xp on portrait),
+     and without them the whole width; data-bleed lets it reach into the next or previous band */
+  :where([data-l=canvas]) { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--s1); row-gap: var(--gap, var(--s2)); align-items: start; }
+  :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; min-inline-size: 0; }
+  :where([data-bleed=down]) { margin-block-end: calc(var(--s3) * -1); position: relative; z-index: 1; }
+  :where([data-bleed=up]) { margin-block-start: calc(var(--s3) * -1); position: relative; z-index: 1; }
+}
+@layer frame {
+  :root { --canvas: min(100vw, 560px); --units: 22; --cols: 4; --gutter: 1rem; font-size: calc(var(--canvas) / var(--units)); }
+  :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }
+  :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }
+  :where([data-l=canvas][data-pad]) { padding-inline: 0; }
+  :where([data-xp="1-1"]) { grid-column: 1 / 2; }
+  :where([data-xp="1-2"]) { grid-column: 1 / 3; }
+  :where([data-xp="1-3"]) { grid-column: 1 / 4; }
+  :where([data-xp="1-4"]) { grid-column: 1 / 5; }
+  :where([data-xp="2-2"]) { grid-column: 2 / 3; }
+  :where([data-xp="2-3"]) { grid-column: 2 / 4; }
+  :where([data-xp="2-4"]) { grid-column: 2 / 5; }
+  :where([data-xp="3-3"]) { grid-column: 3 / 4; }
+  :where([data-xp="3-4"]) { grid-column: 3 / 5; }
+  :where([data-xp="4-4"]) { grid-column: 4 / 5; }
+  @media (width >= 1100px) {
+    :root { --canvas: calc(1100px + (100vw - 1100px) * 0.7); --units: 72; --cols: 12; --gutter: 2rem; font-size: calc(var(--canvas) / var(--units)); }
+    :where([data-x="1-1"]) { grid-column: 1 / 2; }
+    :where([data-x="1-2"]) { grid-column: 1 / 3; }
+    :where([data-x="1-3"]) { grid-column: 1 / 4; }
+    :where([data-x="1-4"]) { grid-column: 1 / 5; }
+    :where([data-x="1-5"]) { grid-column: 1 / 6; }
+    :where([data-x="1-6"]) { grid-column: 1 / 7; }
+    :where([data-x="1-7"]) { grid-column: 1 / 8; }
+    :where([data-x="1-8"]) { grid-column: 1 / 9; }
+    :where([data-x="1-9"]) { grid-column: 1 / 10; }
+    :where([data-x="1-10"]) { grid-column: 1 / 11; }
+    :where([data-x="1-11"]) { grid-column: 1 / 12; }
+    :where([data-x="1-12"]) { grid-column: 1 / 13; }
+    :where([data-x="2-2"]) { grid-column: 2 / 3; }
+    :where([data-x="2-3"]) { grid-column: 2 / 4; }
+    :where([data-x="2-4"]) { grid-column: 2 / 5; }
+    :where([data-x="2-5"]) { grid-column: 2 / 6; }
+    :where([data-x="2-6"]) { grid-column: 2 / 7; }
+    :where([data-x="2-7"]) { grid-column: 2 / 8; }
+    :where([data-x="2-8"]) { grid-column: 2 / 9; }
+    :where([data-x="2-9"]) { grid-column: 2 / 10; }
+    :where([data-x="2-10"]) { grid-column: 2 / 11; }
+    :where([data-x="2-11"]) { grid-column: 2 / 12; }
+    :where([data-x="2-12"]) { grid-column: 2 / 13; }
+    :where([data-x="3-3"]) { grid-column: 3 / 4; }
+    :where([data-x="3-4"]) { grid-column: 3 / 5; }
+    :where([data-x="3-5"]) { grid-column: 3 / 6; }
+    :where([data-x="3-6"]) { grid-column: 3 / 7; }
+    :where([data-x="3-7"]) { grid-column: 3 / 8; }
+    :where([data-x="3-8"]) { grid-column: 3 / 9; }
+    :where([data-x="3-9"]) { grid-column: 3 / 10; }
+    :where([data-x="3-10"]) { grid-column: 3 / 11; }
+    :where([data-x="3-11"]) { grid-column: 3 / 12; }
+    :where([data-x="3-12"]) { grid-column: 3 / 13; }
+    :where([data-x="4-4"]) { grid-column: 4 / 5; }
+    :where([data-x="4-5"]) { grid-column: 4 / 6; }
+    :where([data-x="4-6"]) { grid-column: 4 / 7; }
+    :where([data-x="4-7"]) { grid-column: 4 / 8; }
+    :where([data-x="4-8"]) { grid-column: 4 / 9; }
+    :where([data-x="4-9"]) { grid-column: 4 / 10; }
+    :where([data-x="4-10"]) { grid-column: 4 / 11; }
+    :where([data-x="4-11"]) { grid-column: 4 / 12; }
+    :where([data-x="4-12"]) { grid-column: 4 / 13; }
+    :where([data-x="5-5"]) { grid-column: 5 / 6; }
+    :where([data-x="5-6"]) { grid-column: 5 / 7; }
+    :where([data-x="5-7"]) { grid-column: 5 / 8; }
+    :where([data-x="5-8"]) { grid-column: 5 / 9; }
+    :where([data-x="5-9"]) { grid-column: 5 / 10; }
+    :where([data-x="5-10"]) { grid-column: 5 / 11; }
+    :where([data-x="5-11"]) { grid-column: 5 / 12; }
+    :where([data-x="5-12"]) { grid-column: 5 / 13; }
+    :where([data-x="6-6"]) { grid-column: 6 / 7; }
+    :where([data-x="6-7"]) { grid-column: 6 / 8; }
+    :where([data-x="6-8"]) { grid-column: 6 / 9; }
+    :where([data-x="6-9"]) { grid-column: 6 / 10; }
+    :where([data-x="6-10"]) { grid-column: 6 / 11; }
+    :where([data-x="6-11"]) { grid-column: 6 / 12; }
+    :where([data-x="6-12"]) { grid-column: 6 / 13; }
+    :where([data-x="7-7"]) { grid-column: 7 / 8; }
+    :where([data-x="7-8"]) { grid-column: 7 / 9; }
+    :where([data-x="7-9"]) { grid-column: 7 / 10; }
+    :where([data-x="7-10"]) { grid-column: 7 / 11; }
+    :where([data-x="7-11"]) { grid-column: 7 / 12; }
+    :where([data-x="7-12"]) { grid-column: 7 / 13; }
+    :where([data-x="8-8"]) { grid-column: 8 / 9; }
+    :where([data-x="8-9"]) { grid-column: 8 / 10; }
+    :where([data-x="8-10"]) { grid-column: 8 / 11; }
+    :where([data-x="8-11"]) { grid-column: 8 / 12; }
+    :where([data-x="8-12"]) { grid-column: 8 / 13; }
+    :where([data-x="9-9"]) { grid-column: 9 / 10; }
+    :where([data-x="9-10"]) { grid-column: 9 / 11; }
+    :where([data-x="9-11"]) { grid-column: 9 / 12; }
+    :where([data-x="9-12"]) { grid-column: 9 / 13; }
+    :where([data-x="10-10"]) { grid-column: 10 / 11; }
+    :where([data-x="10-11"]) { grid-column: 10 / 12; }
+    :where([data-x="10-12"]) { grid-column: 10 / 13; }
+    :where([data-x="11-11"]) { grid-column: 11 / 12; }
+    :where([data-x="11-12"]) { grid-column: 11 / 13; }
+    :where([data-x="12-12"]) { grid-column: 12 / 13; }
+  }
+  @media (width >= 2000px) {
+    :root { --canvas: calc(2000px + (100vw - 2000px) * 0.6); --units: 96; --cols: 12; --gutter: 2rem; font-size: calc(var(--canvas) / var(--units)); }
+    :where([data-x="1-1"]) { grid-column: 1 / 2; }
+    :where([data-x="1-2"]) { grid-column: 1 / 3; }
+    :where([data-x="1-3"]) { grid-column: 1 / 4; }
+    :where([data-x="1-4"]) { grid-column: 1 / 5; }
+    :where([data-x="1-5"]) { grid-column: 1 / 6; }
+    :where([data-x="1-6"]) { grid-column: 1 / 7; }
+    :where([data-x="1-7"]) { grid-column: 1 / 8; }
+    :where([data-x="1-8"]) { grid-column: 1 / 9; }
+    :where([data-x="1-9"]) { grid-column: 1 / 10; }
+    :where([data-x="1-10"]) { grid-column: 1 / 11; }
+    :where([data-x="1-11"]) { grid-column: 1 / 12; }
+    :where([data-x="1-12"]) { grid-column: 1 / 13; }
+    :where([data-x="2-2"]) { grid-column: 2 / 3; }
+    :where([data-x="2-3"]) { grid-column: 2 / 4; }
+    :where([data-x="2-4"]) { grid-column: 2 / 5; }
+    :where([data-x="2-5"]) { grid-column: 2 / 6; }
+    :where([data-x="2-6"]) { grid-column: 2 / 7; }
+    :where([data-x="2-7"]) { grid-column: 2 / 8; }
+    :where([data-x="2-8"]) { grid-column: 2 / 9; }
+    :where([data-x="2-9"]) { grid-column: 2 / 10; }
+    :where([data-x="2-10"]) { grid-column: 2 / 11; }
+    :where([data-x="2-11"]) { grid-column: 2 / 12; }
+    :where([data-x="2-12"]) { grid-column: 2 / 13; }
+    :where([data-x="3-3"]) { grid-column: 3 / 4; }
+    :where([data-x="3-4"]) { grid-column: 3 / 5; }
+    :where([data-x="3-5"]) { grid-column: 3 / 6; }
+    :where([data-x="3-6"]) { grid-column: 3 / 7; }
+    :where([data-x="3-7"]) { grid-column: 3 / 8; }
+    :where([data-x="3-8"]) { grid-column: 3 / 9; }
+    :where([data-x="3-9"]) { grid-column: 3 / 10; }
+    :where([data-x="3-10"]) { grid-column: 3 / 11; }
+    :where([data-x="3-11"]) { grid-column: 3 / 12; }
+    :where([data-x="3-12"]) { grid-column: 3 / 13; }
+    :where([data-x="4-4"]) { grid-column: 4 / 5; }
+    :where([data-x="4-5"]) { grid-column: 4 / 6; }
+    :where([data-x="4-6"]) { grid-column: 4 / 7; }
+    :where([data-x="4-7"]) { grid-column: 4 / 8; }
+    :where([data-x="4-8"]) { grid-column: 4 / 9; }
+    :where([data-x="4-9"]) { grid-column: 4 / 10; }
+    :where([data-x="4-10"]) { grid-column: 4 / 11; }
+    :where([data-x="4-11"]) { grid-column: 4 / 12; }
+    :where([data-x="4-12"]) { grid-column: 4 / 13; }
+    :where([data-x="5-5"]) { grid-column: 5 / 6; }
+    :where([data-x="5-6"]) { grid-column: 5 / 7; }
+    :where([data-x="5-7"]) { grid-column: 5 / 8; }
+    :where([data-x="5-8"]) { grid-column: 5 / 9; }
+    :where([data-x="5-9"]) { grid-column: 5 / 10; }
+    :where([data-x="5-10"]) { grid-column: 5 / 11; }
+    :where([data-x="5-11"]) { grid-column: 5 / 12; }
+    :where([data-x="5-12"]) { grid-column: 5 / 13; }
+    :where([data-x="6-6"]) { grid-column: 6 / 7; }
+    :where([data-x="6-7"]) { grid-column: 6 / 8; }
+    :where([data-x="6-8"]) { grid-column: 6 / 9; }
+    :where([data-x="6-9"]) { grid-column: 6 / 10; }
+    :where([data-x="6-10"]) { grid-column: 6 / 11; }
+    :where([data-x="6-11"]) { grid-column: 6 / 12; }
+    :where([data-x="6-12"]) { grid-column: 6 / 13; }
+    :where([data-x="7-7"]) { grid-column: 7 / 8; }
+    :where([data-x="7-8"]) { grid-column: 7 / 9; }
+    :where([data-x="7-9"]) { grid-column: 7 / 10; }
+    :where([data-x="7-10"]) { grid-column: 7 / 11; }
+    :where([data-x="7-11"]) { grid-column: 7 / 12; }
+    :where([data-x="7-12"]) { grid-column: 7 / 13; }
+    :where([data-x="8-8"]) { grid-column: 8 / 9; }
+    :where([data-x="8-9"]) { grid-column: 8 / 10; }
+    :where([data-x="8-10"]) { grid-column: 8 / 11; }
+    :where([data-x="8-11"]) { grid-column: 8 / 12; }
+    :where([data-x="8-12"]) { grid-column: 8 / 13; }
+    :where([data-x="9-9"]) { grid-column: 9 / 10; }
+    :where([data-x="9-10"]) { grid-column: 9 / 11; }
+    :where([data-x="9-11"]) { grid-column: 9 / 12; }
+    :where([data-x="9-12"]) { grid-column: 9 / 13; }
+    :where([data-x="10-10"]) { grid-column: 10 / 11; }
+    :where([data-x="10-11"]) { grid-column: 10 / 12; }
+    :where([data-x="10-12"]) { grid-column: 10 / 13; }
+    :where([data-x="11-11"]) { grid-column: 11 / 12; }
+    :where([data-x="11-12"]) { grid-column: 11 / 13; }
+    :where([data-x="12-12"]) { grid-column: 12 / 13; }
+    :where([data-xw="1-1"]) { grid-column: 1 / 2; }
+    :where([data-xw="1-2"]) { grid-column: 1 / 3; }
+    :where([data-xw="1-3"]) { grid-column: 1 / 4; }
+    :where([data-xw="1-4"]) { grid-column: 1 / 5; }
+    :where([data-xw="1-5"]) { grid-column: 1 / 6; }
+    :where([data-xw="1-6"]) { grid-column: 1 / 7; }
+    :where([data-xw="1-7"]) { grid-column: 1 / 8; }
+    :where([data-xw="1-8"]) { grid-column: 1 / 9; }
+    :where([data-xw="1-9"]) { grid-column: 1 / 10; }
+    :where([data-xw="1-10"]) { grid-column: 1 / 11; }
+    :where([data-xw="1-11"]) { grid-column: 1 / 12; }
+    :where([data-xw="1-12"]) { grid-column: 1 / 13; }
+    :where([data-xw="2-2"]) { grid-column: 2 / 3; }
+    :where([data-xw="2-3"]) { grid-column: 2 / 4; }
+    :where([data-xw="2-4"]) { grid-column: 2 / 5; }
+    :where([data-xw="2-5"]) { grid-column: 2 / 6; }
+    :where([data-xw="2-6"]) { grid-column: 2 / 7; }
+    :where([data-xw="2-7"]) { grid-column: 2 / 8; }
+    :where([data-xw="2-8"]) { grid-column: 2 / 9; }
+    :where([data-xw="2-9"]) { grid-column: 2 / 10; }
+    :where([data-xw="2-10"]) { grid-column: 2 / 11; }
+    :where([data-xw="2-11"]) { grid-column: 2 / 12; }
+    :where([data-xw="2-12"]) { grid-column: 2 / 13; }
+    :where([data-xw="3-3"]) { grid-column: 3 / 4; }
+    :where([data-xw="3-4"]) { grid-column: 3 / 5; }
+    :where([data-xw="3-5"]) { grid-column: 3 / 6; }
+    :where([data-xw="3-6"]) { grid-column: 3 / 7; }
+    :where([data-xw="3-7"]) { grid-column: 3 / 8; }
+    :where([data-xw="3-8"]) { grid-column: 3 / 9; }
+    :where([data-xw="3-9"]) { grid-column: 3 / 10; }
+    :where([data-xw="3-10"]) { grid-column: 3 / 11; }
+    :where([data-xw="3-11"]) { grid-column: 3 / 12; }
+    :where([data-xw="3-12"]) { grid-column: 3 / 13; }
+    :where([data-xw="4-4"]) { grid-column: 4 / 5; }
+    :where([data-xw="4-5"]) { grid-column: 4 / 6; }
+    :where([data-xw="4-6"]) { grid-column: 4 / 7; }
+    :where([data-xw="4-7"]) { grid-column: 4 / 8; }
+    :where([data-xw="4-8"]) { grid-column: 4 / 9; }
+    :where([data-xw="4-9"]) { grid-column: 4 / 10; }
+    :where([data-xw="4-10"]) { grid-column: 4 / 11; }
+    :where([data-xw="4-11"]) { grid-column: 4 / 12; }
+    :where([data-xw="4-12"]) { grid-column: 4 / 13; }
+    :where([data-xw="5-5"]) { grid-column: 5 / 6; }
+    :where([data-xw="5-6"]) { grid-column: 5 / 7; }
+    :where([data-xw="5-7"]) { grid-column: 5 / 8; }
+    :where([data-xw="5-8"]) { grid-column: 5 / 9; }
+    :where([data-xw="5-9"]) { grid-column: 5 / 10; }
+    :where([data-xw="5-10"]) { grid-column: 5 / 11; }
+    :where([data-xw="5-11"]) { grid-column: 5 / 12; }
+    :where([data-xw="5-12"]) { grid-column: 5 / 13; }
+    :where([data-xw="6-6"]) { grid-column: 6 / 7; }
+    :where([data-xw="6-7"]) { grid-column: 6 / 8; }
+    :where([data-xw="6-8"]) { grid-column: 6 / 9; }
+    :where([data-xw="6-9"]) { grid-column: 6 / 10; }
+    :where([data-xw="6-10"]) { grid-column: 6 / 11; }
+    :where([data-xw="6-11"]) { grid-column: 6 / 12; }
+    :where([data-xw="6-12"]) { grid-column: 6 / 13; }
+    :where([data-xw="7-7"]) { grid-column: 7 / 8; }
+    :where([data-xw="7-8"]) { grid-column: 7 / 9; }
+    :where([data-xw="7-9"]) { grid-column: 7 / 10; }
+    :where([data-xw="7-10"]) { grid-column: 7 / 11; }
+    :where([data-xw="7-11"]) { grid-column: 7 / 12; }
+    :where([data-xw="7-12"]) { grid-column: 7 / 13; }
+    :where([data-xw="8-8"]) { grid-column: 8 / 9; }
+    :where([data-xw="8-9"]) { grid-column: 8 / 10; }
+    :where([data-xw="8-10"]) { grid-column: 8 / 11; }
+    :where([data-xw="8-11"]) { grid-column: 8 / 12; }
+    :where([data-xw="8-12"]) { grid-column: 8 / 13; }
+    :where([data-xw="9-9"]) { grid-column: 9 / 10; }
+    :where([data-xw="9-10"]) { grid-column: 9 / 11; }
+    :where([data-xw="9-11"]) { grid-column: 9 / 12; }
+    :where([data-xw="9-12"]) { grid-column: 9 / 13; }
+    :where([data-xw="10-10"]) { grid-column: 10 / 11; }
+    :where([data-xw="10-11"]) { grid-column: 10 / 12; }
+    :where([data-xw="10-12"]) { grid-column: 10 / 13; }
+    :where([data-xw="11-11"]) { grid-column: 11 / 12; }
+    :where([data-xw="11-12"]) { grid-column: 11 / 13; }
+    :where([data-xw="12-12"]) { grid-column: 12 / 13; }
+  }
 }

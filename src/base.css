@@ -1,0 +1,191 @@
+@layer reset, tokens, base, relation, surface, tone;
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  html { -webkit-text-size-adjust: none; text-size-adjust: none; }
+  img, svg, video, canvas, picture { display: block; max-inline-size: 100%; block-size: auto; }
+  input, button, textarea, select { font: inherit; color: inherit; letter-spacing: inherit; }
+  :where(p, h1, h2, h3, h4, h5, h6, li, dd, dt, label, a, figcaption, blockquote) { overflow-wrap: break-word; }
+}
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    --hue: 250;
+    --paper:     light-dark(oklch(0.985 0.004 var(--hue)), oklch(0.19 0.012 var(--hue)));
+    --ink:       light-dark(oklch(0.23 0.02 var(--hue)),   oklch(0.94 0.008 var(--hue)));
+    --accent:    light-dark(oklch(0.50 0.16 var(--hue)),   oklch(0.78 0.12 var(--hue)));
+    --on-accent: light-dark(oklch(0.99 0 0),               oklch(0.18 0.02 var(--hue)));
+    --danger:    light-dark(oklch(0.50 0.19 27),           oklch(0.76 0.14 27));
+    --ok:        light-dark(oklch(0.47 0.12 150),          oklch(0.80 0.14 150));
+    --warn:      light-dark(oklch(0.50 0.11 70),           oklch(0.83 0.13 80));
+    --quiet:     color-mix(in oklch, var(--ink) 66%, var(--paper));
+    --line:      color-mix(in oklch, var(--ink) 16%, transparent);
+    --veil:      color-mix(in oklch, var(--ink) 4.5%, transparent);
+
+    /* type and space: plain rem, so they scale with the page and keep proportion */
+    --t-1: .875rem; --t0: 1rem; --t1: 1.25rem; --t2: 1.6rem; --t3: 2.25rem; --t4: 3.25rem;
+    --s-2: .25rem; --s-1: .5rem; --s0: 1rem; --s1: 1.5rem; --s2: 2.5rem; --s3: 4rem;
+    --radius: .5rem;
+    --target: 2.75rem;
+    --gutter: 2rem;
+
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", monospace;
+  }
+
+  :where([data-theme=light]) { color-scheme: light; }
+  :where([data-theme=dark])  { color-scheme: dark; }
+  @media (prefers-contrast: more) {
+    :root { --quiet: var(--ink); --line: color-mix(in oklch, var(--ink) 45%, transparent); --veil: color-mix(in oklch, var(--ink) 8%, transparent); }
+  }
+  @media print { :root { font-size: 11pt; } }
+}
+
+@layer base {
+  /* the canvas is exactly U rem wide, centred; what the window has beyond it is margin.
+     A classic scrollbar lies over the margin or the gutter instead of narrowing the canvas. */
+  :where(html) { overflow-x: hidden; background: var(--paper); }
+  :where(body) {
+    inline-size: var(--canvas); margin-inline: auto; min-block-size: 100dvh;
+    font-family: var(--font); font-size: var(--t0); line-height: 1.5;
+    color: var(--ink); background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+  }
+  :where([data-theme]) { color: var(--ink); background-color: var(--paper); }
+
+  :where(h1) { font-size: var(--t4); }
+  :where(h2) { font-size: var(--t3); }
+  :where(h3) { font-size: var(--t2); }
+  :where(h4) { font-size: var(--t1); }
+  :where(h5, h6) { font-size: var(--t0); }
+  :where(h1, h2, h3, h4, h5, h6) { line-height: 1.12; font-weight: 650; text-wrap: balance; letter-spacing: -.01em; }
+  :where(p, li, dd, blockquote) { max-inline-size: 68ch; text-wrap: pretty; }
+  :where(small, figcaption, caption) { font-size: var(--t-1); }
+  :where(strong, b) { font-weight: 650; }
+  :where(code, kbd, samp, pre) { font-family: var(--font-mono); font-size: .92em; }
+  :where(:not(pre) > code) { padding: .1em .35em; border-radius: .3em; background: var(--veil); }
+  :where(pre) { padding: var(--s0); border-radius: var(--radius); background: var(--veil); overflow-x: auto; }
+  :where(hr) { border: 0; border-block-start: .0625rem solid var(--line); }
+  :where(ul, ol) { padding-inline-start: 1.25em; }
+  :where(ul[role=list], ol[role=list], menu, ul[data-l], ol[data-l]) { list-style: none; padding: 0; }
+  :where(a) { color: var(--accent); text-underline-offset: .2em; text-decoration-thickness: from-font; }
+  :where(:focus-visible) { outline: .125rem solid var(--accent); outline-offset: .125rem; }
+
+  :where(button, input[type=button], input[type=submit], input[type=reset]) {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-1);
+    min-block-size: var(--target); min-inline-size: var(--target); padding: var(--s-2) var(--s0);
+    border: .0625rem solid var(--line); border-radius: var(--radius);
+    background: var(--veil); font-weight: 550; line-height: 1.2; cursor: pointer;
+  }
+  :where(button:hover) { background: color-mix(in oklch, var(--ink) 9%, transparent); }
+  :where(button:disabled) { opacity: .55; cursor: not-allowed; }
+  :where(input:not([type=checkbox], [type=radio], [type=range], [type=button], [type=submit], [type=reset]), select, textarea) {
+    inline-size: 100%; min-inline-size: 0; min-block-size: var(--target); padding: var(--s-2) var(--s0);
+    border: .0625rem solid color-mix(in oklch, var(--ink) 28%, transparent); border-radius: var(--radius);
+    background: var(--paper);
+  }
+  :where(textarea) { min-block-size: 6lh; resize: vertical; }
+  :where(input[type=checkbox], input[type=radio]) { inline-size: 1.25rem; block-size: 1.25rem; accent-color: var(--accent); }
+  :where(label) { display: flex; flex-direction: column; gap: var(--s-2); }
+  :where(label:has(> input[type=checkbox], > input[type=radio])) { flex-direction: row; align-items: center; min-block-size: var(--target); }
+  :where(label > span:first-child, legend) { font-weight: 550; }
+  :where(fieldset) { border: .0625rem solid var(--line); border-radius: var(--radius); padding: var(--s1); min-inline-size: 0; }
+  :where(legend) { padding-inline: var(--s-1); }
+  :where([aria-invalid=true], :user-invalid) { border-color: var(--danger); }
+  :where(details) { border-block-end: .0625rem solid var(--line); }
+  :where(summary) { min-block-size: var(--target); display: flex; align-items: center; gap: var(--s-1); cursor: pointer; font-weight: 550; }
+
+  :where(table) { inline-size: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  :where(th, td) { padding: var(--s-1) var(--s0); text-align: start; vertical-align: top; border-block-end: .0625rem solid var(--line); }
+  :where(thead th) { font-size: var(--t-1); font-weight: 600; color: var(--quiet); white-space: nowrap; }
+  :where(caption) { text-align: start; padding-block-end: var(--s-1); color: var(--quiet); }
+  :where(dl) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: var(--s0) var(--s1); }
+  :where(dl > div) { display: flex; flex-direction: column; gap: var(--s-2); }
+  :where(dt) { font-size: var(--t-1); color: var(--quiet); }
+  :where(dd) { margin: 0; font-weight: 550; }
+  :where(data) { font-size: var(--t2); font-weight: 650; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  :where(p, li, td, dd, span, a) :where(data) { font: inherit; }
+  :where(mark) {
+    display: inline-flex; align-items: center; gap: .35em; max-inline-size: 100%;
+    padding: .1em .6em; border-radius: 999rem;
+    font-size: var(--t-1); font-weight: 600; line-height: 1.35;
+    color: var(--ink); background: var(--veil);
+  }
+}
+
+/*
+ * Relations. Every threshold is in rem, so it falls at the same place of the page in every
+ * window of a step: a relation never changes form inside a step.
+ */
+@layer relation {
+  :where([data-space=none])  { --gap: 0rem; }
+  :where([data-space=tight]) { --gap: var(--s-1); }
+  :where([data-space=loose]) { --gap: var(--s2); }
+  :where([data-l]:not([data-space])) { --gap: initial; }
+
+  :where([data-l=stack]) { display: flex; flex-direction: column; gap: var(--gap, var(--s1)); }
+  :where([data-l=stack]) > :where([data-push]) { margin-block-start: auto; }
+  :where([data-l=stack]) > :where(mark, button, a, small, span, strong, data, img, svg) { align-self: flex-start; }
+
+  :where([data-l=cluster]) { display: flex; flex-flow: row wrap; align-items: center; gap: var(--gap, var(--s0)); }
+  :where([data-l=cluster]) > :where([data-push]) { margin-inline-start: auto; }
+
+  /* split: main beside side; folds when the main part would be narrower than 24rem */
+  :where([data-l=split]) { display: flex; flex-flow: row wrap; gap: var(--gap, var(--s1)); }
+  :where([data-l=split]) > :where(*) { flex: 999 1 0; min-inline-size: min(100%, 24rem); }
+  :where([data-l=split]) > :where([data-side]),
+  :where([data-l=split]:not(:has(> [data-side]))) > :where(:first-child) { flex: 1 1 16rem; min-inline-size: 0; }
+  :where([data-l=split]) > :where(img, svg, video, picture) { flex-grow: 0; }
+  :where(label[data-l=split]) { align-items: center; }
+
+  /* switch: equal parts in a row, all into a column at once below 36rem */
+  :where([data-l=switch]) { display: flex; flex-flow: row wrap; gap: var(--gap, var(--s1)); }
+  :where([data-l=switch]) > :where(*) { flex: 1 1 calc((36rem - 100%) * 999); }
+
+  /* grid: as many 18rem columns as fit */
+  :where([data-l=grid]) { display: grid; gap: var(--gap, var(--s1)); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+
+  /* reel: a strip scrolling inside itself, never the page */
+  :where([data-l=reel]) { display: flex; gap: var(--gap, var(--s0)); overflow-x: auto; overscroll-behavior-inline: contain; padding-block-end: var(--s-1); }
+  :where([data-l=reel]) > :where(*) { flex: 0 0 auto; }
+  :where([data-l=reel]) > :where(:only-child) { flex-grow: 1; }
+  :where([data-l=reel]) > :where(table) { inline-size: max-content; min-inline-size: 100%; }
+
+  /* page: the whole width with the gutter of the step; the page has no island in the middle */
+  :where([data-l=page]) { display: flex; flex-direction: column; gap: var(--gap, var(--s2)); padding: var(--s1) var(--gutter) var(--s3); }
+
+  /* cover: a tall area with its content in the middle */
+  :where([data-l=cover]) { display: flex; flex-direction: column; justify-content: center; gap: var(--gap, var(--s1)); min-block-size: min(100svh, 42rem); }
+  :where([data-l=cover]) > :where([data-push]) { margin-block-start: auto; }
+
+  :where([data-l]) > :where(img, svg, video, picture) { align-self: flex-start; }
+  :where([data-pad]) { padding: var(--s1); }
+}
+
+@layer surface {
+  :where([data-surface]) { padding: 1.25rem; border-radius: var(--radius); }
+  :where([data-surface=raised])  { background: var(--veil); }
+  :where([data-surface=outline]) { border: .0625rem solid var(--line); }
+  :where([data-surface=accent])  { background: color-mix(in oklch, var(--accent) 10%, transparent); }
+}
+
+@layer tone {
+  :where([data-tone=quiet])  { color: var(--quiet); }
+  :where([data-tone=strong]) { font-weight: 650; }
+  :where([data-tone=accent]) { color: var(--accent); }
+  :where([data-tone=danger]) { color: var(--danger); }
+  :where([data-tone=ok])     { color: var(--ok); }
+  :where([data-tone=warn])   { color: var(--warn); }
+  :where(mark[data-tone]) { color: var(--ink); }
+  :where(mark[data-tone=accent]) { background: color-mix(in oklch, var(--accent) 16%, transparent); }
+  :where(mark[data-tone=danger]) { background: color-mix(in oklch, var(--danger) 16%, transparent); }
+  :where(mark[data-tone=ok])     { background: color-mix(in oklch, var(--ok) 18%, transparent); }
+  :where(mark[data-tone=warn])   { background: color-mix(in oklch, var(--warn) 20%, transparent); }
+  :where(mark[data-tone=quiet])  { color: var(--quiet); }
+  :where(button[data-tone=accent]) { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+  :where(button[data-tone=danger]) { background: var(--danger); color: var(--on-accent); border-color: transparent; }
+  :where(button[data-tone=quiet])  { background: transparent; border-color: transparent; color: var(--ink); }
+}

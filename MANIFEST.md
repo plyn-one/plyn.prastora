@@ -4,21 +4,22 @@ You lay out a page with semantic HTML, `core.css` and the attributes below. Noth
 
 ## How the page behaves
 
-The page is always U units wide, and 1rem is one unit. U is a step of a ladder (20, 25, 32, 40, 50, 64, 80, 100, 128), chosen by the window in the reader's own text size. Inside a step the page scales as a whole: every relation resolves the same way, so what you see at one width of a step you get at every width of it. Between steps relations fold by themselves. Body text is never smaller than the reader's size, and zoom makes it larger. You never pick sizes: pick relations and meanings.
+A page has a few frames: portrait (phones), landscape, wide. Each frame has its own composition, set once, on a canvas of a fixed number of units (1rem is one unit) and columns: 4 in portrait, 12 in landscape and wide. Within a frame the canvas scales as a whole, like a picture: every element keeps its place against every other on every screen of the frame. What the window has beyond the canvas is margin. You place things by columns of the canvas, not by sizes.
 
 ## Rules
 
 1. Semantic HTML first: `header nav main aside article section footer form label fieldset table dl ul button a h1..h6 p`. They are already styled.
-2. Composition is given only by `data-l`. Relations nest at any depth.
+2. Composition is given by `data-l="canvas"` and the columns its children take; small assemblies inside use the other relations. Relations nest at any depth.
 3. Use only the attributes and values listed here.
-4. Headings by meaning: one `h1` per page, `h2` for sections, `h3` inside them. Their size follows the step.
-5. Run `node check.mjs page.html` and fix every problem until it prints `"ok": true`. The check renders both edges of every step in both colour schemes.
+4. Headings by meaning: one `h1` per page, `h2` for sections, `h3` inside them. Their size is set by the frame.
+5. Run `node check.mjs page.html` and fix every problem until it prints `"ok": true`. The check renders both edges of every frame in both colour schemes.
 
 ## Relations: `data-l`
 
 | value | meaning | children |
 |---|---|---|
 | `page` | the whole page with its gutter; put it on the first element inside `body` | header, main, footer |
+| `canvas` | a band of the page laid on the columns of the frame; each child takes columns by `data-x` | placed children |
 | `stack` | one under another | any |
 | `cluster` | short things in a wrapping row: links, buttons, marks | short items |
 | `split` | main beside side; folds into a stack when main would be under 24 units | two; mark the side `data-side` (default: the first) |
@@ -31,6 +32,10 @@ The page is always U units wide, and 1rem is one unit. U is a step of a ladder (
 
 | attribute | values | effect |
 |---|---|---|
+| `data-x` | `first-last`, columns 1 to 12 | on a child of `canvas`: the columns it takes in landscape and wide, as `1-6` |
+| `data-xw` | `first-last`, 1 to 12 | the same for wide only, when it differs |
+| `data-xp` | `first-last`, 1 to 4 | the same for portrait; without it the child takes the whole width there |
+| `data-bleed` | `up` `down` | on a child of `canvas`: reaches 4 units into the band above or below |
 | `data-space` | `none` `tight` `loose` | the gap of this relation only |
 | `data-side` | | on a child of `split`: the side |
 | `data-push` | | on a child of `stack`, `cluster` or `cover`: it and the ones after it go to the end |
@@ -52,7 +57,14 @@ Page:
 </div></body>
 ```
 
-Hero with a picture bound to the text: `<section data-l="split"><div data-l="stack"><h1>…</h1><p>…</p></div><svg data-side …></svg></section>`
+Hero with a picture bound to the heading and reaching into the next band:
+```html
+<section data-l="canvas"><div data-x="1-6" data-l="stack"><h1>…</h1><p>…</p></div>
+  <svg data-x="8-12" data-xp="2-4" data-bleed="down" …></svg></section>
+<section data-l="canvas" data-surface="accent"><p data-x="1-6">…</p></section>
+```
+
+Three in a row: `<section data-l="canvas"><article data-x="1-4">…</article><article data-x="5-8">…</article><article data-x="9-12">…</article></section>`
 
 Cards: `<ul data-l="grid"><li data-surface="raised" data-l="stack" data-space="tight"><h3>…</h3><p>…</p><mark data-tone="ok">…</mark></li></ul>`
 
@@ -66,4 +78,4 @@ Wide table: `<div data-l="reel"><table>…</table></div>`. Status: `<mark data-t
 
 ## Problems the check reports
 
-`composition-moves` an element stands elsewhere at the two edges of one step: something is sized outside the vocabulary · `page-scroll-x` the page is wider than the window · `escapes-parent` · `narrow-measure` prose in a column under 15 em: change the relation · `text-too-small` · `body-below-reader-size` · `target-too-small` under 24×24 px · `contrast` · `vocabulary` an attribute, value, `class` or `style` outside this manifest.
+`composition-moves` an element stands elsewhere on the canvas at the two edges of one frame: something is sized outside the vocabulary · `page-scroll-x` the page is wider than the window · `escapes-parent` · `narrow-measure` prose in a column under 15 em: change the relation · `text-too-small` · `body-below-reader-size` · `target-too-small` under 24×24 px · `contrast` · `vocabulary` an attribute, value, `class` or `style` outside this manifest.

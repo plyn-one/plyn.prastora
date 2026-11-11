@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The check of a page laid out with prastora: renders it at both edges of every step of the ladder
+// The check of a page laid out with prastora: renders it at both edges of every frame
 // and in both colour schemes, and prints what broke as JSON. Exit 0 when nothing did.
 //   node check.mjs <page.html> [--shots <dir>]
 // Needs Playwright with Chromium.
@@ -15,13 +15,17 @@ const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : nul
 if (!page) { console.error('usage: node check.mjs <page.html> [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
 
-// the ladder of core.css: a step u holds from u em to the next step's em (16 px to the em)
-const LADDER = [20, 25, 32, 40, 50, 64, 80, 100, 128];
-const EDGES = LADDER.map((u, i) => ({ u, lo: Math.max(u, 20) * 16, hi: (LADDER[i + 1] ?? 240) * 16 - 1 }));
-EDGES[0].lo = 320;
+// the frames are read from the stylesheet the page links: its first comment lists them
+import { readFileSync } from 'node:fs';
+import { dirname } from 'node:path';
+const html = readFileSync(page, 'utf8');
+const href = html.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/)?.[1] ?? html.match(/<link[^>]+href="([^"]+)"[^>]+rel="stylesheet"/)?.[1];
+const FRAMES = JSON.parse(readFileSync(resolve(dirname(page), href), 'utf8').match(/frames: (\[.*\])/)[1]);
+const EDGES = FRAMES.map(f => ({ u: f.name, lo: Math.max(f.from, 320), hi: (f.to ?? 3841) - 1 }));
 
 const VOCAB = {
-  'data-l': ['page', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
+  'data-l': ['page', 'canvas', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
+  'data-bleed': ['up', 'down'],
   'data-space': ['none', 'tight', 'loose'],
   'data-surface': ['raised', 'outline', 'accent'],
   'data-tone': ['quiet', 'strong', 'accent', 'danger', 'ok', 'warn'],
@@ -29,7 +33,7 @@ const VOCAB = {
   'data-side': [''], 'data-push': [''], 'data-pad': [''],
 };
 
-// runs in the page: what breaks at this width, and the geometry of every element in rem
+// runs in the page: what breaks at this width, and the geometry of every element in rem from the canvas edge
 function inspect(VOCAB) {
   const issues = [], boxes = [];
   const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -54,6 +58,13 @@ function inspect(VOCAB) {
   for (const el of all) {
     for (const a of el.getAttributeNames()) {
       if (!a.startsWith('data-')) continue;
+      const span = { 'data-x': 12, 'data-xw': 12, 'data-xp': 4 }[a];
+      if (span) {
+        const m = el.getAttribute(a).match(/^(\d+)-(\d+)$/);
+        if (!m || +m[1] < 1 || +m[2] > span || +m[1] > +m[2]) add('vocabulary', el, `${a}="${el.getAttribute(a)}" is not first-last within 1-${span}`);
+        else if (el.parentElement?.dataset.l !== 'canvas') add('vocabulary', el, `${a} outside a canvas`);
+        continue;
+      }
       if (!(a in VOCAB)) add('vocabulary', el, `unknown attribute ${a}`);
       else if (!VOCAB[a].includes(el.getAttribute(a))) add('vocabulary', el, `${a}="${el.getAttribute(a)}" is not one of ${VOCAB[a].join(' ')}`);
     }
@@ -66,10 +77,11 @@ function inspect(VOCAB) {
   if (document.body.scrollWidth > innerWidth + 1) add('page-scroll-x', document.body, `${document.body.scrollWidth} px wide in a ${innerWidth} px window`);
 
   const body = parseFloat(getComputedStyle(document.body).fontSize);
+  const x0 = document.body.getBoundingClientRect().left;
   for (const el of all) {
     if (!shown(el)) continue;
     const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
-    boxes.push([path(el), r.left / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
+    boxes.push([path(el), (r.left - x0) / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
     const p = el.parentElement;
     if (p && p !== document.body && cs.position === 'static' && !scrolls(p)) {
       const q = p.getBoundingClientRect();
@@ -121,11 +133,11 @@ for (const scheme of ['light', 'dark']) {
       const r = await pg.evaluate(inspect, VOCAB);
       seen[w] = r;
       for (const i of r.issues) if (scheme === 'light' || !['vocabulary'].includes(i.rule)) note(i, `${scheme}@${w}`);
-      if (r.body < 15.9) note({ rule: 'body-below-reader-size', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${scheme}@${w}`);
+      if (r.body < 12) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${scheme}@${w}`);
       if (shots && scheme === 'light') await pg.screenshot({ path: `${shots}/u${u}-${w}.png`, fullPage: true });
       await ctx.close();
     }
-    // the promise: within a step every element stands at the same place of the page, in rem
+    // the promise: within a frame every element stands at the same place of the canvas, in rem
     if (scheme === 'light') {
       const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = [];
       for (const b of seen[hi].boxes) {
@@ -135,11 +147,11 @@ for (const scheme of ['light', 'dark']) {
         if (d > 0.5) moved.push([b[0], d]);
       }
       for (const [at, d] of moved.sort((x, y) => y[1] - x[1]).slice(0, 5))
-        note({ rule: 'composition-moves', at, detail: `moves ${d.toFixed(2)} rem between ${lo} and ${hi} px` }, `step ${u}`);
+        note({ rule: 'composition-moves', at, detail: `moves ${d.toFixed(2)} rem between ${lo} and ${hi} px` }, `frame ${u}`);
     }
   }
 }
 await browser.close();
 const problems = [...found.values()];
-console.log(JSON.stringify({ page, ok: problems.length === 0, steps: EDGES.map(e => `${e.u}: ${e.lo}–${e.hi} px`), problems }, null, 2));
+console.log(JSON.stringify({ page, ok: problems.length === 0, frames: EDGES.map(e => `${e.u}: ${e.lo}–${e.hi} px`), problems }, null, 2));
 process.exit(problems.length ? 1 : 0);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prastora: a page that keeps its composition</title>
+<title>Prastora: a composition held like a picture</title>
 <link rel="stylesheet" href="../core.css">
 </head>
 <body>
@@ -21,64 +21,53 @@
     <button data-push data-tone="accent">Get the core</button>
   </header>
 
-  <main data-l="stack" data-space="loose">
-    <section data-l="split" aria-labelledby="idea">
-      <div data-l="stack">
-        <h1 id="idea">A page that keeps its composition on every screen</h1>
-        <p data-tone="quiet">Within a step of the ladder the page scales as a whole, like a picture: nothing moves relative to anything. Between steps the relations fold by themselves. Body text never falls below the reader's own size, and zoom makes it larger.</p>
+  <main data-l="stack" data-space="none">
+    <section data-l="canvas" aria-labelledby="idea">
+      <div data-x="1-6" data-l="stack" data-pad>
+        <h1 id="idea">A composition held like a picture</h1>
+        <p data-tone="quiet">Each class of screen has its own composition, set once. Within it the page scales as a whole, so the picture on the right keeps its place against the heading and still reaches into the band below on every screen of the class.</p>
         <div data-l="cluster">
           <button data-tone="accent">Read the manifest</button>
-          <button>See the check</button>
+          <button>See the lab</button>
         </div>
       </div>
-      <svg data-side viewBox="0 0 200 200" role="img" aria-label="Nested frames, each a smaller copy of the one around it">
-        <rect x="4" y="4" width="192" height="192" rx="16" fill="none" stroke="currentColor" stroke-width="4" opacity=".35"/>
-        <rect x="28" y="28" width="144" height="144" rx="12" fill="none" stroke="currentColor" stroke-width="4" opacity=".5"/>
-        <rect x="52" y="52" width="96" height="96" rx="8" fill="none" stroke="currentColor" stroke-width="4" opacity=".7"/>
-        <rect x="76" y="76" width="48" height="48" rx="4" fill="currentColor" opacity=".85"/>
+      <svg data-x="8-12" data-xp="2-4" data-bleed="down" viewBox="0 0 300 340" role="img" aria-label="An arched window with nested frames">
+        <path d="M20 330V150a130 130 0 0 1 260 0v180Z" fill="none" stroke="currentColor" stroke-width="10"/>
+        <path d="M60 330V160a90 90 0 0 1 180 0v170Z" fill="none" stroke="currentColor" stroke-width="7" opacity=".6"/>
+        <path d="M100 330V170a50 50 0 0 1 100 0v160Z" fill="currentColor" opacity=".18"/>
+        <circle cx="150" cy="150" r="22" fill="currentColor"/>
+        <path d="M0 330h300" stroke="currentColor" stroke-width="10"/>
       </svg>
     </section>
 
-    <section data-l="stack" aria-labelledby="parts">
-      <h2 id="parts">Three parts</h2>
-      <ul data-l="grid">
-        <li data-surface="raised" data-l="stack" data-space="tight"><h3>The core</h3><p>One stylesheet: the ladder of steps, tokens, plain HTML styled, and eight relations.</p><mark data-tone="ok">ready</mark></li>
-        <li data-surface="raised" data-l="stack" data-space="tight"><h3>The manifest</h3><p>The whole vocabulary on one page, small enough to stay in an agent's context.</p><mark data-tone="ok">ready</mark></li>
-        <li data-surface="raised" data-l="stack" data-space="tight"><h3>The check</h3><p>Renders the page at both edges of every step and says what moved or broke.</p><mark data-tone="ok">ready</mark></li>
-        <li data-surface="raised" data-l="stack" data-space="tight"><h3>Themes</h3><p>Values only: a theme changes colours and type, never the composition.</p><mark data-tone="warn">next</mark></li>
-      </ul>
+    <section data-l="canvas" data-surface="accent" aria-label="What holds">
+      <p data-x="1-6" data-tone="strong">The picture above overlaps this band by the same share of the page on a laptop and on a large monitor. A fluid layout cannot promise that: there the overlap drifts as the window changes.</p>
     </section>
 
-    <section data-l="switch" aria-label="Figures">
-      <div data-surface="outline" data-l="stack" data-space="tight"><span data-tone="quiet">Steps</span><data value="9">9</data></div>
-      <div data-surface="outline" data-l="stack" data-space="tight"><span data-tone="quiet">Relations</span><data value="8">8</data></div>
-      <div data-surface="outline" data-l="stack" data-space="tight"><span data-tone="quiet">Text, at least</span><data value="1">1 em</data></div>
+    <section data-l="canvas" data-pad aria-labelledby="parts">
+      <h2 id="parts" data-x="1-12">Three parts</h2>
+      <article data-x="1-4" data-surface="raised" data-l="stack" data-space="tight"><h3>The core</h3><p>One stylesheet: frames, canvas grid, plain HTML styled, and the relations for small assemblies.</p></article>
+      <article data-x="5-8" data-surface="raised" data-l="stack" data-space="tight"><h3>The manifest</h3><p>The whole vocabulary on one page, small enough to stay in an agent's context.</p></article>
+      <article data-x="9-12" data-surface="raised" data-l="stack" data-space="tight"><h3>The check</h3><p>Renders both edges of every frame and says what moved or broke.</p></article>
     </section>
 
-    <section data-l="stack" aria-labelledby="ladder">
-      <h2 id="ladder">The ladder</h2>
-      <div data-l="reel" data-surface="outline">
-        <table>
-          <thead><tr><th>Step</th><th>Window</th><th>Typical screen</th><th>Body text</th></tr></thead>
-          <tbody>
-            <tr><td>20</td><td>320–399 px</td><td>Small phone</td><td>16–20 px</td></tr>
-            <tr><td>25</td><td>400–511 px</td><td>Large phone</td><td>16–20 px</td></tr>
-            <tr><td>40</td><td>640–799 px</td><td>Small tablet</td><td>16–20 px</td></tr>
-            <tr><td>64</td><td>1024–1279 px</td><td>Tablet, small laptop</td><td>16–20 px</td></tr>
-            <tr><td>80</td><td>1280–1599 px</td><td>Laptop</td><td>16–20 px</td></tr>
-            <tr><td>128</td><td>2048 px and wider</td><td>Large display</td><td>16 px and up</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <section data-l="canvas" data-pad aria-label="A note on margins">
+      <p data-x="3-8" data-xw="4-8">On a wide window the canvas stops following it one to one, and what is left becomes margin. The composition does not change for that: only how large the picture is and how much air is around it.</p>
+      <aside data-x="10-12" data-l="stack" data-space="tight"><small data-tone="quiet">Margin note</small><p data-tone="quiet">Placed by columns, it stays level with the paragraph it belongs to.</p></aside>
     </section>
 
-    <form data-surface="raised" data-l="stack" aria-labelledby="try">
-      <h2 id="try">Try it on a page of yours</h2>
-      <label data-l="split"><span data-side>Page address</span><input type="url" name="url" required placeholder="https://"></label>
-      <label data-l="split"><span data-side>Kind of page</span><select name="kind"><option>Landing</option><option>Article</option><option>Dashboard</option></select></label>
-      <label><input type="checkbox" name="dark"> Check the dark scheme too</label>
-      <div data-l="cluster"><button type="submit" data-tone="accent">Check</button><button type="reset" data-tone="quiet">Clear</button></div>
-    </form>
+    <section data-l="canvas" data-pad aria-labelledby="try">
+      <form data-x="1-7" data-surface="raised" data-l="stack">
+        <h2 id="try">Try it on a page of yours</h2>
+        <label><span>Page address</span><input type="url" name="url" required placeholder="https://"></label>
+        <label><input type="checkbox" name="dark"> Check the dark scheme too</label>
+        <div data-l="cluster"><button type="submit" data-tone="accent">Check</button><button type="reset" data-tone="quiet">Clear</button></div>
+      </form>
+      <dl data-x="9-12">
+        <div><dt>Frames</dt><dd>3</dd></div>
+        <div><dt>Columns</dt><dd>4 and 12</dd></div>
+      </dl>
+    </section>
   </main>
 
   <footer data-l="cluster"><small data-tone="quiet">Prastora, a place of Plyń.</small></footer>
