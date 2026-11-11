@@ -3,7 +3,8 @@
 //   node variants.mjs     core.css from the variant marked "core"; lab/<id>/ and lab/index.html from all variants
 // A frame holds the windows from `from` rem up to the next frame (rem of the window: the reader's base text
 // size); its canvas is `units` units wide and has `cols` columns; `grow` says how the canvas follows the window:
-// "pure" (the canvas is the window), {"cap": rem} (the canvas stops growing there), {"slow": k} (past the start
+// "pure" (the canvas is the window), {"share": k} (the canvas is k of the window, the rest even margins),
+// {"cap": rem} (the canvas stops growing there), {"slow": k} (past the start
 // of the frame the canvas takes k of what the window grows). What the window has beyond the canvas is margin.
 // Everything inside the canvas is in units, so its composition holds exactly whatever the growth.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -15,6 +16,7 @@ const demo = readFileSync('demo/index.html', 'utf8');
 const canvasExpr = f => {
   const g = f.grow;
   if (g === 'pure') return '100vw';
+  if (g.share) return `calc(100vw * ${g.share})`;
   if (g.cap) return `min(100vw, ${g.cap}rem)`;
   if (g.slow != null) return `calc(${f.start}rem + (100vw - ${f.start}rem) * ${g.slow})`;
   throw new Error('unknown growth ' + JSON.stringify(g));
