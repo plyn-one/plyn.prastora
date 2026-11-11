@@ -1,0 +1,11 @@
+kola = "usie"
+
+["samaadrasavańnie"]
+"file:AGENTS.md" = { faza = "dadzienaść", rola = "sens" }
+"file:miesca.toml" = { faza = "dadzienaść", rola = "prajava" }
+"file:śled.toml" = { faza = "ściah", rola = "ruch" }
+"dir:pračytańnie" = { faza = "ściah", rola = "prajava" }
+"file:pračytańnie/en.toml" = { faza = "ściah", rola = "prajava" }
+
+[kanon."prastora"]
+"čaść" = "nazoŭnik"

@@ -1,0 +1,14 @@
+["apisańnie"]
+"uvachod" = "plyn.prastora: the web layout framework of Plyń, made first for agents: plain HTML and CSS in which a page keeps its composition across screens, with a closed vocabulary an agent reads whole and a check that renders a page and tells the agent what broke. The kernel is plyn-one/plyn, kept in one place and not copied here: the place is checked with the tool github_read of the frame's Klučnik, operation check, and landed with its tool github, operation land; each landed commit records, in its status pravierka, the kernel that passed it, and a new kernel rechecks this place by itself. śled.toml keeps what a commit does not: the cycles left open, each with what is expected, who judges, by what measure and where its answer comes, and the decisions no change carries, each with who took it; work done is told once, in its commit, and not again here. It is read through the matrix of the kernel (vyhlad.md of plyn-one/plyn). This file is written by plyn-one/plyn.dojlid (experiments/uvachod.py) from miesca.toml and these readings and is rewritten when the place changes; the norms of the system are read in plyn-one/plyn.mova."
+"pravierka" = "The tool github_read of the frame's Klučnik, operation check, runs the checks of the system on this place and replays śled.toml through the kernel, the same check that decides the landing; files not yet committed are passed as changes. Its tool github, operation land, lands a branch on main: Plynia checks its head and sets the status pravierka naming the kernel that passed it, and only then main takes it through the gateway; a change that touches what the place's own tests guard carries a trailer `Testy:` saying what ran and its result. Nothing moves this place to a newer kernel: when the kernel lands, it rechecks this place and records the result on its head."
+"kirunak" = "A framework an agent lays pages out with on its first or second try: proportional scaling within a few regimes, as A-Rozum/prastora showed, joined with a closed vocabulary of relations that works at every scale, a manifest that fits in an agent's context, and a check by rendering. Made anew: A-Rozum/prastora and the prototype at plyn-css-proto.pages.dev are sources, not material moved here."
+
+["imia"]
+"prastora" = "a space: this place, the web layout framework of Plyń made first for agents, in which a page keeps its composition across screens"
+
+["samaadrasavańnie"]
+"file:AGENTS.md" = "the orientation of this place, written by plyn.dojlid"
+"file:miesca.toml" = "the registry of this place: the answers of its constituents"
+"file:śled.toml" = "the work of this place, one zapis per krok"
+"dir:pračytańnie" = "the readings of this place, one file per language"
+"file:pračytańnie/en.toml" = "the readings of this place in English"

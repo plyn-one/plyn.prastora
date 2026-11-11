@@ -1,0 +1,30 @@
+[[zapis]]
+faza = "dadzienaść"
+"hłybinia" = 2
+vynik = "The first task: a web layout framework made first for agents, in which a page keeps its composition across screens. The owner decided on 11 November 2026 to make it anew as an open place of Plyń rather than move A-Rozum/prastora, a framework made on the previous version of the system."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 0
+adras = [1, 1]
+vynik = "Agents that lay out pages for the projects of Plyń and for the sites of owners; people who read those pages on screens from 360 px phones to 4K displays, and who enlarge text. Two sources: A-Rozum/prastora, in which a page scales as a whole within regimes (the root size is a share of the window width), so that compositions crossing sections and graphics bound to text hold; and the prototype published at https://plyn-css-proto.pages.dev, with eight relations that work at every scale, sizes taken from the nearest container, a manifest of about 1,600 tokens and a check by rendering, which an agent used with no other help."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 0
+adras = [1, 2]
+vynik = "Inside: the stylesheet of the core, the vocabulary of relations and its manifest for agents, the themes as values only, and the check that renders a page. Outside: the content, the themes and the pages of each project, which link the core and stay with their owners. Plain HTML and CSS, no build step, JavaScript only where HTML and CSS have no answer and with a working page without it."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 0
+adras = [1, 3]
+vynik = "Measured before founding. In A-Rozum/prastora the composition holds within a regime, while body text falls to 11.7 px on a 360 px phone and to 10 px at 801 px, and browser zoom barely enlarges it; its vocabulary is open, with classes made per page. In the prototype the vocabulary is closed and an agent built a passing page from the manifest alone in two runs, while the layout is fluid and does not keep its composition. Nothing of either is in this place yet."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 0
+adras = [2, 1]
+"čakańnie" = "An agent given only the manifest of this place lays out a page that passes the place's rendering check in every regime and both colour schemes within two runs, and the page keeps its proportions and the relative positions of its parts within each regime, with body text no smaller than a readable minimum and enlargeable by the reader."
+"mieryła" = "ahient"
+"upeŭnienaść" = 0.4
