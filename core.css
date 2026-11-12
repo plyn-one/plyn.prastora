@@ -278,6 +278,94 @@
   :where([data-size="6"]) { font-size: 5.6rem; }
   :where([data-size="7"]) { font-size: 8rem; }
 }
+
+/*
+ * Documents: sheets that are the same on screen and on paper. A sheet holds 50 × 70 units, the print area of an
+ * A4 sheet at 10pt, so its lines break the same on every screen and on paper; every line of it stands on a grid
+ * of 1.5 units, so numbers in its margin name lines, and a note in the page margin can point at a line.
+ */
+@layer relation {
+  :where([data-l=spread]) { display: flex; flex-flow: row wrap; gap: var(--s1); align-items: flex-start; }
+  :where([data-l=sheet]) {
+    position: relative; flex: none; box-sizing: content-box;
+    inline-size: 50rem; block-size: 70rem; padding: 4rem 3rem; overflow: hidden;
+    background: white; color: oklch(0.2 0 0); color-scheme: light;
+    box-shadow: 0 .1rem .6rem color-mix(in oklch, black 18%, transparent);
+    font-size: 1rem; line-height: 1.5rem;
+  }
+  :where([data-l=sheet]) :where(h1, h2, h3, h4, p, li, dt, dd, blockquote, table, figure) { margin: 0; line-height: 1.5rem; max-inline-size: none; }
+  :where([data-l=sheet]) :where(h1) { font-size: 1.6rem; line-height: 3rem; letter-spacing: 0; text-align: center; }
+  :where([data-l=sheet]) :where(h2, h3) { font-size: 1.1rem; letter-spacing: 0; }
+  :where([data-l=sheet]) > :where(* + *) { margin-block-start: 1.5rem; }
+  :where([data-l=sheet]) :where(p, li) { text-align: justify; hyphens: auto; }
+  /* clauses are numbered through all the sheets of a page: the outer list does not start the count again */
+  :where(body:has([data-l=sheet])) { counter-reset: clause; }
+  :where([data-l=sheet]) :where(ol) { padding-inline-start: 0; list-style: none; }
+  :where([data-l=sheet]) :where(li > ol) { counter-reset: clause; }
+  :where([data-l=sheet]) :where(ol > li) { counter-increment: clause; padding-inline-start: 2.5rem; text-indent: -2.5rem; }
+  :where([data-l=sheet]) :where(ol > li)::before { content: counters(clause, ".") "."; display: inline-block; inline-size: 2.5rem; text-indent: 0; font-weight: 600; }
+  :where([data-l=sheet]) :where(ol ol) { margin-block-start: 0; }
+  /* numbers of lines, in the left margin of the sheet */
+  :where([data-l=sheet][data-numbered])::before {
+    content: "1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9\A 10\A 11\A 12\A 13\A 14\A 15\A 16\A 17\A 18\A 19\A 20\A 21\A 22\A 23\A 24\A 25\A 26\A 27\A 28\A 29\A 30\A 31\A 32\A 33\A 34\A 35\A 36\A 37\A 38\A 39\A 40\A 41\A 42\A 43\A 44\A 45\A 46"; white-space: pre; position: absolute; inset-block-start: 4rem; inset-inline-start: .8rem;
+    inline-size: 1.4rem; text-align: end; font-size: .75rem; line-height: 1.5rem; color: oklch(0.55 0 0); font-variant-numeric: tabular-nums;
+  }
+  :where([data-l=sheet]) > :where(footer:last-child) { position: absolute; inset-block-end: 1.5rem; inset-inline: 3rem; font-size: .875rem; text-align: center; color: oklch(0.45 0 0); }
+
+  /* notes beside a sheet, each at the line it speaks of, with a line drawn to it */
+  :where([data-l=margin]) { position: relative; flex: 1 1 14rem; min-inline-size: 14rem; align-self: stretch; padding-block-start: 4rem; }
+  :where([data-l=margin]) > :where([data-line]) { position: absolute; inset-inline: 0; font-size: .875rem; line-height: 1.25rem; }
+  :where([data-l=margin]) > :where([data-line])::before {
+    content: ""; position: absolute; inset-block-start: .7rem; inset-inline-end: calc(100% + .25rem); inline-size: calc(var(--s1) + 2.6rem);
+    border-block-start: .0625rem solid var(--accent);
+  }
+  :where([data-line="1"]) { inset-block-start: calc(4rem + 0 * 1.5rem); }
+  :where([data-line="2"]) { inset-block-start: calc(4rem + 1 * 1.5rem); }
+  :where([data-line="3"]) { inset-block-start: calc(4rem + 2 * 1.5rem); }
+  :where([data-line="4"]) { inset-block-start: calc(4rem + 3 * 1.5rem); }
+  :where([data-line="5"]) { inset-block-start: calc(4rem + 4 * 1.5rem); }
+  :where([data-line="6"]) { inset-block-start: calc(4rem + 5 * 1.5rem); }
+  :where([data-line="7"]) { inset-block-start: calc(4rem + 6 * 1.5rem); }
+  :where([data-line="8"]) { inset-block-start: calc(4rem + 7 * 1.5rem); }
+  :where([data-line="9"]) { inset-block-start: calc(4rem + 8 * 1.5rem); }
+  :where([data-line="10"]) { inset-block-start: calc(4rem + 9 * 1.5rem); }
+  :where([data-line="11"]) { inset-block-start: calc(4rem + 10 * 1.5rem); }
+  :where([data-line="12"]) { inset-block-start: calc(4rem + 11 * 1.5rem); }
+  :where([data-line="13"]) { inset-block-start: calc(4rem + 12 * 1.5rem); }
+  :where([data-line="14"]) { inset-block-start: calc(4rem + 13 * 1.5rem); }
+  :where([data-line="15"]) { inset-block-start: calc(4rem + 14 * 1.5rem); }
+  :where([data-line="16"]) { inset-block-start: calc(4rem + 15 * 1.5rem); }
+  :where([data-line="17"]) { inset-block-start: calc(4rem + 16 * 1.5rem); }
+  :where([data-line="18"]) { inset-block-start: calc(4rem + 17 * 1.5rem); }
+  :where([data-line="19"]) { inset-block-start: calc(4rem + 18 * 1.5rem); }
+  :where([data-line="20"]) { inset-block-start: calc(4rem + 19 * 1.5rem); }
+  :where([data-line="21"]) { inset-block-start: calc(4rem + 20 * 1.5rem); }
+  :where([data-line="22"]) { inset-block-start: calc(4rem + 21 * 1.5rem); }
+  :where([data-line="23"]) { inset-block-start: calc(4rem + 22 * 1.5rem); }
+  :where([data-line="24"]) { inset-block-start: calc(4rem + 23 * 1.5rem); }
+  :where([data-line="25"]) { inset-block-start: calc(4rem + 24 * 1.5rem); }
+  :where([data-line="26"]) { inset-block-start: calc(4rem + 25 * 1.5rem); }
+  :where([data-line="27"]) { inset-block-start: calc(4rem + 26 * 1.5rem); }
+  :where([data-line="28"]) { inset-block-start: calc(4rem + 27 * 1.5rem); }
+  :where([data-line="29"]) { inset-block-start: calc(4rem + 28 * 1.5rem); }
+  :where([data-line="30"]) { inset-block-start: calc(4rem + 29 * 1.5rem); }
+  :where([data-line="31"]) { inset-block-start: calc(4rem + 30 * 1.5rem); }
+  :where([data-line="32"]) { inset-block-start: calc(4rem + 31 * 1.5rem); }
+  :where([data-line="33"]) { inset-block-start: calc(4rem + 32 * 1.5rem); }
+  :where([data-line="34"]) { inset-block-start: calc(4rem + 33 * 1.5rem); }
+  :where([data-line="35"]) { inset-block-start: calc(4rem + 34 * 1.5rem); }
+  :where([data-line="36"]) { inset-block-start: calc(4rem + 35 * 1.5rem); }
+  :where([data-line="37"]) { inset-block-start: calc(4rem + 36 * 1.5rem); }
+  :where([data-line="38"]) { inset-block-start: calc(4rem + 37 * 1.5rem); }
+  :where([data-line="39"]) { inset-block-start: calc(4rem + 38 * 1.5rem); }
+  :where([data-line="40"]) { inset-block-start: calc(4rem + 39 * 1.5rem); }
+  :where([data-line="41"]) { inset-block-start: calc(4rem + 40 * 1.5rem); }
+  :where([data-line="42"]) { inset-block-start: calc(4rem + 41 * 1.5rem); }
+  :where([data-line="43"]) { inset-block-start: calc(4rem + 42 * 1.5rem); }
+  :where([data-line="44"]) { inset-block-start: calc(4rem + 43 * 1.5rem); }
+  :where([data-line="45"]) { inset-block-start: calc(4rem + 44 * 1.5rem); }
+  :where([data-line="46"]) { inset-block-start: calc(4rem + 45 * 1.5rem); }
+}
 @layer relation {
   /* canvas: the grid of the frame; a child takes columns by data-x (data-xw on wide, data-xp on portrait),
      and without them the whole width; data-bleed lets it reach into the next or previous band */
@@ -307,6 +395,10 @@
     :where([data-ratiop="9/16"]) { aspect-ratio: 9 / 16; }
     :where([data-float][data-wp=full]) { float: none; inline-size: auto; margin-inline: 0; }
     :where([data-l=columns]) > :where(p) { text-align: start; }
+    :where([data-l=sheet]) { zoom: calc((var(--units) - 2) / 56); }
+    :where([data-l=margin]) { padding-block-start: 0; display: flex; flex-direction: column; gap: var(--s0); }
+    :where([data-l=margin]) > :where([data-line]) { position: static; }
+    :where([data-l=margin]) > :where([data-line])::before { content: "Line " attr(data-line) ". "; position: static; border: 0; inline-size: auto; font-weight: 600; color: var(--accent); }
     :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }
     :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }
     :where([data-l=canvas][data-pad]) { padding-inline: 0; }
@@ -573,6 +665,12 @@
     :where(figure, blockquote, article, table, pre, [data-l=layer], [data-surface], [data-float]) { break-inside: avoid; }
     :where(h1, h2, h3, h4) { break-after: avoid; }
     :where(p) { orphans: 3; widows: 3; }
+    :where([data-l=spread]) { display: block; }
+    :where([data-l=sheet]) { box-shadow: none; break-after: page; }
+    :where([data-l=margin]) { display: none; }
+    /* a page of sheets prints its sheets only: the sheet is the page */
+    :where(body:has([data-l=sheet])) :where([data-l=page] > header, [data-l=page] > footer) { display: none; }
+    :where(body:has([data-l=sheet])) :where([data-l=page], [data-l=page] > main) { gap: 0; }
     :where([data-x="1-1"]) { grid-column: 1 / 2; }
     :where([data-x="1-2"]) { grid-column: 1 / 3; }
     :where([data-x="1-3"]) { grid-column: 1 / 4; }
@@ -653,4 +751,4 @@
     :where([data-x="12-12"]) { grid-column: 12 / 13; }
   }
 }
-@page { size: A4; margin: 16mm 15mm 18mm; }
+@page { size: A4; margin: 10.9mm 6.2mm; }

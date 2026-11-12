@@ -37,11 +37,18 @@ const portraitOverrides = [
   ...Object.entries(RATIOS).map(([k, v]) => `  :where([data-ratiop="${k}"]) { aspect-ratio: ${v}; }`),
   `  :where([data-float][data-wp=full]) { float: none; inline-size: auto; margin-inline: 0; }`,
   `  :where([data-l=columns]) > :where(p) { text-align: start; }`,
+  // a sheet keeps its lines on a phone as a page of a PDF does: it is made smaller as a whole
+  `  :where([data-l=sheet]) { zoom: calc((var(--units) - 2) / 56); }`,
+  `  :where([data-l=margin]) { padding-block-start: 0; display: flex; flex-direction: column; gap: var(--s0); }`,
+  `  :where([data-l=margin]) > :where([data-line]) { position: static; }`,
+  `  :where([data-l=margin]) > :where([data-line])::before { content: "Line " attr(data-line) ". "; position: static; border: 0; inline-size: auto; font-weight: 600; color: var(--accent); }`,
 ].join('\n');
 
 // print is a frame of its own: an A4 sheet is a canvas of 50 units at 10pt (176 mm of the 180 mm between
 // the margins), laid out with the landscape composition; nothing leaves the sheet, and blocks do not split
-const PAGE = `@page { size: A4; margin: 16mm 15mm 18mm; }\n`;
+// the print area is 56 × 78 units at 10pt (197.6 × 275.2 mm): a sheet on screen with its own margins, so a sheet
+// prints as it is shown, its line numbers and its foot included
+const PAGE = `@page { size: A4; margin: 10.9mm 6.2mm; }\n`;
 const printFrame = `  @media print {
     :root { --units: 50; --cols: 12; --text-cols: 2; --gutter: 0rem; font-size: 10pt; color-scheme: light; --paper: white; --t4: 2.6rem; --t3: 1.6rem; --t2: 1.3rem; --t1: 1.1rem; }
     :where(body) { min-block-size: 0; }
@@ -52,6 +59,12 @@ const printFrame = `  @media print {
     :where(figure, blockquote, article, table, pre, [data-l=layer], [data-surface], [data-float]) { break-inside: avoid; }
     :where(h1, h2, h3, h4) { break-after: avoid; }
     :where(p) { orphans: 3; widows: 3; }
+    :where([data-l=spread]) { display: block; }
+    :where([data-l=sheet]) { box-shadow: none; break-after: page; }
+    :where([data-l=margin]) { display: none; }
+    /* a page of sheets prints its sheets only: the sheet is the page */
+    :where(body:has([data-l=sheet])) :where([data-l=page] > header, [data-l=page] > footer) { display: none; }
+    :where(body:has([data-l=sheet])) :where([data-l=page], [data-l=page] > main) { gap: 0; }
 ${placement(12, 'data-x').replace(/^/gm, '  ')}
   }
 `;

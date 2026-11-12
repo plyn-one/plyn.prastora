@@ -12,6 +12,7 @@ kola = "usie"
 "dir:demo" = { faza = "ściah", rola = "prajava" }
 "file:demo/index.html" = { faza = "ściah", rola = "prajava" }
 "file:demo/longread.html" = { faza = "ściah", rola = "prajava" }
+"file:demo/document.html" = { faza = "ściah", rola = "prajava" }
 "dir:src" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/base.css" = { faza = "dadzienaść", rola = "prajava" }
 "file:variants.mjs" = { faza = "ściah", rola = "ruch" }

@@ -29,3 +29,4 @@
 "file:fonts/source-sans-3-vietnamese.woff2" = "Source Sans 3, variable weight 200 to 900, the vietnamese subset"
 "file:fonts/source-sans-3-latin-ext.woff2" = "Source Sans 3, variable weight 200 to 900, the latin-ext subset"
 "file:fonts/source-sans-3-latin.woff2" = "Source Sans 3, variable weight 200 to 900, the latin subset"
+"file:demo/document.html" = "a document in sheets the same on screen and on paper: numbered lines, clauses numbered through the sheets, notes in the margin at the lines they speak of"

@@ -22,6 +22,9 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 | `canvas` | a band of the page laid on the columns of the frame; each child takes columns by `data-x` | placed children |
 | `columns` | running text in columns: two on landscape and wide, one on portrait | paragraphs, a pull quote, a floated picture |
 | `layer` | children lie on one another: a picture with words on it at set places | a picture and placed text |
+| `spread` | a sheet with its margin of notes beside it | one `sheet`, one `margin` |
+| `sheet` | a sheet of a document, 50 × 70 units: the same lines on every screen and on paper, one printed page each | headings, paragraphs, numbered clauses (`ol`), a `footer` last |
+| `margin` | notes beside a sheet, each at the line it speaks of (`data-line`), with a line drawn to it | `p data-line="n"` |
 | `stack` | one under another | any |
 | `cluster` | short things in a wrapping row: links, buttons, marks | short items |
 | `split` | main beside side; folds into a stack when main would be under 24 units | two; mark the side `data-side` (default: the first) |
@@ -45,6 +48,8 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 | `data-initial` | | on the first paragraph: an initial letter over three lines |
 | `data-pull` | | on a `blockquote` in `columns`: a quote set across the columns |
 | `data-float` | `start` `end` | a picture the text runs round, with `data-w` (`quarter` `third` `half` of the columns) and `data-shape` (`arch` `circle`) |
+| `data-numbered` | | on a `sheet`: numbers its lines in its left margin |
+| `data-line` | `1` to `46` | on a note in `margin`: the line of the sheet it stands at |
 | `data-hide` | `portrait` `landscape` `wide` `print` | not shown in that frame |
 | `data-space` | `none` `tight` `loose` | the gap of this relation only |
 | `data-side` | | on a child of `split`: the side |
@@ -79,6 +84,8 @@ Longread: `<section data-l="canvas"><div data-x="1-9" data-l="columns"><p data-i
 Cover: `<section data-l="layer" data-out="both" data-ratio="21/9" data-ratiop="3/4"><svg preserveAspectRatio="xMidYMid slice" …></svg><div data-place="top-start" data-pad><h1><span data-size="6" data-sizep="4">First line</span><span data-size="5" data-sizep="3">second</span></h1></div></section>`
 
 Text of more than one line is set at whole units (the core does this): only then its lines break the same on every screen of a frame. If the check still finds text moving within a frame, a line lies on the edge of its column: move the column by one, or change the words.
+
+Document: `<section data-l="spread"><article data-l="sheet" data-numbered><h1>…</h1><p>…</p><ol><li>Clause<ol><li>…</li></ol></li></ol><footer>Sheet 1 of 2</footer></article><aside data-l="margin"><p data-line="9">…</p></aside></section>`, one `spread` per sheet. Clauses are numbered through all sheets. When the check reports `sheet-overflow`, move the last clauses to the next sheet; `off-grid` means something on the sheet is sized outside the vocabulary.
 
 Three in a row: `<section data-l="canvas"><article data-x="1-4">…</article><article data-x="5-8">…</article><article data-x="9-12">…</article></section>`
 

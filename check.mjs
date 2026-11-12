@@ -25,7 +25,7 @@ const FRAMES = JSON.parse(readFileSync(resolve(dirname(page), href), 'utf8').mat
 const EDGES = FRAMES.map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
 
 const VOCAB = {
-  'data-l': ['page', 'canvas', 'columns', 'layer', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
+  'data-l': ['page', 'canvas', 'columns', 'layer', 'spread', 'sheet', 'margin', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
   'data-bleed': ['up', 'down'],
   'data-pull': [''], 'data-initial': [''],
   'data-float': ['start', 'end'], 'data-w': ['quarter', 'third', 'half'], 'data-wp': ['full'], 'data-shape': ['arch', 'circle'],
@@ -34,6 +34,7 @@ const VOCAB = {
   'data-ratio': ['21/9', '16/9', '3/2', '1/1', '3/4'], 'data-ratiop': ['21/9', '16/9', '3/2', '1/1', '3/4', '2/3', '9/16'],
   'data-size': ['1', '2', '3', '4', '5', '6', '7'], 'data-sizep': ['1', '2', '3', '4', '5', '6', '7'],
   'data-hide': ['portrait', 'landscape', 'wide', 'print'],
+  'data-numbered': [''], 'data-line': Array.from({ length: 46 }, (_, i) => String(i + 1)),
   'data-space': ['none', 'tight', 'loose'],
   'data-surface': ['raised', 'outline', 'accent'],
   'data-tone': ['quiet', 'strong', 'accent', 'danger', 'ok', 'warn'],
@@ -79,6 +80,17 @@ function inspect(VOCAB) {
     if (el.hasAttribute('data-side') && el.parentElement?.dataset.l !== 'split') add('vocabulary', el, 'data-side outside split');
     if (el.hasAttribute('data-push') && !['stack', 'cluster', 'cover'].includes(el.parentElement?.dataset.l)) add('vocabulary', el, 'data-push outside stack, cluster or cover');
     if (el.hasAttribute('style') || el.hasAttribute('class')) add('vocabulary', el, 'style and class are not used: say it with the vocabulary');
+  }
+
+  // a sheet holds what it was given, and every line on it stands on the grid its numbers name
+  for (const s of document.querySelectorAll('[data-l=sheet]')) {
+    if (s.scrollHeight > s.clientHeight + 1) add('sheet-overflow', s, `content ${Math.round((s.scrollHeight - s.clientHeight) / rem * 10) / 10} rem taller than the sheet: move text to the next sheet`);
+    const top = s.getBoundingClientRect().top + parseFloat(getComputedStyle(s).paddingTop) * (parseFloat(getComputedStyle(s).zoom) || 1);
+    const grid = 1.5 * rem * (parseFloat(getComputedStyle(s).zoom) || 1);
+    for (const e of s.querySelectorAll('h1, h2, h3, h4, p, li, dt, dd, blockquote')) {
+      const off = ((e.getBoundingClientRect().top - top) / grid) % 1;
+      if (off > 0.02 && off < 0.98) add('off-grid', e, `starts ${off.toFixed(2)} of a line off the grid of the sheet: its numbers would not match`);
+    }
   }
 
   const de = document.documentElement;
