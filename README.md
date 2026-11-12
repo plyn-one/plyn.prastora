@@ -10,6 +10,6 @@ Plain HTML and CSS, no build step, no JavaScript. Pages are written with a close
 - Before laying out a page: [MANIFEST.md](MANIFEST.md), and the section of [manifest/](manifest/) the page needs.
 - Examples: [demo/](demo/), published at https://plyn-prastora.pages.dev.
 
-Release `v0.1`. The core's font, Source Sans 3, is under the SIL Open Font License ([fonts/OFL.txt](fonts/OFL.txt)).
+Release `v0.1`. The framework is under the MIT License ([LICENSE](LICENSE)); the core's font, Source Sans 3, under the SIL Open Font License ([fonts/OFL.txt](fonts/OFL.txt)).
 
 `AGENTS.md`, `miesca.toml`, `śled.toml` and `pračytańnie/` belong to Plyń, the system this repository is a place of; they are not needed to use the framework.

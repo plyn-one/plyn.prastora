@@ -104,7 +104,8 @@ function css(v) {
     // portrait's own values come last, so they are not undone by its general rules above
     f.name === 'portrait' ? portraitOverrides : '',
   ].filter(Boolean).join('\n');
-  const head = `/* prastora core v${VERSION}, variant ${v.id}: ${v.title}. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
+  // /*! keeps this comment through minifiers: the check reads the frames from it
+  const head = `/*! prastora core v${VERSION}, variant ${v.id}: ${v.title}. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
    frames (rem of the window): ${JSON.stringify(frames.map(({ name, from, to, units, cols, grow }) => ({ name, from, to, units, cols, grow })))} */\n`;
   // every frame's rules hold only within its windows; the root size of the first frame is also the default
   const when = f => ['screen', f.from > 0 && `(width >= ${f.from}rem)`, f.to && `(width < ${f.to}rem)`].filter(Boolean).join(' and ');

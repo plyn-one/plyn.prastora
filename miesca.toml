@@ -19,6 +19,7 @@ kola = "usie"
 "file:demo/blank.html" = { faza = "ściah", rola = "prajava" }
 "file:CONNECT.md" = { faza = "dadzienaść", rola = "sens" }
 "file:README.md" = { faza = "dadzienaść", rola = "sens" }
+"file:LICENSE" = { faza = "dadzienaść", rola = "prajava" }
 "dir:manifest" = { faza = "dadzienaść", rola = "sens" }
 "file:manifest/magazine.md" = { faza = "dadzienaść", rola = "sens" }
 "file:manifest/documents.md" = { faza = "dadzienaść", rola = "sens" }

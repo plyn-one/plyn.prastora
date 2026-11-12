@@ -50,6 +50,7 @@ const FIX = {
   'sheet-overflow': 'move the last clauses to the next sheet',
   'off-grid': 'something in a gridded block is sized outside the vocabulary; borders and odd sizes push lines off',
   'shaped-overflow': 'shorten the text of the figure',
+  'basics': 'give the page lang and a title, and every picture words for those who cannot see it',
   'print-pages': 'each sheet should print as one page: a sheet overflows on paper, or something outside the sheets prints',
 };
 
@@ -134,6 +135,16 @@ function inspect(VOCAB) {
   for (const s of document.querySelectorAll('[data-shaped]')) {
     const p = s.querySelector(':scope > p');
     if (p && getComputedStyle(s).aspectRatio !== 'auto' && p.scrollHeight > s.clientHeight + 1) add('shaped-overflow', s, `the text is ${Math.round((p.scrollHeight - s.clientHeight) / rem)} rem longer than its figure: shorten it`);
+  }
+
+  // what every page needs: its language, its title, and words for its pictures
+  if (!document.documentElement.lang) add('basics', document.documentElement, '<html> has no lang');
+  if (!document.title.trim()) add('basics', document.documentElement, 'no <title>');
+  for (const im of document.querySelectorAll('img:not([alt])')) add('basics', im, 'img without alt (alt="" for a picture that only decorates)');
+  for (const sv of document.querySelectorAll('svg')) {
+    if (sv.closest('[aria-hidden=true]') || sv.matches('svg svg') || sv.querySelector('text')) continue;
+    if (!sv.getAttribute('aria-label') && !sv.querySelector('title') && !sv.closest('figure[aria-label], [role=img][aria-label]'))
+      add('basics', sv, 'svg without aria-label (or aria-hidden="true" for one that only decorates)');
   }
 
   const de = document.documentElement;

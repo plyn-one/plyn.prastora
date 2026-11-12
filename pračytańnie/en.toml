@@ -43,3 +43,4 @@
 "file:manifest/pictures.md" = "the manifest section on words on pictures and composition across the page"
 "file:manifest/type.md" = "the manifest section on typography of print"
 "file:README.md" = "the front page of the repository for agents and developers outside Plyń: what the framework is and where to start"
+"file:LICENSE" = "the MIT License the framework is given under"
