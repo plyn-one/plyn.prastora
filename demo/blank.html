@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A blank: filled in on screen, printed as the form</title>
+<link rel="stylesheet" href="../core.css">
+</head>
+<body>
+<div data-l="page">
+
+  <header data-l="cluster">
+    <strong>Prastora</strong>
+    <small data-tone="quiet">A blank: filled in on screen, printed as the form with what was entered</small>
+    <nav aria-label="Demonstrations" data-push>
+      <ul role="list" data-l="cluster"><li><a href="document.html">Document</a></li><li><a href="index.html">First</a></li></ul>
+    </nav>
+  </header>
+
+  <main data-l="stack" data-space="loose">
+    <section data-l="spread" aria-label="The blank">
+      <article data-l="sheet">
+        <form data-l="canvas" action="#" aria-labelledby="blank-title">
+          <h1 id="blank-title" data-x="1-12">Request for copies of documents</h1>
+          <p data-x="1-12"><small>Form R-7 · Fill in block letters, one letter in each box. Fields marked * are required.</small></p>
+
+          <fieldset data-x="1-12" data-l="canvas">
+            <legend data-x="1-12">1. Applicant</legend>
+            <label data-x="1-12">Surname *<input data-comb="24" maxlength="24" name="surname" required autocomplete="family-name"></label>
+            <label data-x="1-12">Given names *<input data-comb="24" maxlength="24" name="given" required autocomplete="given-name"></label>
+            <label data-x="1-5">Date of birth (DDMMYYYY) *<input data-comb="8" maxlength="8" name="born" inputmode="numeric" required></label>
+            <label data-x="7-12">Personal number<input data-comb="11" maxlength="11" name="number" inputmode="numeric"></label>
+          </fieldset>
+
+          <fieldset data-x="1-12" data-l="canvas">
+            <legend data-x="1-12">2. Address for delivery</legend>
+            <label data-x="1-8">Street and house *<input name="street" required autocomplete="street-address"></label>
+            <label data-x="9-12">Postal code *<input data-comb="6" maxlength="6" name="postcode" required autocomplete="postal-code"></label>
+            <label data-x="1-8">City *<input name="city" required autocomplete="address-level2"></label>
+            <label data-x="9-12">Country<input name="country" autocomplete="country-name"></label>
+          </fieldset>
+
+          <fieldset data-x="1-12" data-l="canvas">
+            <legend data-x="1-12">3. Documents requested</legend>
+            <label data-x="1-6"><input type="checkbox" name="doc" value="contract"> Contract with annexes</label>
+            <label data-x="7-12"><input type="checkbox" name="doc" value="minutes"> Minutes of meetings</label>
+            <label data-x="1-6"><input type="checkbox" name="doc" value="invoices"> Invoices and payments</label>
+            <label data-x="7-12"><input type="checkbox" name="doc" value="letters"> Letters exchanged</label>
+            <label data-x="1-12">Other, describe<input name="other"></label>
+          </fieldset>
+
+          <fieldset data-x="1-12" data-l="canvas">
+            <legend data-x="1-12">4. Form of copies</legend>
+            <label data-x="1-4"><input type="radio" name="form" value="paper"> On paper</label>
+            <label data-x="5-8"><input type="radio" name="form" value="pdf"> As PDF</label>
+            <label data-x="9-12"><input type="radio" name="form" value="both"> Both</label>
+          </fieldset>
+
+          <fieldset data-x="1-12" data-l="canvas">
+            <legend data-x="1-12">5. Signature</legend>
+            <label data-x="1-5">Date (DDMMYYYY)<input data-comb="8" maxlength="8" name="date" inputmode="numeric"></label>
+            <label data-x="7-12">Signature<input name="signature" aria-describedby="sign-note"></label>
+            <p data-x="7-12" id="sign-note"><small>On paper: sign by hand. On screen: type your full name.</small></p>
+          </fieldset>
+
+          <div data-x="1-12" data-l="cluster"><button type="submit" data-tone="accent">Send</button><button type="button" data-tone="quiet">Print</button></div>
+        </form>
+        <footer>Form R-7 · a fictional blank for demonstration</footer>
+      </article>
+    </section>
+  </main>
+</div>
+</body>
+</html>

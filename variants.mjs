@@ -49,6 +49,9 @@ const portraitOverrides = [
   `  :where([data-shaped])::before, :where([data-shaped]) > :where(p)::before { content: none; }`,
   // a sheet keeps its lines on a phone as a page of a PDF does: it is made smaller as a whole
   `  :where([data-l=sheet]) { zoom: calc((var(--units) - 2) / 56); }`,
+  // the grid inside a sheet is the same in every frame
+  `  :where([data-l=sheet] [data-l=canvas]) > :where([data-x]) { grid-column: auto; }`,
+  ...[...placement(12, 'data-x').split('\n')].map(l => l.replace(':where([data-x=', ':where([data-l=sheet] [data-l=canvas]) > :where([data-x=')),
   `  :where([data-l=margin]) { padding-block-start: 0; display: flex; flex-direction: column; gap: var(--s0); }`,
   `  :where([data-l=margin]) > :where([data-line]) { position: static; }`,
   `  :where([data-l=margin]) > :where([data-line])::before { content: "Line " attr(data-line) ". "; position: static; border: 0; inline-size: auto; font-weight: 600; color: var(--accent); }`,
@@ -65,6 +68,9 @@ const printFrame = `  @media print {
     :where([data-l=page]) { padding: 0; }
     /* paper carries the content and its pictures; what is only for using the screen stays there */
     :where(form, button, nav, input, select, textarea, video, audio, iframe, dialog, [data-hide~=print]) { display: none !important; }
+    /* a blank on a sheet prints with what was entered */
+    :where([data-l=sheet] form, [data-l=sheet] input, [data-l=sheet] select, [data-l=sheet] textarea) { display: revert !important; }
+    :where([data-l=sheet] label) { display: flex !important; }
     :where([data-out]) { --bleed: 0rem; }
     :where(figure, blockquote, article, table, pre, [data-l=layer], [data-surface], [data-float]) { break-inside: avoid; }
     :where(h1, h2, h3, h4) { break-after: avoid; }
@@ -89,10 +95,11 @@ function css(v) {
     // screen of the frame; the canvas is then exactly `units` rem and the little that is left joins the margins
     `  :root { --units: ${f.units}; --cols: ${f.cols}; --text-cols: ${f.name === 'portrait' ? 1 : 2}; --gutter: ${f.name === 'portrait' ? '1rem' : '2rem'}; font-size: calc(${canvasExpr(f)} / ${f.units}); font-size: round(down, calc(${canvasExpr(f)} / ${f.units}), calc(1rem / 64)); }`,
     `  :where([data-hide~=${f.name}]) { display: none !important; }`,
-    f.name === 'portrait' ? portraitOverrides : '',
     f.name === 'portrait'
       ? `  :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }\n  :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }\n  :where([data-l=canvas][data-pad]) { padding-inline: 0; }\n${placement(f.cols, 'data-xp')}`
       : `${placement(f.cols, 'data-x')}${f.name === 'wide' ? '\n' + placement(f.cols, 'data-xw') : ''}`,
+    // portrait's own values come last, so they are not undone by its general rules above
+    f.name === 'portrait' ? portraitOverrides : '',
   ].filter(Boolean).join('\n');
   const head = `/* prastora core, variant ${v.id}: ${v.title}. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
    frames (rem of the window): ${JSON.stringify(frames.map(({ name, from, to, units, cols, grow }) => ({ name, from, to, units, cols, grow })))} */\n`;

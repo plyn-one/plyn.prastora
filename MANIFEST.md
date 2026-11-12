@@ -60,6 +60,7 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 | `data-stackp` | | on a gridded `layer`: on a phone its blocks become a stack and its drawing is not shown |
 | `data-across` | | on a child of `book`: crosses both pages |
 | `data-reveal` | `fade` `rise` `draw` | appears as it scrolls into view (`draw`: an SVG `path` with `pathLength="1"` draws itself); off for readers who ask for less motion |
+| `data-comb` | `1` to `24` | on an `input` on a sheet: a box for each letter, the letters typed one in each box; give `maxlength` the same number |
 | `data-numbered` | | on a `sheet`: numbers its lines in its left margin |
 | `data-line` | `1` to `46` | on a note in `margin`: the line of the sheet it stands at |
 | `data-hide` | `portrait` `landscape` `wide` `print` | not shown in that frame |
@@ -100,6 +101,8 @@ Text of more than one line is set at whole units (the core does this): only then
 Document: `<section data-l="spread"><article data-l="sheet" data-numbered><h1>…</h1><p>…</p><ol><li>Clause<ol><li>…</li></ol></li></ol><footer>Sheet 1 of 2</footer></article><aside data-l="margin"><p data-line="9">…</p></aside></section>`, one `spread` per sheet. Clauses are numbered through all sheets. When the check reports `sheet-overflow`, move the last clauses to the next sheet; `off-grid` means something on the sheet is sized outside the vocabulary.
 
 A drawing through the page: a gridded `layer` with `data-ratio` holds an `svg` and blocks at cells (`data-col`, `data-row`, `data-w` as a share of the whole picture); draw the road in the svg through the same coordinates (a twentieth per cell).
+
+Blank: a `form data-l="canvas"` on a `sheet`: inside a sheet the grid has 12 columns in every frame, so the blank is the same on a phone, a screen and paper; fields are `label`s with an `input` (`data-comb` for boxed letters), choices take two lines. It prints with what was entered; its buttons do not print.
 
 Three in a row: `<section data-l="canvas"><article data-x="1-4">…</article><article data-x="5-8">…</article><article data-x="9-12">…</article></section>`
 

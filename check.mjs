@@ -38,6 +38,7 @@ const VOCAB = {
   'data-col': Array.from({ length: 20 }, (_, i) => String(i + 1)), 'data-row': Array.from({ length: 20 }, (_, i) => String(i + 1)),
   'data-fit': [''], 'data-lines': ['', 'shown'], 'data-hang': [''], 'data-shaped': ['circle', 'diamond'],
   'data-stackp': [''], 'data-across': [''], 'data-reveal': ['fade', 'rise', 'draw'],
+  'data-comb': Array.from({ length: 24 }, (_, i) => String(i + 1)),
   'data-numbered': [''], 'data-line': Array.from({ length: 46 }, (_, i) => String(i + 1)),
   'data-space': ['none', 'tight', 'loose'],
   'data-surface': ['raised', 'outline', 'accent'],
@@ -121,12 +122,14 @@ function inspect(VOCAB) {
       const q = p.getBoundingClientRect();
       if (r.right > q.right + 1.5 || r.left < q.left - 1.5) add('escapes-parent', el, `${Math.round(r.left)}–${Math.round(r.right)} outside ${Math.round(q.left)}–${Math.round(q.right)}`);
     }
-    if (ownText(el)) {
+    // inside a sheet made smaller as a whole (a phone), size is judged as on a page of a PDF: the reader zooms
+    const shrunk = (() => { const s = el.closest('[data-l=sheet]'); return s && parseFloat(getComputedStyle(s).zoom) < 1; })();
+    if (ownText(el) && !shrunk) {
       const f = parseFloat(cs.fontSize);
       if (f < 8.5) add('text-too-small', el, `${f.toFixed(1)} px`);
       if (el.matches('p, li, dd, td, blockquote') && !el.matches('[data-pull], [data-balloon]') && el.textContent.trim().length > 40 && r.width < f * 14) add('narrow-measure', el, `${(r.width / f).toFixed(1)} em`);
     }
-    if (el.matches('button, input:not([type=hidden]), select, textarea, summary')) {
+    if (!shrunk && el.matches('button, input:not([type=hidden]), select, textarea, summary')) {
       const t = (el.closest('label') ?? el).getBoundingClientRect();
       if (t.width < 24 || t.height < 24) add('target-too-small', el, `${Math.round(t.width)}×${Math.round(t.height)}`);
     }

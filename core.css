@@ -502,6 +502,56 @@
   @keyframes prastora-rise { from { opacity: 0; translate: 0 2rem; } }
   @keyframes prastora-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 }
+
+/*
+ * Forms like paper blanks, on a sheet: a field takes the columns of a 12-column grid that is the same in every
+ * frame; a field with data-comb shows a box for each letter and the letters typed stand one in each box; line
+ * fields are written on. Filled in on screen, a blank prints as it is, with what was entered.
+ */
+@layer relation {
+  :where([data-l=sheet]) :where([data-l=canvas]) { --cols: 12; --gap: 0rem; column-gap: 1rem; }
+  :where([data-l=sheet]) :where(label) { gap: 0; font-size: .875rem; line-height: 1.5rem; font-weight: 600; color: oklch(0.35 0 0); }
+  /* smaller text inside a line keeps to the line, so the line stays on the grid */
+  :where([data-l=sheet], [data-lines]) :where(small, sub, sup, code, kbd) { line-height: 1; }
+  :where([data-l=sheet]) :where(input:not([type=checkbox], [type=radio]), textarea, select) {
+    min-block-size: 1.5rem; block-size: 1.5rem; padding: 0 .25rem; border: 0; border-block-end: .0625rem solid oklch(0.3 0 0);
+    border-radius: 0; background: transparent; color: oklch(0.15 0 0); font-size: 1rem; line-height: 1.5rem;
+  }
+  /* a choice takes two lines of the grid, so it is easy to hit */
+  :where([data-l=sheet]) :where(label:has(> input[type=checkbox], > input[type=radio])) { min-block-size: 3rem; gap: .5rem; font-size: 1rem; font-weight: 400; color: oklch(0.2 0 0); }
+  :where([data-l=sheet]) :where(input[type=checkbox], input[type=radio]) { inline-size: 1rem; block-size: 1rem; margin: 0; }
+  :where([data-l=sheet]) :where(fieldset) { border: 0; padding: 0; margin: 0; }
+  :where([data-l=sheet]) :where(legend) { padding: 0; font-weight: 700; font-size: 1rem; line-height: 1.5rem; }
+  :where([data-l=sheet]) :where(input[data-comb]) {
+    font-family: var(--font-mono); text-transform: uppercase; letter-spacing: calc(1.5rem - 1ch); padding: 0 0 0 calc((1.5rem - 1ch) / 2);
+    border: .0625rem solid oklch(0.3 0 0); border-inline-start-width: 0;
+    background: linear-gradient(to right, oklch(0.3 0 0) .0625rem, transparent .0625rem) 0 0 / 1.5rem 100% repeat-x;
+  }
+  :where([data-l=sheet]) :where(input[data-comb="1"]) { inline-size: calc(1 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="2"]) { inline-size: calc(2 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="3"]) { inline-size: calc(3 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="4"]) { inline-size: calc(4 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="5"]) { inline-size: calc(5 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="6"]) { inline-size: calc(6 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="7"]) { inline-size: calc(7 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="8"]) { inline-size: calc(8 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="9"]) { inline-size: calc(9 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="10"]) { inline-size: calc(10 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="11"]) { inline-size: calc(11 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="12"]) { inline-size: calc(12 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="13"]) { inline-size: calc(13 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="14"]) { inline-size: calc(14 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="15"]) { inline-size: calc(15 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="16"]) { inline-size: calc(16 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="17"]) { inline-size: calc(17 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="18"]) { inline-size: calc(18 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="19"]) { inline-size: calc(19 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="20"]) { inline-size: calc(20 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="21"]) { inline-size: calc(21 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="22"]) { inline-size: calc(22 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="23"]) { inline-size: calc(23 * 1.5rem + .0625rem); }
+  :where([data-l=sheet]) :where(input[data-comb="24"]) { inline-size: calc(24 * 1.5rem + .0625rem); }
+}
 @layer relation {
   /* canvas: the grid of the frame; a child takes columns by data-x (data-xw on wide, data-xp on portrait),
      and without them the whole width; data-bleed lets it reach into the next or previous band */
@@ -515,6 +565,19 @@
   @media screen and (width < 50rem) {
     :root { --units: 22; --cols: 4; --text-cols: 1; --gutter: 1rem; font-size: calc(100vw / 22); font-size: round(down, calc(100vw / 22), calc(1rem / 64)); }
     :where([data-hide~=portrait]) { display: none !important; }
+    :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }
+    :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }
+    :where([data-l=canvas][data-pad]) { padding-inline: 0; }
+    :where([data-xp="1-1"]) { grid-column: 1 / 2; }
+    :where([data-xp="1-2"]) { grid-column: 1 / 3; }
+    :where([data-xp="1-3"]) { grid-column: 1 / 4; }
+    :where([data-xp="1-4"]) { grid-column: 1 / 5; }
+    :where([data-xp="2-2"]) { grid-column: 2 / 3; }
+    :where([data-xp="2-3"]) { grid-column: 2 / 4; }
+    :where([data-xp="2-4"]) { grid-column: 2 / 5; }
+    :where([data-xp="3-3"]) { grid-column: 3 / 4; }
+    :where([data-xp="3-4"]) { grid-column: 3 / 5; }
+    :where([data-xp="4-4"]) { grid-column: 4 / 5; }
     :where([data-sizep="1"]) { font-size: 1rem; }
     :where([data-sizep="2"]) { font-size: 1.4rem; }
     :where([data-sizep="3"]) { font-size: 2rem; }
@@ -539,22 +602,88 @@
     :where([data-shaped]) { aspect-ratio: auto; overflow: visible; text-align: start; }
     :where([data-shaped])::before, :where([data-shaped]) > :where(p)::before { content: none; }
     :where([data-l=sheet]) { zoom: calc((var(--units) - 2) / 56); }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x]) { grid-column: auto; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-1"]) { grid-column: 1 / 2; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-2"]) { grid-column: 1 / 3; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-3"]) { grid-column: 1 / 4; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-4"]) { grid-column: 1 / 5; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-5"]) { grid-column: 1 / 6; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-6"]) { grid-column: 1 / 7; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-7"]) { grid-column: 1 / 8; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-8"]) { grid-column: 1 / 9; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-9"]) { grid-column: 1 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-10"]) { grid-column: 1 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-11"]) { grid-column: 1 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="1-12"]) { grid-column: 1 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-2"]) { grid-column: 2 / 3; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-3"]) { grid-column: 2 / 4; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-4"]) { grid-column: 2 / 5; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-5"]) { grid-column: 2 / 6; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-6"]) { grid-column: 2 / 7; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-7"]) { grid-column: 2 / 8; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-8"]) { grid-column: 2 / 9; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-9"]) { grid-column: 2 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-10"]) { grid-column: 2 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-11"]) { grid-column: 2 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="2-12"]) { grid-column: 2 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-3"]) { grid-column: 3 / 4; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-4"]) { grid-column: 3 / 5; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-5"]) { grid-column: 3 / 6; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-6"]) { grid-column: 3 / 7; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-7"]) { grid-column: 3 / 8; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-8"]) { grid-column: 3 / 9; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-9"]) { grid-column: 3 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-10"]) { grid-column: 3 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-11"]) { grid-column: 3 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="3-12"]) { grid-column: 3 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-4"]) { grid-column: 4 / 5; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-5"]) { grid-column: 4 / 6; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-6"]) { grid-column: 4 / 7; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-7"]) { grid-column: 4 / 8; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-8"]) { grid-column: 4 / 9; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-9"]) { grid-column: 4 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-10"]) { grid-column: 4 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-11"]) { grid-column: 4 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="4-12"]) { grid-column: 4 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="5-5"]) { grid-column: 5 / 6; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="5-6"]) { grid-column: 5 / 7; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="5-7"]) { grid-column: 5 / 8; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="5-8"]) { grid-column: 5 / 9; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="5-9"]) { grid-column: 5 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="5-10"]) { grid-column: 5 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="5-11"]) { grid-column: 5 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="5-12"]) { grid-column: 5 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="6-6"]) { grid-column: 6 / 7; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="6-7"]) { grid-column: 6 / 8; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="6-8"]) { grid-column: 6 / 9; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="6-9"]) { grid-column: 6 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="6-10"]) { grid-column: 6 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="6-11"]) { grid-column: 6 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="6-12"]) { grid-column: 6 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="7-7"]) { grid-column: 7 / 8; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="7-8"]) { grid-column: 7 / 9; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="7-9"]) { grid-column: 7 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="7-10"]) { grid-column: 7 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="7-11"]) { grid-column: 7 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="7-12"]) { grid-column: 7 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="8-8"]) { grid-column: 8 / 9; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="8-9"]) { grid-column: 8 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="8-10"]) { grid-column: 8 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="8-11"]) { grid-column: 8 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="8-12"]) { grid-column: 8 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="9-9"]) { grid-column: 9 / 10; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="9-10"]) { grid-column: 9 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="9-11"]) { grid-column: 9 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="9-12"]) { grid-column: 9 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="10-10"]) { grid-column: 10 / 11; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="10-11"]) { grid-column: 10 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="10-12"]) { grid-column: 10 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="11-11"]) { grid-column: 11 / 12; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="11-12"]) { grid-column: 11 / 13; }
+    :where([data-l=sheet] [data-l=canvas]) > :where([data-x="12-12"]) { grid-column: 12 / 13; }
     :where([data-l=margin]) { padding-block-start: 0; display: flex; flex-direction: column; gap: var(--s0); }
     :where([data-l=margin]) > :where([data-line]) { position: static; }
     :where([data-l=margin]) > :where([data-line])::before { content: "Line " attr(data-line) ". "; position: static; border: 0; inline-size: auto; font-weight: 600; color: var(--accent); }
-    :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }
-    :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }
-    :where([data-l=canvas][data-pad]) { padding-inline: 0; }
-    :where([data-xp="1-1"]) { grid-column: 1 / 2; }
-    :where([data-xp="1-2"]) { grid-column: 1 / 3; }
-    :where([data-xp="1-3"]) { grid-column: 1 / 4; }
-    :where([data-xp="1-4"]) { grid-column: 1 / 5; }
-    :where([data-xp="2-2"]) { grid-column: 2 / 3; }
-    :where([data-xp="2-3"]) { grid-column: 2 / 4; }
-    :where([data-xp="2-4"]) { grid-column: 2 / 5; }
-    :where([data-xp="3-3"]) { grid-column: 3 / 4; }
-    :where([data-xp="3-4"]) { grid-column: 3 / 5; }
-    :where([data-xp="4-4"]) { grid-column: 4 / 5; }
   }
   @media screen and (width >= 50rem) and (width < 125rem) {
     :root { --units: 80; --cols: 12; --text-cols: 2; --gutter: 2rem; font-size: calc(100vw / 80); font-size: round(down, calc(100vw / 80), calc(1rem / 64)); }
@@ -804,6 +933,9 @@
     :where([data-l=page]) { padding: 0; }
     /* paper carries the content and its pictures; what is only for using the screen stays there */
     :where(form, button, nav, input, select, textarea, video, audio, iframe, dialog, [data-hide~=print]) { display: none !important; }
+    /* a blank on a sheet prints with what was entered */
+    :where([data-l=sheet] form, [data-l=sheet] input, [data-l=sheet] select, [data-l=sheet] textarea) { display: revert !important; }
+    :where([data-l=sheet] label) { display: flex !important; }
     :where([data-out]) { --bleed: 0rem; }
     :where(figure, blockquote, article, table, pre, [data-l=layer], [data-surface], [data-float]) { break-inside: avoid; }
     :where(h1, h2, h3, h4) { break-after: avoid; }
