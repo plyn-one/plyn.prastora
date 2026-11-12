@@ -18,11 +18,12 @@ if (shots) mkdirSync(shots, { recursive: true });
 
 // the frames are read from the core the page links: its first comment lists them, in rem of the window
 // (16 px to the rem at the browser's default)
-function framesOf(page) {
+async function framesOf(page) {
   const html = readFileSync(page, 'utf8');
   const href = [...html.matchAll(/<link[^>]+>/g)].map(m => m[0]).filter(l => /rel="stylesheet"/.test(l)).map(l => l.match(/href="([^"]+)"/)?.[1]).find(Boolean);
   if (!href) throw new Error(`${page}: no stylesheet linked; link core.css`);
-  const css = readFileSync(resolve(dirname(page), href), 'utf8');
+  // the core may be a file beside the page or a pinned release at an address
+  const css = /^https?:/.test(href) ? await (await fetch(href)).text() : readFileSync(resolve(dirname(page), href), 'utf8');
   const m = css.match(/frames[^:]*: (\[.*\])/);
   if (!m) throw new Error(`${page}: ${href} is not the prastora core (no list of frames in its first comment)`);
   return JSON.parse(m[1]).map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
@@ -179,7 +180,7 @@ function inspect(VOCAB) {
 const browser = await chromium.launch();
 const reports = [];
 for (const page of pages) {
-  const EDGES = framesOf(page);
+  const EDGES = await framesOf(page);
   const url = pathToFileURL(resolve(page)).href;
   const found = new Map();
   const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
