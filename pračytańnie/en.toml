@@ -8,7 +8,7 @@
 "file:śled.toml" = "the work of this place, one zapis per krok"
 "dir:pračytańnie" = "the readings of this place, one file per language"
 "file:pračytańnie/en.toml" = "the readings of this place in English"
-"file:core.css" = "the core stylesheet, built by variants.mjs: three frames, each a canvas of fixed units and columns that scales as a whole, with margins beyond it; plain HTML styled and the relations"
+"file:core.css" = "the core stylesheet, built by variants.mjs: three screen frames and a print frame, each a canvas of fixed units and columns that scales as a whole, with margins beyond it; plain HTML styled, the relations and the devices of print"
 "file:MANIFEST.md" = "the manifest for agents: the whole vocabulary, its rules and patterns, read before laying a page out"
 "file:check.mjs" = "the check of a page by rendering: both edges of every frame in both colour schemes, and whether anything moved on the canvas within a frame"
 "dir:demo" = "pages laid out with the core, which the check passes"
@@ -19,3 +19,4 @@
 "dir:lab" = "the lab: variants of frames compared on the same page"
 "file:lab/variants.json" = "the variants of frames: where each frame begins, its units and columns, and how its canvas follows the window"
 "file:demo/longread.html" = "a longread laid out with devices of print: a cover with words on its picture, a headline set by hand, an initial letter, justified columns with a pulled quote, text round a shape, a picture reaching into the margin, a staggered dialogue"
+"file:lab/prospects.md" = "notes for the owner on where layout as a picture may lead and why, what was found on the way, and fonts measured; not instructions for laying out a page"

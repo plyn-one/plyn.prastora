@@ -39,6 +39,21 @@ const portraitOverrides = [
   `  :where([data-l=columns]) > :where(p) { text-align: start; }`,
 ].join('\n');
 
+// print is a frame of its own: an A4 sheet is a canvas of 50 units at 10pt (176 mm of the 180 mm between
+// the margins), laid out with the landscape composition; nothing leaves the sheet, and blocks do not split
+const PAGE = `@page { size: A4; margin: 16mm 15mm 18mm; }\n`;
+const printFrame = `  @media print {
+    :root { --units: 50; --cols: 12; --text-cols: 2; --gutter: 0rem; font-size: 10pt; color-scheme: light; --paper: white; --t4: 2.6rem; --t3: 1.6rem; --t2: 1.3rem; --t1: 1.1rem; }
+    :where(body) { min-block-size: 0; }
+    :where([data-hide~=print]) { display: none !important; }
+    :where([data-out]) { --bleed: 0rem; }
+    :where(figure, blockquote, article, table, pre, [data-l=layer], [data-surface], [data-float]) { break-inside: avoid; }
+    :where(h1, h2, h3, h4) { break-after: avoid; }
+    :where(p) { orphans: 3; widows: 3; }
+${placement(12, 'data-x').replace(/^/gm, '  ')}
+  }
+`;
+
 function css(v) {
   const frames = v.frames.map((f, i) => ({ ...f, start: Math.max(f.from, 20), to: v.frames[i + 1]?.from ?? null }));
   const block = f => [
@@ -55,9 +70,9 @@ function css(v) {
   const head = `/* prastora core, variant ${v.id}: ${v.title}. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
    frames (rem of the window): ${JSON.stringify(frames.map(({ name, from, to, units, cols, grow }) => ({ name, from, to, units, cols, grow })))} */\n`;
   // every frame's rules hold only within its windows; the root size of the first frame is also the default
-  const when = f => [f.from > 0 && `(width >= ${f.from}rem)`, f.to && `(width < ${f.to}rem)`].filter(Boolean).join(' and ');
+  const when = f => ['screen', f.from > 0 && `(width >= ${f.from}rem)`, f.to && `(width < ${f.to}rem)`].filter(Boolean).join(' and ');
   const frameCss = `@layer frame {\n` + block(frames[0]).split('\n')[0] + '\n' + frames.map(f =>
-    `  @media ${when(f)} {\n` + block(f).replace(/^/gm, '  ') + '\n  }\n').join('') + `}\n`;
+    `  @media ${when(f)} {\n` + block(f).replace(/^/gm, '  ') + '\n  }\n').join('') + printFrame + `}\n` + PAGE;
   const canvasRel = `@layer relation {
   /* canvas: the grid of the frame; a child takes columns by data-x (data-xw on wide, data-xp on portrait),
      and without them the whole width; data-bleed lets it reach into the next or previous band */

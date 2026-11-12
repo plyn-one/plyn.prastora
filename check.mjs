@@ -33,7 +33,7 @@ const VOCAB = {
   'data-place': ['top-start', 'top-center', 'top-end', 'middle-start', 'middle-center', 'middle-end', 'bottom-start', 'bottom-center', 'bottom-end'],
   'data-ratio': ['21/9', '16/9', '3/2', '1/1', '3/4'], 'data-ratiop': ['21/9', '16/9', '3/2', '1/1', '3/4', '2/3', '9/16'],
   'data-size': ['1', '2', '3', '4', '5', '6', '7'], 'data-sizep': ['1', '2', '3', '4', '5', '6', '7'],
-  'data-hide': ['portrait', 'landscape', 'wide'],
+  'data-hide': ['portrait', 'landscape', 'wide', 'print'],
   'data-space': ['none', 'tight', 'loose'],
   'data-surface': ['raised', 'outline', 'accent'],
   'data-tone': ['quiet', 'strong', 'accent', 'danger', 'ok', 'warn'],

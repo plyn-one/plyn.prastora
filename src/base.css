@@ -41,7 +41,6 @@
   @media (prefers-contrast: more) {
     :root { --quiet: var(--ink); --line: color-mix(in oklch, var(--ink) 45%, transparent); --veil: color-mix(in oklch, var(--ink) 8%, transparent); }
   }
-  @media print { :root { font-size: 11pt; } }
 }
 
 @layer base {
