@@ -37,6 +37,13 @@ const portraitOverrides = [
   ...Object.entries(RATIOS).map(([k, v]) => `  :where([data-ratiop="${k}"]) { aspect-ratio: ${v}; }`),
   `  :where([data-float][data-wp=full]) { float: none; inline-size: auto; margin-inline: 0; }`,
   `  :where([data-l=columns]) > :where(p) { text-align: start; }`,
+  // a picture whose blocks are set on its grid becomes a stack on a phone when it asks so (data-stackp)
+  `  :where([data-l=layer][data-stackp]) { display: flex; flex-direction: column; gap: var(--s1); aspect-ratio: auto; contain: none; }`,
+  `  :where([data-l=layer][data-stackp]) > :where(svg) { display: none; }`,
+  `  :where([data-l=layer][data-stackp]) > :where(*) { inline-size: auto; }`,
+  // a book shows one page at a time on a phone
+  `  :where([data-l=book]) { grid-template-columns: minmax(0, 1fr); padding: var(--s1); }`,
+  `  :where([data-l=book])::after { content: none; }`,
   // a paragraph in a figure needs width: on a phone it is an ordinary paragraph
   `  :where([data-shaped]) { aspect-ratio: auto; overflow: visible; text-align: start; }`,
   `  :where([data-shaped])::before, :where([data-shaped]) > :where(p)::before { content: none; }`,
@@ -65,6 +72,8 @@ const printFrame = `  @media print {
     :where([data-l=spread]) { display: block; }
     :where([data-l=sheet]) { box-shadow: none; break-after: page; }
     :where([data-l=margin]) { display: none; }
+    :where([data-l=book]) { box-shadow: none; padding: 0; }
+    :where([data-l=book])::after { content: none; }
     /* a page of sheets prints its sheets only: the sheet is the page */
     :where(body:has([data-l=sheet])) :where([data-l=page] > header, [data-l=page] > footer) { display: none; }
     :where(body:has([data-l=sheet])) :where([data-l=page], [data-l=page] > main) { gap: 0; }

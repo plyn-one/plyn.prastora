@@ -372,6 +372,11 @@
  */
 @layer relation {
   :where([data-l=layer][data-grid]) { grid-template: repeat(20, minmax(0, 1fr)) / repeat(20, minmax(0, 1fr)); }
+  /* a share on a gridded picture is a share of the whole picture, not of the cell's row */
+  :where([data-l=layer][data-grid]) { container-type: inline-size; }
+  :where([data-l=layer][data-grid]) > :where([data-w=quarter]) { inline-size: 25cqi; }
+  :where([data-l=layer][data-grid]) > :where([data-w=third]) { inline-size: 33.333cqi; }
+  :where([data-l=layer][data-grid]) > :where([data-w=half]) { inline-size: 50cqi; }
   :where([data-col="1"]) { grid-column: 1 / -1; justify-self: start; }
   :where([data-col="2"]) { grid-column: 2 / -1; justify-self: start; }
   :where([data-col="3"]) { grid-column: 3 / -1; justify-self: start; }
@@ -462,4 +467,36 @@
   :where([data-shaped=circle]) > :where(p)::before { shape-outside: radial-gradient(ellipse 100% 64% at 0% 50%, transparent 97%, black 98%); }
   :where([data-shaped=diamond])::before { shape-outside: polygon(0 0, 82% 0, 0 50%, 82% 100%, 0 100%); }
   :where([data-shaped=diamond]) > :where(p)::before { shape-outside: polygon(100% 0, 18% 0, 100% 50%, 18% 100%, 100% 100%); }
+}
+
+/*
+ * Composition across the page. A gridded layer with a proportion is a picture on which a drawing and blocks of
+ * text share coordinates: a road drawn through it meets the blocks set at its bends on every screen of the frame.
+ * A book shows two pages with a gutter, and a picture may cross it. Motion tied to scrolling starts at the same
+ * place of the page on every screen; it is off for readers who ask for less motion.
+ */
+@layer relation {
+  :where([data-l=book]) {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s3); row-gap: var(--s1);
+    padding: var(--s2) var(--s2); background: white; color: oklch(0.2 0 0); color-scheme: light; position: relative;
+    box-shadow: 0 .1rem .6rem color-mix(in oklch, black 18%, transparent);
+  }
+  :where([data-l=book])::after {
+    content: ""; position: absolute; inset-block: 0; inset-inline-start: calc(50% - 1.5rem); inline-size: 3rem; pointer-events: none;
+    background: linear-gradient(to right, transparent, color-mix(in oklch, black 10%, transparent) 50%, transparent);
+  }
+  :where([data-l=book]) > :where(*) { min-inline-size: 0; }
+  :where([data-l=book]) > :where([data-across]) { grid-column: 1 / -1; }
+  :where([data-l=book]) :where(p) { text-align: justify; hyphens: auto; max-inline-size: none; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      :where([data-reveal=fade]) { animation: prastora-fade linear both; animation-timeline: view(); animation-range: entry 10% cover 30%; }
+      :where([data-reveal=rise]) { animation: prastora-rise linear both; animation-timeline: view(); animation-range: entry 10% cover 30%; }
+      :where([data-reveal=draw]) { stroke-dasharray: 1; animation: prastora-draw linear both; animation-timeline: view(); animation-range: entry 20% exit 60%; }
+    }
+  }
+  @keyframes prastora-fade { from { opacity: 0; } }
+  @keyframes prastora-rise { from { opacity: 0; translate: 0 2rem; } }
+  @keyframes prastora-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 }

@@ -25,7 +25,7 @@ const FRAMES = JSON.parse(readFileSync(resolve(dirname(page), href), 'utf8').mat
 const EDGES = FRAMES.map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
 
 const VOCAB = {
-  'data-l': ['page', 'canvas', 'columns', 'layer', 'spread', 'sheet', 'margin', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
+  'data-l': ['page', 'canvas', 'columns', 'layer', 'spread', 'sheet', 'margin', 'book', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
   'data-bleed': ['up', 'down'],
   'data-pull': [''], 'data-initial': [''],
   'data-float': ['start', 'end'], 'data-w': ['quarter', 'third', 'half'], 'data-wp': ['full'], 'data-shape': ['arch', 'circle', 'alpha'],
@@ -37,6 +37,7 @@ const VOCAB = {
   'data-grid': [''], 'data-tag': [''], 'data-balloon': ['start', 'end'],
   'data-col': Array.from({ length: 20 }, (_, i) => String(i + 1)), 'data-row': Array.from({ length: 20 }, (_, i) => String(i + 1)),
   'data-fit': [''], 'data-lines': ['', 'shown'], 'data-hang': [''], 'data-shaped': ['circle', 'diamond'],
+  'data-stackp': [''], 'data-across': [''], 'data-reveal': ['fade', 'rise', 'draw'],
   'data-numbered': [''], 'data-line': Array.from({ length: 46 }, (_, i) => String(i + 1)),
   'data-space': ['none', 'tight', 'loose'],
   'data-surface': ['raised', 'outline', 'accent'],

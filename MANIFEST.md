@@ -24,6 +24,7 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 | `layer` | children lie on one another: a picture with words on it at set places | a picture and placed text |
 | `spread` | a sheet with its margin of notes beside it | one `sheet`, one `margin` |
 | `sheet` | a sheet of a document, 50 × 70 units: the same lines on every screen and on paper, one printed page each | headings, paragraphs, numbered clauses (`ol`), a `footer` last |
+| `book` | a book spread: two pages with a gutter; a child with `data-across` crosses both (a picture across the gutter); one page at a time on a phone | a picture, two pages |
 | `margin` | notes beside a sheet, each at the line it speaks of (`data-line`), with a line drawn to it | `p data-line="n"` |
 | `stack` | one under another | any |
 | `cluster` | short things in a wrapping row: links, buttons, marks | short items |
@@ -56,6 +57,9 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 | `data-lines` | `` or `shown` | every line inside stands on one grid of 1.5 units, shared by columns, notes and quotes side by side; `shown` draws the grid |
 | `data-hang` | | on a paragraph that opens with a quote: the quote hangs outside the edge |
 | `data-shaped` | `circle` `diamond` | on a `div` holding one `p`: the paragraph set inside the figure; give it enough text to fill the figure, the check reports overflow; on a phone it is an ordinary paragraph |
+| `data-stackp` | | on a gridded `layer`: on a phone its blocks become a stack and its drawing is not shown |
+| `data-across` | | on a child of `book`: crosses both pages |
+| `data-reveal` | `fade` `rise` `draw` | appears as it scrolls into view (`draw`: an SVG `path` with `pathLength="1"` draws itself); off for readers who ask for less motion |
 | `data-numbered` | | on a `sheet`: numbers its lines in its left margin |
 | `data-line` | `1` to `46` | on a note in `margin`: the line of the sheet it stands at |
 | `data-hide` | `portrait` `landscape` `wide` `print` | not shown in that frame |
@@ -94,6 +98,8 @@ Cover: `<section data-l="layer" data-out="both" data-ratio="21/9" data-ratiop="3
 Text of more than one line is set at whole units (the core does this): only then its lines break the same on every screen of a frame. If the check still finds text moving within a frame, a line lies on the edge of its column: move the column by one, or change the words.
 
 Document: `<section data-l="spread"><article data-l="sheet" data-numbered><h1>…</h1><p>…</p><ol><li>Clause<ol><li>…</li></ol></li></ol><footer>Sheet 1 of 2</footer></article><aside data-l="margin"><p data-line="9">…</p></aside></section>`, one `spread` per sheet. Clauses are numbered through all sheets. When the check reports `sheet-overflow`, move the last clauses to the next sheet; `off-grid` means something on the sheet is sized outside the vocabulary.
+
+A drawing through the page: a gridded `layer` with `data-ratio` holds an `svg` and blocks at cells (`data-col`, `data-row`, `data-w` as a share of the whole picture); draw the road in the svg through the same coordinates (a twentieth per cell).
 
 Three in a row: `<section data-l="canvas"><article data-x="1-4">…</article><article data-x="5-8">…</article><article data-x="9-12">…</article></section>`
 

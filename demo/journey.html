@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Across the page: a road through the sections, a book spread, motion on scrolling</title>
+<link rel="stylesheet" href="../core.css">
+</head>
+<body>
+<div data-l="page">
+
+  <header data-l="cluster">
+    <strong>Prastora</strong>
+    <small data-tone="quiet">Composition across the page</small>
+    <nav aria-label="Demonstrations" data-push>
+      <ul role="list" data-l="cluster"><li><a href="index.html">First</a></li><li><a href="longread.html">Longread</a></li><li><a href="document.html">Document</a></li><li><a href="pictures.html">Pictures</a></li><li><a href="type.html">Type</a></li></ul>
+    </nav>
+  </header>
+
+  <main data-l="stack" data-space="loose">
+
+    <section data-l="canvas" aria-labelledby="road">
+      <div data-x="1-12" data-l="stack" data-space="tight">
+        <h1 id="road">The road of an idler</h1>
+        <p data-tone="quiet">One drawing runs through the page, and each stop of the essay stands at a bend of it. The road and the stops share the coordinates of one picture, so they meet on every screen of the frame; the road draws itself as you scroll.</p>
+      </div>
+      <div data-x="1-12" data-l="layer" data-grid data-ratio="1/1" data-stackp aria-label="Four stops on a winding road">
+        <svg viewBox="0 0 1000 1000" data-tone="accent" aria-hidden="true">
+          <path d="M120 112 C 120 230, 300 290, 500 300 C 545 302, 525 430, 470 470 C 430 500, 410 520, 410 560 C 410 650, 420 760, 520 800" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" opacity=".25"/>
+          <path data-reveal="draw" pathLength="1" d="M120 112 C 120 230, 300 290, 500 300 C 545 302, 525 430, 470 470 C 430 500, 410 520, 410 560 C 410 650, 420 760, 520 800" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+          <g fill="currentColor"><circle cx="120" cy="112" r="13"/><circle cx="500" cy="300" r="13"/><circle cx="410" cy="560" r="13"/><circle cx="520" cy="800" r="13"/></g>
+        </svg>
+        <article data-col="2" data-row="1" data-w="third" data-reveal="rise" data-l="stack" data-space="tight"><h3>The school</h3><p>Most boys pay so dear for their medals that they never afterwards have a shot in their locker.</p></article>
+        <article data-col="12" data-row="6" data-w="third" data-reveal="rise" data-l="stack" data-space="tight"><h3>The street</h3><p>If a lad does not learn in the streets, it is because he has no faculty of learning.</p></article>
+        <article data-col="2" data-row="11" data-w="third" data-reveal="rise" data-l="stack" data-space="tight"><h3>The burn</h3><p>He may pitch on some tuft of lilacs over a burn, and a bird will sing in the thicket.</p></article>
+        <article data-col="12" data-row="16" data-w="third" data-reveal="rise" data-l="stack" data-space="tight"><h3>The road</h3><p>Where are the ugliest Sloughs and Thickets on the Road, and what Staff is of the best service.</p></article>
+      </div>
+    </section>
+
+    <section data-l="canvas" aria-labelledby="book">
+      <h2 id="book" data-x="1-12">A book spread</h2>
+      <article data-x="1-12" data-l="book" aria-label="Two pages of the essay">
+        <figure data-across data-l="layer" data-ratio="21/9" aria-label="A meadow across both pages">
+          <svg data-tone="accent" viewBox="0 0 2100 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Hills and a lone tree across the two pages">
+            <rect width="2100" height="900" fill="currentColor" opacity=".06"/>
+            <path d="M0 620 Q 520 470 1040 590 T 2100 540 V900 H0Z" fill="currentColor" opacity=".14"/>
+            <path d="M0 760 Q 700 610 1300 720 T 2100 690 V900 H0Z" fill="currentColor" opacity=".24"/>
+            <rect x="1000" y="430" width="26" height="300" fill="currentColor" opacity=".7"/>
+            <circle cx="1013" cy="400" r="150" fill="currentColor" opacity=".3"/>
+          </svg>
+        </figure>
+        <div data-l="stack" data-space="tight">
+          <h3>An Apology for Idlers</h3>
+          <p>Just now, when every one is bound, under pain of a decree in absence convicting them of lèse-respectability, to enter on some lucrative profession, and labour therein with something not far short of enthusiasm, a cry from the opposite party who are content when they have enough, and like to look on and enjoy in the meanwhile, savours a little of bravado and gasconade.</p>
+        </div>
+        <div data-l="stack" data-space="tight">
+          <p>And yet this should not be. Idleness so called, which does not consist in doing nothing, but in doing a great deal not recognised in the dogmatic formularies of the ruling class, has as good a right to state its position as industry itself. The picture above crosses the gutter as it would in a printed book.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer data-l="cluster"><small data-tone="quiet">Text: Robert Louis Stevenson, “An Apology for Idlers” (1877), public domain. Drawings: Prastora.</small></footer>
+</div>
+</body>
+</html>
