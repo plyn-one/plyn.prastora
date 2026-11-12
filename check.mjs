@@ -8,7 +8,14 @@ import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { resolve, dirname, basename } from 'node:path';
 import { mkdirSync, readFileSync } from 'node:fs';
-const { chromium } = createRequire(import.meta.url)('playwright');
+// Playwright is looked for beside this file and in the folder the check is run from
+const { chromium } = (() => {
+  for (const base of [import.meta.url, pathToFileURL(process.cwd() + '/').href]) {
+    try { return createRequire(base)('playwright'); } catch {}
+  }
+  console.error('check.mjs needs Playwright with Chromium. In the folder you run it from:\n  npm i -D playwright\n  npx playwright install chromium');
+  process.exit(2);
+})();
 
 const args = process.argv.slice(2);
 const pages = args.filter((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--'));

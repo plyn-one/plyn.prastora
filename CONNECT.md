@@ -1,23 +1,14 @@
 # Connecting Prastora to a project (for agents)
 
-Prastora is a web page layout framework: a page is composed like a picture, once per frame (portrait, landscape, wide, print), and scales as a whole within a frame. It is plain CSS with no build step and no JavaScript.
+Prastora is a web page layout framework: a page is composed like a picture, once per frame (portrait, landscape, wide, print), and scales as a whole within a frame. Plain CSS, no build step, no JavaScript. Repository: https://github.com/plyn-one/plyn.prastora, release `v0.1`.
 
-## What to take
+## 1. Link the core
 
-| file | needed for |
-|---|---|
-| `core.css` | every page |
-| `fonts/` | every page: the core's font, next to `core.css` (the core loads `fonts/…` relative to itself) |
-| `MANIFEST.md`, `manifest/` | you, before laying out a page |
-| `check.mjs` | you, after: the check of a page |
+Any one of these; the font comes with the core from the same place.
 
-## Three ways, pick one
-
-1. **A pinned release, nothing copied:** link `https://plyn-prastora.pages.dev/v0.1/core.css`; the fonts come with it. Fetch the manifest and the check from the same address (`/v0.1/MANIFEST.md`, `/v0.1/manifest/<section>.md`, `/v0.1/check.mjs`).
-2. **Copied files:** put `core.css` and `fonts/` in the project's static folder side by side; keep `check.mjs` among the project's tools. Record the version (first line of `core.css`) where the project keeps its dependencies.
-3. **In a place of Plyń:** add `plyn-one/plyn.prastora` as the submodule `prastora/`, pinned at a commit on its main branch; link `prastora/core.css` and run `prastora/check.mjs`.
-
-## A page
+- **By the release tag, nothing copied:** `https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v0.1/core.css`
+- **Copied files:** put `core.css` and the folder `fonts/` side by side in the project's static files (the core loads `fonts/…` relative to itself). Take them from the repository at tag `v0.1`.
+- **In a place of Plyń:** add the repository as the submodule `prastora/`, pinned at a commit on its main branch, and link `prastora/core.css`.
 
 ```html
 <!doctype html>
@@ -26,23 +17,30 @@ Prastora is a web page layout framework: a page is composed like a picture, once
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>…</title>
-<link rel="stylesheet" href="…/core.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v0.1/core.css">
 </head>
 <body><div data-l="page">…</div></body>
 </html>
 ```
-Link `core.css` with `rel="stylesheet"` and no other stylesheet for layout: the check reads the frames from the core the page links.
+The first stylesheet linked must be the core: the check reads the frames from it.
 
-## The check
+## 2. Read the manifest
 
-Needs Node 20 or later and Playwright with Chromium:
+`MANIFEST.md`, and only the section of `manifest/` the page needs. From the repository at `v0.1`, or `https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v0.1/MANIFEST.md`.
+
+## 3. Run the check
+
+It is a file of the repository; get it into the project first, then install Playwright in the same folder. Node 20 or later.
 ```
+curl -fsSLo check.mjs https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v0.1/check.mjs
 npm i -D playwright
 npx playwright install chromium
-node check.mjs pages/*.html
+node check.mjs page.html [more pages…]
 ```
-It renders each page in every frame (both edges and seven widths inside, light and dark) and on A4, and prints JSON: `ok`, the pages printed, and problems, each with a `fix`. A page is done when `ok` is `true`. `--shots <dir>` also saves pictures of each frame and of print for looking at.
+It renders each page in every frame (both edges and seven widths inside, light and dark) and on A4, and prints JSON: `ok`, the pages printed, and problems, each with a `fix`. The page is done when `ok` is `true`. `--shots <dir>` saves a picture of each frame and of print.
 
-## What a project keeps to itself
+If Chromium cannot be installed where you work, say so in your report and hand over the page unchecked; do not call it checked.
 
-Colours and type are values in `:root` of the core (`--paper`, `--ink`, `--accent`, `--font` and the others in its tokens layer); a project may set them in its own small stylesheet linked after the core, with no rules other than these values. Composition always comes from the core's attributes.
+## Colours and type of a project
+
+They are values in `:root` of the core (`--paper`, `--ink`, `--accent`, `--font` and the others of its tokens layer). A project may set them in its own small stylesheet linked after the core, with no rules other than these values. Composition always comes from the core's attributes.
