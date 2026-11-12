@@ -9,7 +9,7 @@
 // Everything inside the canvas is in units, so its composition holds exactly whatever the growth.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
-const VERSION = '0.1';
+const VERSION = '0.1.1';
 const variants = JSON.parse(readFileSync('lab/variants.json', 'utf8'));
 const base = readFileSync('src/base.css', 'utf8');
 const demo = readFileSync('demo/index.html', 'utf8');

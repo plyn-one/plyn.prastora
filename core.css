@@ -1,4 +1,4 @@
-/*! prastora core v0.1, variant a: pure scaling as in the earlier Prastora, with margins on wide screens. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
+/*! prastora core v0.1.1, variant a: pure scaling as in the earlier Prastora, with margins on wide screens. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
    frames (rem of the window): [{"name":"portrait","from":0,"to":50,"units":22,"cols":4,"grow":"pure"},{"name":"landscape","from":50,"to":125,"units":80,"cols":12,"grow":"pure"},{"name":"wide","from":125,"to":null,"units":85,"cols":12,"grow":{"share":0.85}}] */
 /* The core's own font, Source Sans 3 (SIL Open Font License, fonts/OFL.txt), served in subsets: a browser loads
    only those whose letters a page uses. One font everywhere keeps lines breaking the same on every system. */
