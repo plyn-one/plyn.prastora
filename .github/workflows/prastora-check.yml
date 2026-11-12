@@ -1,0 +1,48 @@
+name: Prastora browser check
+
+on:
+  push:
+    paths:
+      - 'site/try/**'
+      - 'site/v0.1.2/**'
+      - 'check.mjs'
+      - '.github/workflows/prastora-check.yml'
+  pull_request:
+    paths:
+      - 'site/try/**'
+      - 'site/v0.1.2/**'
+      - 'check.mjs'
+      - '.github/workflows/prastora-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Check all frames and A4
+        shell: bash
+        run: |
+          set -o pipefail
+          node check.mjs site/try/coffee/index.html --shots prastora-shots | tee prastora-report.json
+      - name: Upload verdict and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prastora-browser-check
+          path: |
+            prastora-report.json
+            prastora-shots/
+          retention-days: 1
+          if-no-files-found: warn
