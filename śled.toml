@@ -28,3 +28,9 @@ adras = [2, 1]
 "čakańnie" = "An agent given only the manifest of this place lays out a page that passes the place's rendering check in every regime and both colour schemes within two runs, and the page keeps its proportions and the relative positions of its parts within each regime, with body text no smaller than a readable minimum and enlargeable by the reader."
 "mieryła" = "ahient"
 "upeŭnienaść" = 0.4
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 0
+adras = [2,2]
+vynik = "First blind test of the expectation at zapis 4, 12 November 2026. Another agent, given only a task (a one-page site of a coffee house) and the published address of CONNECT.md, could not open that address from its environment, found the framework through the map of Plyń and the repository, and laid the page out from the manifest alone. It ran the check once and stopped at MODULE_NOT_FOUND, as the guide did not say to fetch check.mjs into the project and install Playwright beside it. The page, checked afterwards in this session, passed at the first run in every frame, light and dark, and in print on two sheets; it used only the vocabulary, no class and no style. Fixed after it: README.md for agents outside Plyń, CONNECT.md linking the core by release tag through a CDN serving the repository and telling how to get and run the check, the check finding Playwright from the folder it runs in. The expectation stays open until an agent runs the check itself within two runs."
