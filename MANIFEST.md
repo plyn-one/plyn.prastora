@@ -4,7 +4,7 @@ You lay out a page with semantic HTML, `core.css` and the attributes below. Noth
 
 ## How the page behaves
 
-A page has a few frames: portrait (phones), landscape, wide. Each frame has its own composition, set once, on a canvas of a fixed number of units (1rem is one unit) and columns: 4 in portrait, 12 in landscape and wide. Within a frame the canvas scales as a whole, like a picture: every element keeps its place against every other on every screen of the frame. What the window has beyond the canvas is margin. You place things by columns of the canvas, not by sizes. Print is a frame too: an A4 sheet, 50 units at 10pt, laid out with the landscape composition; blocks do not split across sheets.
+A page has a few frames: portrait (phones), landscape, wide. Each frame has its own composition, set once, on a canvas of a fixed number of units (1rem is one unit) and columns: 4 in portrait, 12 in landscape and wide. Within a frame the canvas scales as a whole, like a picture: every element keeps its place against every other on every screen of the frame. What the window has beyond the canvas is margin. You place things by columns of the canvas, not by sizes. Print is a frame too: an A4 sheet, 50 units at 10pt, laid out with the landscape composition; blocks do not split across sheets, and what serves only the screen (forms, buttons, navigation, video) is not printed. Hide anything else that does not belong on paper with `data-hide="print"`.
 
 ## Rules
 

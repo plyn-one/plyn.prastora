@@ -45,7 +45,9 @@ const PAGE = `@page { size: A4; margin: 16mm 15mm 18mm; }\n`;
 const printFrame = `  @media print {
     :root { --units: 50; --cols: 12; --text-cols: 2; --gutter: 0rem; font-size: 10pt; color-scheme: light; --paper: white; --t4: 2.6rem; --t3: 1.6rem; --t2: 1.3rem; --t1: 1.1rem; }
     :where(body) { min-block-size: 0; }
-    :where([data-hide~=print]) { display: none !important; }
+    :where([data-l=page]) { padding: 0; }
+    /* paper carries the content and its pictures; what is only for using the screen stays there */
+    :where(form, button, nav, input, select, textarea, video, audio, iframe, dialog, [data-hide~=print]) { display: none !important; }
     :where([data-out]) { --bleed: 0rem; }
     :where(figure, blockquote, article, table, pre, [data-l=layer], [data-surface], [data-float]) { break-inside: avoid; }
     :where(h1, h2, h3, h4) { break-after: avoid; }
@@ -122,7 +124,7 @@ ${variants.map((v, i) => `      <article data-x="${i % 2 ? 7 : 1}-${i % 2 ? 12 :
 
 for (const v of variants) {
   mkdirSync(`lab/${v.id}`, { recursive: true });
-  writeFileSync(`lab/${v.id}/core.css`, css(v));
+  writeFileSync(`lab/${v.id}/core.css`, css(v).replaceAll('url("fonts/', 'url("../../fonts/'));
   writeFileSync(`lab/${v.id}/index.html`, labPage(v));
   if (v.core) writeFileSync('core.css', css(v));
 }

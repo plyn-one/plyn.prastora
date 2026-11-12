@@ -18,4 +18,13 @@ kola = "usie"
 "dir:lab" = { faza = "ściah", rola = "sens" }
 "file:lab/variants.json" = { faza = "ściah", rola = "sens" }
 "file:lab/prospects.md" = { faza = "asadak", rola = "sens" }
+"dir:fonts" = { faza = "dadzienaść", rola = "prajava" }
+"file:fonts/OFL.txt" = { faza = "dadzienaść", rola = "prajava" }
+"file:fonts/source-sans-3-cyrillic-ext.woff2" = { faza = "dadzienaść", rola = "prajava" }
+"file:fonts/source-sans-3-cyrillic.woff2" = { faza = "dadzienaść", rola = "prajava" }
+"file:fonts/source-sans-3-greek-ext.woff2" = { faza = "dadzienaść", rola = "prajava" }
+"file:fonts/source-sans-3-greek.woff2" = { faza = "dadzienaść", rola = "prajava" }
+"file:fonts/source-sans-3-vietnamese.woff2" = { faza = "dadzienaść", rola = "prajava" }
+"file:fonts/source-sans-3-latin-ext.woff2" = { faza = "dadzienaść", rola = "prajava" }
+"file:fonts/source-sans-3-latin.woff2" = { faza = "dadzienaść", rola = "prajava" }
 

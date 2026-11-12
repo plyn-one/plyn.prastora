@@ -142,6 +142,7 @@ for (const scheme of ['light', 'dark']) {
       const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
       const pg = await ctx.newPage();
       await pg.goto(url);
+      await pg.evaluate(() => document.fonts.ready);
       const r = await pg.evaluate(inspect, VOCAB);
       seen[w] = r;
       const edge = w === lo || w === hi;
