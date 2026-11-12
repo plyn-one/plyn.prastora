@@ -25,6 +25,7 @@ Longread:
   <aside data-x="10-12" data-l="stack"><p data-tone="quiet">a note</p></aside>
 </section>
 ```
+Text after a `data-pull` is laid in the columns again, split between them: leave at least eight lines after it, or put the quote earlier; two or three lines split in two are set with gaps between the words.
 
 Cover, picture to both window edges, words on it:
 ```html

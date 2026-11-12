@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 // The version of a release lives here only. A release: set it, run this script, land, then tag v<VERSION>.
 // core.css, CONNECT.md and README.md are written from it, so no text names an old version.
-const VERSION = '0.1.1';
+const VERSION = '0.1.2';
 const variants = JSON.parse(readFileSync('lab/variants.json', 'utf8'));
 const base = readFileSync('src/base.css', 'utf8');
 const demo = readFileSync('demo/index.html', 'utf8');
@@ -170,14 +170,15 @@ writeFileSync('lab/index.html', labIndex());
 for (const f of ['CONNECT.md', 'README.md']) writeFileSync(f, readFileSync(`src/${f}`, 'utf8').replaceAll('{{VERSION}}', VERSION));
 
 // site/: the whole tree of https://plyn-prastora.pages.dev, which Klučnik publishes from main (pages baseline)
-// and work pages from any commit (pages publish, path try/<name>/). Written here from the sources, never by hand.
-import { cpSync, rmSync } from 'node:fs';
-rmSync('site', { recursive: true, force: true });
+// and work pages from any commit (pages publish, path try/<name>/). Written here from the sources, never by hand,
+// except site/try/.
+import { cpSync, rmSync, readdirSync } from 'node:fs';
+// site/try/ is not written here: work pages are made in it directly; everything else of site/ is written anew
 mkdirSync('site', { recursive: true });
+for (const f of readdirSync('site')) if (f !== 'try') rmSync(`site/${f}`, { recursive: true, force: true });
 for (const f of ['core.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs']) cpSync(f, `site/${f}`);
 for (const d of ['fonts', 'manifest', 'demo']) cpSync(d, `site/${d}`, { recursive: true });
 cpSync('src/site-index.html', 'site/index.html');
-cpSync('src/try', 'site/try', { recursive: true });
 // site/v<tag>/: what each release tag holds of the core, as it was then, for addresses that name a release
 import { execFileSync } from 'node:child_process';
 const RELEASED = ['core.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs', 'fonts', 'manifest'];

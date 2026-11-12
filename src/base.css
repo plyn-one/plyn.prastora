@@ -86,7 +86,9 @@
   :where(code, kbd, samp, pre) { font-family: var(--font-mono); font-size: .92em; }
   :where(:not(pre) > code) { padding: .1em .35em; border-radius: .3em; background: var(--veil); }
   :where(pre) { padding: var(--s0); border-radius: var(--radius); background: var(--veil); overflow-x: auto; }
-  :where(hr) { border: 0; border-block-start: .0625rem solid var(--line); }
+  /* a hairline that takes room is drawn as a shadow or a fill: a border is rounded to whole device pixels, which
+     would make a table or a rule a different number of units tall on every screen */
+  :where(hr) { border: 0; block-size: .0625rem; background: var(--line); }
   :where(ul, ol) { padding-inline-start: 1.25em; }
   :where(ul[role=list], ol[role=list], menu, ul[data-l], ol[data-l]) { list-style: none; padding: 0; }
   :where(a) { color: var(--accent); text-underline-offset: .2em; text-decoration-thickness: from-font; }
@@ -110,14 +112,14 @@
   :where(label) { display: flex; flex-direction: column; gap: var(--s-2); }
   :where(label:has(> input[type=checkbox], > input[type=radio])) { flex-direction: row; align-items: center; min-block-size: var(--target); }
   :where(label > span:first-child, legend) { font-weight: 550; }
-  :where(fieldset) { border: .0625rem solid var(--line); border-radius: var(--radius); padding: var(--s1); min-inline-size: 0; }
+  :where(fieldset) { border: 0; box-shadow: inset 0 0 0 .0625rem var(--line); border-radius: var(--radius); padding: var(--s1); min-inline-size: 0; }
   :where(legend) { padding-inline: var(--s-1); }
   :where([aria-invalid=true], :user-invalid) { border-color: var(--danger); }
-  :where(details) { border-block-end: .0625rem solid var(--line); }
+  :where(details) { box-shadow: inset 0 -.0625rem var(--line); }
   :where(summary) { min-block-size: var(--target); display: flex; align-items: center; gap: var(--s-1); cursor: pointer; font-weight: 550; }
 
   :where(table) { inline-size: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-  :where(th, td) { padding: var(--s-1) var(--s0); text-align: start; vertical-align: top; border-block-end: .0625rem solid var(--line); }
+  :where(th, td) { padding: var(--s-1) var(--s0); text-align: start; vertical-align: top; box-shadow: inset 0 -.0625rem var(--line); }
   :where(thead th) { font-size: var(--t-1); font-weight: 600; color: var(--quiet); white-space: nowrap; }
   :where(caption) { text-align: start; padding-block-end: var(--s-1); color: var(--quiet); }
   :where(dl) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: var(--s0) var(--s1); }
@@ -186,7 +188,7 @@
 @layer surface {
   :where([data-surface]) { padding: 1.25rem; border-radius: var(--radius); }
   :where([data-surface=raised])  { background: var(--veil); }
-  :where([data-surface=outline]) { border: .0625rem solid var(--line); }
+  :where([data-surface=outline]) { box-shadow: inset 0 0 0 .0625rem var(--line); }
   :where([data-surface=accent])  { background: color-mix(in oklch, var(--accent) 10%, transparent); }
 }
 
@@ -221,8 +223,10 @@
   :where([data-l=columns]) > :where(p) { orphans: 2; widows: 2; max-inline-size: none; text-align: justify; hyphens: auto; }
   :where([data-pull]) {
     column-span: all; margin-block: var(--s1); padding-block: var(--s0); max-inline-size: none;
-    border-block: .125rem solid currentColor; font-size: 2rem; line-height: 1.15; font-weight: 600; text-wrap: balance;
+    box-shadow: inset 0 .125rem currentColor, inset 0 -.125rem currentColor; font-size: 2rem; line-height: 1.15; font-weight: 600; text-wrap: balance;
   }
+  /* the text after a quote across the columns starts level in every column */
+  :where([data-l=columns]) > :where([data-pull] + *) { margin-block-start: 0; }
   /* the initial letter floats at a whole number of units: a size the browser computes from the lines
      (initial-letter) is fractional and breaks the lines beside it differently from screen to screen */
   :where([data-initial])::first-letter { float: inline-start; font-size: 4rem; line-height: 3rem; margin: .25rem .5rem 0 0; font-weight: 700; color: var(--accent); }
@@ -451,7 +455,7 @@
   :where([data-lines]) :where(h1, h2, h3, h4, p, li, dt, dd, blockquote, small, figcaption) { line-height: 1.5rem; margin-block: 0; }
   :where([data-lines]) :where(h1, h2, h3, [data-pull]) { line-height: 3rem; }
   :where([data-lines]) :where(* + p, * + h2, * + h3, * + blockquote, * + ul, * + ol) { margin-block-start: 1.5rem; }
-  :where([data-lines]) :where([data-pull]) { margin-block: 1.5rem; padding-block: 0; border-block-width: 0; box-shadow: inset 0 .125rem currentColor, inset 0 -.125rem currentColor; }
+  :where([data-lines]) :where([data-pull]) { margin-block: 1.5rem; padding-block: 0; }
   :where([data-lines][data-l=canvas], [data-lines] [data-l=canvas]) { --gap: 3rem; }
   :where([data-lines=shown]) { background: repeating-linear-gradient(to bottom, transparent 0 calc(1.5rem - .0625rem), color-mix(in oklch, var(--accent) 22%, transparent) calc(1.5rem - .0625rem) 1.5rem); }
 

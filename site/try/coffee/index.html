@@ -1,65 +1,132 @@
 <!doctype html>
-<html lang="ru">
+<html lang="pl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Тихая Чашка — небольшая кофейня с зерном свежей обжарки, десертами и уютной атмосферой.">
-<title>Тихая Чашка — кофейня по соседству</title>
+<meta name="description" content="Oficyna pod Plantami — autorska karta fikcyjnej krakowskiej kawiarni. Kawa specialty, domowe wypieki i czas na długi poranek.">
+<meta name="theme-color" content="#87383c">
+<title>Oficyna pod Plantami — karta kawiarni, Kraków</title>
 <link rel="stylesheet" href="../../core.css">
+<style>:root { --paper: #f3ead9; --ink: #261f1d; --accent: #87383c; --on-accent: #f8eedf; --quiet: #746559; --line: #b2a38f; --veil: #e8dbc7; --font: "Source Sans 3", ui-sans-serif, system-ui, sans-serif; --radius: 0rem; }</style>
 </head>
 <body>
 <div data-l="page">
 <header data-l="cluster" data-space="tight">
-  <strong>ТИХАЯ ЧАШКА · кофейня</strong>
-  <nav aria-label="Разделы сайта" data-push><ul role="list" data-l="cluster" data-space="tight">
-    <li><a href="#about">О нас</a></li><li><a href="#menu">Меню</a></li><li><a href="#hours">Часы</a></li><li><a href="#visit">Как добраться</a></li>
-  </ul></nav>
+  <strong>O / P · KRAKÓW</strong>
+  <nav aria-label="Spis treści" data-push><ul role="list" data-l="cluster" data-space="tight"><li><a href="#karta">Karta</a></li><li><a href="#historia">Opowieść</a></li><li><a href="#odwiedz">Odwiedź nas</a></li></ul></nav>
 </header>
 <main data-l="stack" data-space="loose">
-  <section data-l="canvas" aria-labelledby="welcome">
+  <section data-l="canvas" aria-labelledby="tytul">
     <div data-x="1-7" data-l="stack" data-space="tight">
-      <p data-tone="accent">ВАШ МАЛЕНЬКИЙ ПЕРЕРЫВ</p>
-      <h1 id="welcome">Хороший кофе. Неспешные встречи.</h1>
-      <p>Место, куда заходят за ароматным капучино, остаются поболтать и возвращаются за ощущением дома.</p>
-      <div data-l="cluster"><a href="#menu">Посмотреть меню</a><a href="#visit">Зайти в гости</a></div>
+      <p data-tone="accent">ZESZYT NR 01 / KAWA · CIASTO · KRAKÓW</p>
+      <h1 id="tytul" data-l="stack" data-space="none">
+        <svg data-fit viewBox="0 0 1000 174" role="img" aria-label="Oficyna"><text x="10" y="154" font-size="208" font-weight="700" textLength="970" lengthAdjust="spacing">OFICYNA</text></svg>
+        <svg data-fit viewBox="0 0 1000 146" role="img" aria-label="pod Plantami"><text x="10" y="128" font-size="137" font-style="italic" textLength="970" lengthAdjust="spacing">pod Plantami</text></svg>
+      </h1>
+      <p><strong>Kawa. Ciasto. Chwila spokoju.</strong></p>
+      <p>Wyobrażona kawiarnia przy starej krakowskiej ulicy. Prawdziwie dobry pretekst, by zwolnić. Otwórz kartę jak małą gazetę — znajdziesz w niej espresso, maślane wypieki i trochę miejsca dla siebie.</p>
+      <div data-l="cluster" data-space="tight"><a href="#karta">Przejrzyj menu ↓</a><span data-tone="quiet">EST. W WYOBRAŹNI / 2026</span></div>
     </div>
-    <figure data-x="9-12" data-xp="1-4" data-surface="accent" data-pad>
-      <svg viewBox="0 0 320 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Иллюстрация чашки кофе с тёплым паром" width="100%">
-        <circle cx="160" cy="145" r="118" fill="#E9C6A1"/>
-        <ellipse cx="161" cy="239" rx="92" ry="13" fill="#A46D4B" opacity=".25"/>
-        <path d="M115 80c-20-19 27-26 7-46M159 79c-20-19 27-26 7-46M202 80c-20-19 27-26 7-46" fill="none" stroke="#8A5539" stroke-width="6" stroke-linecap="round" opacity=".7"/>
-        <path d="M75 106h157v87a72 72 0 0 1-72 72h-13a72 72 0 0 1-72-72z" fill="#FFF7E9" stroke="#6D4330" stroke-width="7"/>
-        <path d="M232 122h19c44 0 40 68-19 67" fill="none" stroke="#6D4330" stroke-width="15"/>
-        <ellipse cx="153" cy="109" rx="77" ry="20" fill="#6D4330"/>
-        <path d="M134 110c10-16 28-17 40 0-14 17-31 15-40 0" fill="none" stroke="#F6DBC0" stroke-width="6" stroke-linecap="round"/>
-      </svg>
-      <figcaption>С любовью к каждой чашке.</figcaption>
+    <figure data-x="8-12" data-xp="1-4" data-l="stack" data-space="tight">
+      <div data-l="layer" data-ratio="3/4" data-ratiop="3/4">
+          <img src="https://images.unsplash.com/photo-1754147910442-47abda520b0e?fit=crop&amp;w=1100&amp;q=82&amp;fm=webp" width="900" height="1160" loading="eager" fetchpriority="high" alt="Kawa i wypiek na drewnianym stole w porannym świetle">
+        </div>
+      <figcaption>01 / Poranek ma swój własny rytm.</figcaption>
     </figure>
   </section>
-  <section id="about" data-l="canvas" data-surface="raised" aria-labelledby="about-title">
+
+  <section id="karta" data-l="canvas" aria-labelledby="karta-tytul">
     <div data-x="1-8" data-l="stack" data-space="tight">
-      <p data-tone="accent">НЕМНОГО О НАС</p>
-      <h2 id="about-title">Кофе, в котором хочется задержаться</h2>
-      <p>«Тихая Чашка» — камерная кофейня для утренних ритуалов и разговоров без спешки. Мы готовим напитки из свежего зерна, подбираем сезонные вкусы и каждый день привозим выпечку.</p>
+      <p data-tone="accent">01 — MENU / KARTA DO ZATRZYMANIA</p>
+      <h2 id="karta-tytul">Zamów coś dobrego. Zostań trochę dłużej.</h2>
     </div>
-    <aside data-x="10-12" data-l="stack" data-space="tight"><strong>Свежая обжарка</strong><p>Знакомые вкусы и новые открытия в каждой чашке.</p><strong>С собой или здесь</strong><p>Выбирайте свой ритм.</p></aside>
+    <p data-x="10-12" data-tone="quiet">Oficyna pod Plantami. Karta sezonowa, jesień–zima 2026. Ceny w złotych.</p>
+    <article data-x="1-12" data-l="book" aria-label="Rozkładana karta napojów i wypieków">
+      <div data-l="stack" data-space="tight">
+        <p data-tone="accent">STRONA 02 / DO PICIA</p>
+        <h3>01. Kawa na co dzień</h3>
+        <table><tbody>
+  <tr><th scope="row">Espresso <small data-tone="quiet">30 ml · krótka rozmowa</small></th><td>11</td></tr>
+  <tr><th scope="row">Doppio <small data-tone="quiet">podwójna porcja espresso</small></th><td>14</td></tr>
+  <tr><th scope="row">Americano</th><td>15</td></tr>
+  <tr><th scope="row">Flat white</th><td>18</td></tr>
+  <tr><th scope="row">Cappuccino</th><td>17</td></tr>
+  <tr><th scope="row">Latte</th><td>19</td></tr>
+</tbody></table>
+        <hr>
+        <h3>02. Powolne metody</h3>
+        <table><tbody>
+  <tr><th scope="row">Przelew dnia <small data-tone="quiet">ziarno zmienia się sezonowo</small></th><td>19</td></tr>
+  <tr><th scope="row">V60 <small data-tone="quiet">jasno palona kawa, 250 ml</small></th><td>22</td></tr>
+  <tr><th scope="row">Cold brew <small data-tone="quiet">parzone na zimno</small></th><td>20</td></tr>
+</tbody></table>
+        <p data-tone="quiet"><small>Mleko owsiane bez dopłaty. Zapytaj o dzisiejsze ziarno.</small></p>
+      </div>
+      <div data-l="stack" data-space="tight">
+        <p data-tone="accent">STRONA 03 / DO KAWY</p>
+        <h3>03. Wypieki i małe rzeczy</h3>
+        <table><tbody>
+  <tr><th scope="row">Drożdżówka z wanilią <small data-tone="quiet">masło · cytryna</small></th><td>14</td></tr>
+  <tr><th scope="row">Rogal z wiśnią <small data-tone="quiet">wiśnia · migdał</small></th><td>16</td></tr>
+  <tr><th scope="row">Sernik z palonym miodem <small data-tone="quiet">wypiek dnia</small></th><td>21</td></tr>
+  <tr><th scope="row">Chleb, twarożek, rzodkiewka</th><td>25</td></tr>
+  <tr><th scope="row">Grzanka z gruszką i serem</th><td>28</td></tr>
+</tbody></table>
+        <hr>
+        <h3>04. Coś szczególnego</h3>
+        <table><tbody>
+  <tr><th scope="row">Espresso tonic z rozmarynem</th><td>22</td></tr>
+  <tr><th scope="row">Kakao z ciemnej czekolady</th><td>19</td></tr>
+  <tr><th scope="row">Herbata liściasta w czajniku <small data-tone="quiet">do wyboru przy ladzie</small></th><td>17</td></tr>
+</tbody></table>
+        <p data-tone="quiet"><small>Wypieki zmieniają się w ciągu dnia. O alergeny pytaj przy ladzie.</small></p>
+      </div>
+    </article>
   </section>
-  <section id="menu" data-l="stack" data-space="tight" aria-labelledby="menu-title">
-    <p data-tone="accent">ЧТО ПОПРОБОВАТЬ</p>
-    <h2 id="menu-title">Наше меню</h2>
-    <p data-tone="quiet">Примерное меню и цены для демонстрации сайта.</p>
-    <div data-l="canvas">
-      <article data-x="1-4" data-l="stack" data-surface="outline" data-space="tight"><h3>Классика</h3><dl><div><dt>Эспрессо</dt><dd>160 ₽</dd></div><div><dt>Американо</dt><dd>190 ₽</dd></div><div><dt>Капучино</dt><dd>250 ₽</dd></div></dl></article>
-      <article data-x="5-8" data-l="stack" data-surface="outline" data-space="tight"><h3>Нежные вкусы</h3><dl><div><dt>Латте</dt><dd>280 ₽</dd></div><div><dt>Раф ванильный</dt><dd>320 ₽</dd></div><div><dt>Какао</dt><dd>260 ₽</dd></div></dl></article>
-      <article data-x="9-12" data-l="stack" data-surface="outline" data-space="tight"><h3>К кофе</h3><dl><div><dt>Круассан</dt><dd>210 ₽</dd></div><div><dt>Чизкейк</dt><dd>310 ₽</dd></div><div><dt>Печенье</dt><dd>130 ₽</dd></div></dl></article>
+
+  <section data-l="canvas" aria-label="Polecenie oficyny">
+    <figure data-x="1-7" data-l="stack" data-space="tight">
+      <div data-l="layer" data-ratio="3/2" data-ratiop="3/2">
+          <img src="https://images.unsplash.com/photo-1704968761743-8656c16833be?fit=crop&amp;w=1400&amp;q=80&amp;fm=webp" width="1200" height="840" loading="lazy" alt="Filiżanka kawy na drewnianym stole, ciemne barwy i miękkie światło">
+        </div>
+      <figcaption>Filiżanka zamiast pośpiechu.</figcaption>
+    </figure>
+    <aside data-x="9-12" data-l="stack" data-space="tight" data-surface="accent">
+      <p data-tone="strong">DOPISEK NA MARGINESIE</p>
+      <h2>Zestaw na długi poranek.</h2>
+      <p>Przelew dnia, ciepła grzanka z twarożkiem i mała drożdżówka. Nic więcej nie trzeba.</p>
+      <h3>42 zł</h3><p>Codziennie do 12:00.</p>
+    </aside>
+  </section>
+
+  <section id="historia" data-l="canvas" aria-labelledby="historia-tytul">
+    <div data-x="1-3" data-l="stack" data-space="tight"><p data-tone="accent">NOTATKA OD REDAKCJI</p><h2 id="historia-tytul">Nie ma tu pośpiechu.</h2></div>
+    <div data-x="5-12" data-l="columns">
+      <p data-initial>Oficyna jest zmyślona, ale jej atmosfera mogłaby być prawdziwa. Przy Kanoniczej w Krakowie stare mury pamiętają różne epoki. Dopisujemy do tej historii mały rozdział: o świeżo mielonej kawie, drewnianych stolikach i zapachu drożdżowego ciasta.</p>
+      <p>Nie chcemy tworzyć muzeum. Inspiruje nas raczej krakowska kultura drukowanych słów: afisze, zeszyty, małe wydawnictwa. Dlatego nasza karta jest czymś, co chciałoby się zatrzymać.</p>
+      <blockquote data-pull>Najlepsze rzeczy nie wymagają pośpiechu.</blockquote>
+      <p>W rzeczywistej kawiarni każde wydanie karty mogłoby opowiadać o innym ziarnie, wypieku i porze roku. Tutaj to projekt pokazowy — zaproszenie do pewnego nastroju.</p>
     </div>
   </section>
-  <section data-l="canvas" aria-label="Информация для гостей">
-    <article id="hours" data-x="1-5" data-l="stack" data-surface="accent" data-space="tight"><p data-tone="strong">КОГДА ЗАХОДИТЬ</p><h2>Часы работы</h2><dl><div><dt>Понедельник — пятница</dt><dd>08:00–21:00</dd></div><div><dt>Суббота — воскресенье</dt><dd>09:00–22:00</dd></div></dl><p>Заглядывайте на кофе по дороге или оставайтесь подольше.</p></article>
-    <article id="visit" data-x="7-12" data-l="stack" data-space="tight"><p data-tone="accent">МЫ РЯДОМ</p><h2>Как добраться</h2><p>Демонстрационный адрес: Москва, ул. Кофейная, 7. Адрес вымышленный — до публикации реального заведения его нужно заменить.</p><p>Ищите тёплый свет в окнах и аромат свежего кофе. Для навигации укажите фактический адрес кофейни.</p><div data-l="cluster"><a href="https://maps.google.com/?q=Moscow" target="_blank" rel="noopener noreferrer">Открыть карту Москвы</a></div></article>
+
+  <section id="odwiedz" data-l="canvas" aria-labelledby="odwiedz-tytul">
+    <div data-x="1-5" data-l="stack" data-space="tight" data-surface="accent">
+      <p data-tone="strong">TYLNA OKŁADKA / INFORMACJE</p>
+      <h2 id="odwiedz-tytul">Znajdź chwilę.</h2>
+      <h3>Kanonicza 13, Kraków</h3>
+      <p>Adres koncepcyjny: rzeczywista ulica, fikcyjna kawiarnia. Kilka minut spacerem od Wawelu.</p>
+      <p><a href="https://www.google.com/maps/search/?api=1&amp;query=Kanonicza%2013%2C%20Krak%C3%B3w" target="_blank" rel="noopener noreferrer">Pokaż miejsce na mapie ↗</a></p>
+    </div>
+    <div data-x="7-12" data-l="stack" data-space="tight">
+      <p data-tone="accent">GODZINY / WERSJA POKAZOWA</p>
+      <h2>Otwarte na dobrą kawę.</h2>
+      <dl><div><dt>Poniedziałek–piątek</dt><dd>07:30–20:30</dd></div><div><dt>Sobota</dt><dd>08:30–21:00</dd></div><div><dt>Niedziela</dt><dd>09:00–19:00</dd></div></dl>
+      <p>Przystanki: Wawel lub Stradom. Do Rynku Głównego około dziesięciu minut spacerem.</p>
+      <p data-tone="quiet">Wszystkie informacje dotyczą fikcyjnego lokalu — nie stanowią oferty rzeczywistej kawiarni.</p>
+    </div>
   </section>
 </main>
-<footer data-l="cluster" data-space="tight"><strong>ТИХАЯ ЧАШКА</strong><small data-tone="quiet">Демонстрационный сайт · меню, адрес и часы вымышлены</small><a data-push href="#welcome">Наверх</a></footer>
+<footer data-l="cluster" data-space="tight"><strong>O / P · OFICYNA POD PLANTAMI</strong><small data-tone="quiet">Kraków / projekt koncepcyjny / skład: Prastora</small><small data-tone="quiet">Zdjęcia: Katja Ano i Olena Bohovyk / Unsplash</small><a data-push href="#tytul">Na początek ↑</a></footer>
 </div>
 </body>
 </html>

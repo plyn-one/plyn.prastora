@@ -7,7 +7,7 @@
 | `data-hang` | | on a paragraph opening with a quote: the quote hangs outside the edge |
 | `data-shaped` | `circle` `diamond` | on a `div` holding one `p`: the paragraph set inside the figure (a plain paragraph on portrait and paper) |
 
-A fitted line: choose `font-size` so the text is near 1000 wide at its natural spacing; `textLength` brings it exactly to the width.
+A fitted line: choose `font-size` so the text is near 1000 wide at its natural spacing; `textLength` brings it exactly to the width. Italic and round capitals reach a little past their letters' width: for them give `textLength="970"` and `x="10"`, or the check finds the line outside its column.
 ```html
 <h1 data-l="stack" data-space="tight">
   <svg data-fit viewBox="0 0 1000 176"><text x="0" y="160" font-size="214" textLength="1000" lengthAdjust="spacing">IDLENESS</text></svg>
