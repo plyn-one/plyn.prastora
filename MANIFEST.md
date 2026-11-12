@@ -52,6 +52,10 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 | `data-col`, `data-row` | `1` to `20` | on a child of a gridded `layer`: the cell it starts at; draw its leader in the picture to the same place (a twentieth of the picture per cell) |
 | `data-tag` | | a label: one short line on a picture |
 | `data-balloon` | `start` `end` | a speech balloon, its tail at its start or end, toward the speaker below |
+| `data-fit` | | on an `svg` inside a heading: a line that fills its column exactly: `<svg data-fit viewBox="0 0 1000 H"><text x="0" y="…" font-size="…" textLength="1000" lengthAdjust="spacing">WORDS</text></svg>`; pick a font-size near the width, so the spacing changes little |
+| `data-lines` | `` or `shown` | every line inside stands on one grid of 1.5 units, shared by columns, notes and quotes side by side; `shown` draws the grid |
+| `data-hang` | | on a paragraph that opens with a quote: the quote hangs outside the edge |
+| `data-shaped` | `circle` `diamond` | on a `div` holding one `p`: the paragraph set inside the figure; give it enough text to fill the figure, the check reports overflow; on a phone it is an ordinary paragraph |
 | `data-numbered` | | on a `sheet`: numbers its lines in its left margin |
 | `data-line` | `1` to `46` | on a note in `margin`: the line of the sheet it stands at |
 | `data-hide` | `portrait` `landscape` `wide` `print` | not shown in that frame |

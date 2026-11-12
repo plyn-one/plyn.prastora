@@ -432,3 +432,34 @@
   /* the outline of a picture by its transparency: the image is named once more in --shape on the element */
   :where([data-shape=alpha]) { shape-outside: var(--shape); shape-image-threshold: .4; shape-margin: var(--s0); }
 }
+
+/*
+ * Typography of print. A headline that fills its column exactly is real text in an SVG stretched by letter
+ * spacing (textLength) to the width of the picture; a block with data-lines keeps every line on one grid of
+ * 1.5 units, so columns, notes and quotes beside one another share their lines; data-hang hangs an opening
+ * quote outside the edge; data-shaped sets a paragraph inside a circle or a diamond.
+ */
+@layer relation {
+  :where(svg[data-fit]) { display: block; inline-size: 100%; block-size: auto; overflow: visible; }
+  :where(svg[data-fit] text) { font-family: var(--font); font-weight: 700; fill: currentColor; letter-spacing: -.01em; }
+
+  :where([data-lines]) :where(h1, h2, h3, h4, p, li, dt, dd, blockquote, small, figcaption) { line-height: 1.5rem; margin-block: 0; }
+  :where([data-lines]) :where(h1, h2, h3, [data-pull]) { line-height: 3rem; }
+  :where([data-lines]) :where(* + p, * + h2, * + h3, * + blockquote, * + ul, * + ol) { margin-block-start: 1.5rem; }
+  :where([data-lines]) :where([data-pull]) { margin-block: 1.5rem; padding-block: 0; border-block-width: 0; box-shadow: inset 0 .125rem currentColor, inset 0 -.125rem currentColor; }
+  :where([data-lines][data-l=canvas], [data-lines] [data-l=canvas]) { --gap: 3rem; }
+  :where([data-lines=shown]) { background: repeating-linear-gradient(to bottom, transparent 0 calc(1.5rem - .0625rem), color-mix(in oklch, var(--accent) 22%, transparent) calc(1.5rem - .0625rem) 1.5rem); }
+
+  :where([data-hang]) { text-indent: -.42em; }
+
+  :where([data-shaped]) { aspect-ratio: 1; overflow: hidden; text-align: justify; hyphens: auto; }
+  :where([data-shaped]) > :where(p) { block-size: 100%; max-inline-size: none; margin: 0; }
+  :where([data-shaped])::before, :where([data-shaped]) > :where(p)::before { content: ""; block-size: 100%; inline-size: 50%; shape-image-threshold: .5; }
+  :where([data-shaped])::before { float: inline-start; }
+  :where([data-shaped]) > :where(p)::before { float: inline-end; }
+  /* the tips of a figure are cut, so its first and last lines still hold words */
+  :where([data-shaped=circle])::before { shape-outside: radial-gradient(ellipse 100% 64% at 100% 50%, transparent 97%, black 98%); }
+  :where([data-shaped=circle]) > :where(p)::before { shape-outside: radial-gradient(ellipse 100% 64% at 0% 50%, transparent 97%, black 98%); }
+  :where([data-shaped=diamond])::before { shape-outside: polygon(0 0, 82% 0, 0 50%, 82% 100%, 0 100%); }
+  :where([data-shaped=diamond]) > :where(p)::before { shape-outside: polygon(100% 0, 18% 0, 100% 50%, 18% 100%, 100% 100%); }
+}

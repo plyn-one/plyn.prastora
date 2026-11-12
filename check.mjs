@@ -36,6 +36,7 @@ const VOCAB = {
   'data-hide': ['portrait', 'landscape', 'wide', 'print'],
   'data-grid': [''], 'data-tag': [''], 'data-balloon': ['start', 'end'],
   'data-col': Array.from({ length: 20 }, (_, i) => String(i + 1)), 'data-row': Array.from({ length: 20 }, (_, i) => String(i + 1)),
+  'data-fit': [''], 'data-lines': ['', 'shown'], 'data-hang': [''], 'data-shaped': ['circle', 'diamond'],
   'data-numbered': [''], 'data-line': Array.from({ length: 46 }, (_, i) => String(i + 1)),
   'data-space': ['none', 'tight', 'loose'],
   'data-surface': ['raised', 'outline', 'accent'],
@@ -88,14 +89,20 @@ function inspect(VOCAB) {
   }
 
   // a sheet holds what it was given, and every line on it stands on the grid its numbers name
-  for (const s of document.querySelectorAll('[data-l=sheet]')) {
-    if (s.scrollHeight > s.clientHeight + 1) add('sheet-overflow', s, `content ${Math.round((s.scrollHeight - s.clientHeight) / rem * 10) / 10} rem taller than the sheet: move text to the next sheet`);
+  for (const s of document.querySelectorAll('[data-l=sheet], [data-lines]')) {
+    if (s.matches('[data-l=sheet]') && s.scrollHeight > s.clientHeight + 1) add('sheet-overflow', s, `content ${Math.round((s.scrollHeight - s.clientHeight) / rem * 10) / 10} rem taller than the sheet: move text to the next sheet`);
     const top = s.getBoundingClientRect().top + parseFloat(getComputedStyle(s).paddingTop) * (parseFloat(getComputedStyle(s).zoom) || 1);
     const grid = 1.5 * rem * (parseFloat(getComputedStyle(s).zoom) || 1);
     for (const e of s.querySelectorAll('h1, h2, h3, h4, p, li, dt, dd, blockquote')) {
       const off = ((e.getBoundingClientRect().top - top) / grid) % 1;
-      if (off > 0.02 && off < 0.98) add('off-grid', e, `starts ${off.toFixed(2)} of a line off the grid of the sheet: its numbers would not match`);
+      if (off > 0.02 && off < 0.98) add('off-grid', e, `starts ${off.toFixed(2)} of a line off the grid of lines: it would not share lines with what stands beside it`);
     }
+  }
+
+  // a paragraph set in a figure must fit it
+  for (const s of document.querySelectorAll('[data-shaped]')) {
+    const p = s.querySelector(':scope > p');
+    if (p && getComputedStyle(s).aspectRatio !== 'auto' && p.scrollHeight > s.clientHeight + 1) add('shaped-overflow', s, `the text is ${Math.round((p.scrollHeight - s.clientHeight) / rem)} rem longer than its figure: shorten it`);
   }
 
   const de = document.documentElement;

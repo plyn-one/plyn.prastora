@@ -33,3 +33,4 @@
 "file:demo/pictures.html" = "words on pictures: labels on the parts of a drawing with lines drawn to them, text round the outline of an image, a comic with balloons of real text"
 "dir:demo/art" = "pictures the demonstration pages use as files"
 "file:demo/art/vase.svg" = "a vase, whose outline the text of demo/pictures.html runs round"
+"file:demo/type.html" = "typography of print: headline lines filling their column exactly, columns and notes on one grid of lines, hanging quotes, paragraphs set in a circle and a diamond"

@@ -37,6 +37,9 @@ const portraitOverrides = [
   ...Object.entries(RATIOS).map(([k, v]) => `  :where([data-ratiop="${k}"]) { aspect-ratio: ${v}; }`),
   `  :where([data-float][data-wp=full]) { float: none; inline-size: auto; margin-inline: 0; }`,
   `  :where([data-l=columns]) > :where(p) { text-align: start; }`,
+  // a paragraph in a figure needs width: on a phone it is an ordinary paragraph
+  `  :where([data-shaped]) { aspect-ratio: auto; overflow: visible; text-align: start; }`,
+  `  :where([data-shaped])::before, :where([data-shaped]) > :where(p)::before { content: none; }`,
   // a sheet keeps its lines on a phone as a page of a PDF does: it is made smaller as a whole
   `  :where([data-l=sheet]) { zoom: calc((var(--units) - 2) / 56); }`,
   `  :where([data-l=margin]) { padding-block-start: 0; display: flex; flex-direction: column; gap: var(--s0); }`,

@@ -14,6 +14,7 @@ kola = "usie"
 "file:demo/longread.html" = { faza = "ściah", rola = "prajava" }
 "file:demo/document.html" = { faza = "ściah", rola = "prajava" }
 "file:demo/pictures.html" = { faza = "ściah", rola = "prajava" }
+"file:demo/type.html" = { faza = "ściah", rola = "prajava" }
 "dir:demo/art" = { faza = "ściah", rola = "prajava" }
 "file:demo/art/vase.svg" = { faza = "ściah", rola = "prajava" }
 "dir:src" = { faza = "dadzienaść", rola = "prajava" }
