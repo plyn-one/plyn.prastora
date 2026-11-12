@@ -178,4 +178,13 @@ for (const f of ['core.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mj
 for (const d of ['fonts', 'manifest', 'demo']) cpSync(d, `site/${d}`, { recursive: true });
 cpSync('src/site-index.html', 'site/index.html');
 cpSync('src/try', 'site/try', { recursive: true });
+// site/v<tag>/: what each release tag holds of the core, as it was then, for addresses that name a release
+import { execFileSync } from 'node:child_process';
+const RELEASED = ['core.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs', 'fonts', 'manifest'];
+for (const tag of execFileSync('git', ['tag', '-l', 'v*'], { encoding: 'utf8' }).split('\n').filter(Boolean)) {
+  const held = execFileSync('git', ['ls-tree', '--name-only', tag], { encoding: 'utf8' }).split('\n');
+  const files = RELEASED.filter(f => held.includes(f));
+  mkdirSync(`site/${tag}`, { recursive: true });
+  execFileSync('sh', ['-c', `git archive "$0" "$@" | tar -x -C "site/$0"`, tag, ...files]);
+}
 console.log('built', variants.map(v => v.id + (v.core ? ' (core)' : '')).join(', '));
