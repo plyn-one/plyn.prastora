@@ -64,6 +64,8 @@
 "file:site/manifest/type.md" = "the copy on the site of manifest/type.md"
 "dir:site/try/coffee" = "a page of a coffee house laid out by another agent from the manifest alone, first as a blind test and then reworked as a magazine"
 "file:site/try/coffee/index.html" = "the coffee house page"
+"dir:site/try/atlas-rzeczy" = "a standalone fictional exhibition used as a blind test of autonomous Prastora page production"
+"file:site/try/atlas-rzeczy/index.html" = "the Atlas drobnych rzeczy fictional exhibition page, written only with the Prastora manifest"
 "file:site/fonts/OFL.txt" = "the copy on the site of fonts/OFL.txt"
 "file:site/fonts/source-sans-3-cyrillic-ext.woff2" = "the copy on the site of fonts/source-sans-3-cyrillic-ext.woff2"
 "file:site/fonts/source-sans-3-cyrillic.woff2" = "the copy on the site of fonts/source-sans-3-cyrillic.woff2"

@@ -38,6 +38,8 @@ kola = "usie"
 "file:site/manifest/type.md" = { faza = "asadak", rola = "prajava" }
 "dir:site/try/coffee" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/try/coffee/index.html" = { faza = "dadzienaść", rola = "prajava" }
+"dir:site/try/atlas-rzeczy" = { faza = "dadzienaść", rola = "prajava" }
+"file:site/try/atlas-rzeczy/index.html" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/fonts/OFL.txt" = { faza = "asadak", rola = "prajava" }
 "file:site/fonts/source-sans-3-cyrillic-ext.woff2" = { faza = "asadak", rola = "prajava" }
 "file:site/fonts/source-sans-3-cyrillic.woff2" = { faza = "asadak", rola = "prajava" }
