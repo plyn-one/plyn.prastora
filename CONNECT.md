@@ -26,7 +26,7 @@ The first stylesheet linked must be the core: the check reads the frames from it
 
 ## 2. Read the manifest
 
-`MANIFEST.md`, and only the section of `manifest/` the page needs. From the repository at `v0.1`, or `https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v0.1.1/MANIFEST.md`.
+`MANIFEST.md`, and only the section of `manifest/` the page needs. From the repository at `v0.1.1`, or `https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v0.1.1/MANIFEST.md`.
 
 ## 3. Run the check
 
