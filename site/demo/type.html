@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typography of print: fitted headlines, shared lines, hanging quotes, text in a figure</title>
+<link rel="stylesheet" href="../core.css">
+</head>
+<body>
+<div data-l="page">
+
+  <header data-l="cluster">
+    <strong>Prastora</strong>
+    <small data-tone="quiet">Typography of print that holds within a frame</small>
+    <nav aria-label="Demonstrations" data-push>
+      <ul role="list" data-l="cluster"><li><a href="index.html">First</a></li><li><a href="longread.html">Longread</a></li><li><a href="document.html">Document</a></li><li><a href="pictures.html">Pictures</a></li></ul>
+    </nav>
+  </header>
+
+  <main data-l="stack" data-space="loose">
+
+    <section data-l="canvas" aria-labelledby="fit">
+      <h1 id="fit" data-x="1-7" data-l="stack" data-space="tight">
+        <svg data-fit viewBox="0 0 1000 176"><text x="0" y="160" font-size="214" textLength="1000" lengthAdjust="spacing">IDLENESS</text></svg>
+        <svg data-fit viewBox="0 0 1000 166"><text x="0" y="150" font-size="200" textLength="1000" lengthAdjust="spacing">SO CALLED</text></svg>
+        <svg data-fit viewBox="0 0 1000 62"><text x="0" y="54" font-size="64" textLength="1000" lengthAdjust="spacing" font-weight="400">does not consist in doing nothing</text></svg>
+      </h1>
+      <p data-x="9-12" data-tone="quiet">Each line of this headline fills the column exactly: it is real text, set once at a size near the width and brought to it by its letter spacing. It stays text to select, find and read aloud, and holds on every screen.</p>
+    </section>
+
+    <section data-l="canvas" data-lines="shown" aria-labelledby="lines">
+      <div data-x="1-9" data-l="columns">
+        <h2 id="lines">Lines shared</h2>
+        <p>Every line of these columns, of the quote across them and of the notes beside them stands on one grid of a unit and a half, drawn here in pale lines. The second column begins on the same line as the first, and a note stands level with the words it speaks of.</p>
+        <p>It is surely beyond a doubt that people should be a good deal idle in youth. For though here and there a Lord Macaulay may escape from school honours with all his wits about him, most boys pay so dear for their medals that they never afterwards have a shot in their locker, and begin the world bankrupt.</p>
+        <blockquote data-pull>Books are a mighty bloodless substitute for life.</blockquote>
+        <p>It seems a pity to sit, like the Lady of Shalott, peering into a mirror, with your back turned on all the bustle and glamour of reality. And if a man reads very hard, as the old anecdote reminds us, he will have little time for thought.</p>
+      </div>
+      <aside data-x="10-12" aria-label="Notes">
+        <p data-tone="quiet"><strong>The grid.</strong> One and a half units: the height of a line of running text.</p>
+        <p data-tone="quiet"><strong>Macaulay.</strong> Thomas Babington Macaulay, historian, famed for his memory and his school prizes.</p>
+      </aside>
+    </section>
+
+    <section data-l="canvas" aria-labelledby="hang">
+      <h2 id="hang" data-x="1-12">Hanging quotes</h2>
+      <div data-x="3-8" data-l="stack" data-space="tight">
+        <p data-hang>“How now, young fellow, what dost thou here?”</p>
+        <p data-hang>“Truly, sir, I take mine ease.”</p>
+        <p data-hang>“Is not this the hour of the class? and should’st thou not be plying thy Book with diligence, to the end thou mayest obtain knowledge?”</p>
+        <p>The opening quotes hang outside the edge, so the letters, not the marks, make the straight left edge of the column.</p>
+      </div>
+    </section>
+
+    <section data-l="canvas" aria-labelledby="figure">
+      <h2 id="figure" data-x="1-12">Text in a figure</h2>
+      <div data-x="1-6" data-shaped="circle"><p>Idleness so called, which does not consist in doing nothing, but in doing a great deal not recognised in the dogmatic formularies of the ruling class, has as good a right to state its position as industry itself. It is admitted that the presence of people who refuse to enter in the great handicap race for sixpenny pieces, is at once an insult and a disenchantment for those who do. A fine fellow takes his determination, votes for the sixpences, and goes for them. And while such an one is ploughing distressfully up the road, it is not hard to understand his resentment, when he perceives cool persons in the meadows by the wayside, lying with a handkerchief over their ears and a glass at their elbow. Alexander is touched in a very delicate place by the disregard of Diogenes. It is a sore thing to have laboured along and scaled the arduous hilltops, and when all is done, find humanity indifferent to your achievement. Hence physicists condemn the unphysical; financiers have only a superficial toleration for those who know little of stocks; literary persons despise the unlettered; and people of all pursuits combine to disparage those who have none. But though this is one difficulty of the subject, it is not the greatest. You could not be put in prison for speaking against industry, but you can be sent to Coventry for speaking like a fool. The greatest difficulty with most subjects is to do them well; therefore, please to remember this is an apology. It is certain that much may be judiciously argued in favour of diligence; only there is something to be said against it, and that is what, on the present occasion, I have to say.</p></div>
+      <div data-x="7-12" data-shaped="diamond"><p>If you look back on your own education, I am sure it will not be the full, vivid, instructive hours of truantry that you regret; you would rather cancel some lack-lustre periods between sleep and waking in the class. For my own part, I have attended a good many lectures in my time. I still remember that the spinning of a top is a case of Kinetic Stability. I still remember that Emphyteusis is not a disease, nor Stillicide a crime. But though I would not willingly part with such scraps of science, I do not set the same store by them as by certain other odds and ends that I came by in the open street while I was playing truant. This is not the moment to dilate on that mighty place of education, which was the favourite school of Dickens and of Balzac, and turns out yearly many inglorious masters in the Science of the Aspects of Life. Suffice it to say this: if a lad does not learn in the streets, it is because he has no faculty of learning. Nor is the truant always in the streets, for if he prefers, he may go out by the gardened suburbs into the country. He may pitch on some tuft of lilacs over a burn, and smoke innumerable pipes to the tune of the water on the stones. A bird will sing in the thicket.</p></div>
+    </section>
+  </main>
+
+  <footer data-l="cluster"><small data-tone="quiet">Text: Robert Louis Stevenson, “An Apology for Idlers” (1877), public domain.</small></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+  <path d="M150 20 h100 v30 c0 20 -20 30 -20 60 c0 40 110 90 110 230 c0 120 -70 190 -70 230 h-140 c0 -40 -70 -110 -70 -230 c0 -140 110 -190 110 -230 c0 -30 -20 -40 -20 -60z" fill="#3b6fb6"/>
+  <path d="M120 300 c40 -30 120 -30 160 0" fill="none" stroke="#ffffff" stroke-width="10" opacity=".7"/>
+  <path d="M110 360 c50 -30 130 -30 180 0" fill="none" stroke="#ffffff" stroke-width="6" opacity=".5"/>
+</svg>

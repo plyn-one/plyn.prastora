@@ -168,4 +168,14 @@ for (const v of variants) {
 }
 writeFileSync('lab/index.html', labIndex());
 for (const f of ['CONNECT.md', 'README.md']) writeFileSync(f, readFileSync(`src/${f}`, 'utf8').replaceAll('{{VERSION}}', VERSION));
+
+// site/: the whole tree of https://plyn-prastora.pages.dev, which Klučnik publishes from main (pages baseline)
+// and work pages from any commit (pages publish, path try/<name>/). Written here from the sources, never by hand.
+import { cpSync, rmSync } from 'node:fs';
+rmSync('site', { recursive: true, force: true });
+mkdirSync('site', { recursive: true });
+for (const f of ['core.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs']) cpSync(f, `site/${f}`);
+for (const d of ['fonts', 'manifest', 'demo']) cpSync(d, `site/${d}`, { recursive: true });
+cpSync('src/site-index.html', 'site/index.html');
+cpSync('src/try', 'site/try', { recursive: true });
 console.log('built', variants.map(v => v.id + (v.core ? ' (core)' : '')).join(', '));

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prastora: a composition held like a picture</title>
+<link rel="stylesheet" href="../core.css">
+</head>
+<body>
+<div data-l="page">
+
+  <header data-l="cluster">
+    <strong>Prastora</strong>
+    <nav aria-label="Sections">
+      <ul role="list" data-l="cluster">
+        <li><a href="#idea">Idea</a></li>
+        <li><a href="#parts">Parts</a></li>
+        <li><a href="#try">Try it</a></li>
+      </ul>
+    </nav>
+    <button data-push data-tone="accent">Get the core</button>
+  </header>
+
+  <main data-l="stack" data-space="none">
+    <section data-l="canvas" aria-labelledby="idea">
+      <div data-x="1-6" data-l="stack" data-pad>
+        <h1 id="idea">A composition held like a picture</h1>
+        <p data-tone="quiet">Each class of screen has its own composition, set once. Within it the page scales as a whole, so the picture on the right keeps its place against the heading and still reaches into the band below on every screen of the class.</p>
+        <div data-l="cluster">
+          <button data-tone="accent">Read the manifest</button>
+          <button>See the lab</button>
+        </div>
+      </div>
+      <svg data-x="8-12" data-xp="2-4" data-bleed="down" viewBox="0 0 300 340" role="img" aria-label="An arched window with nested frames">
+        <path d="M20 330V150a130 130 0 0 1 260 0v180Z" fill="none" stroke="currentColor" stroke-width="10"/>
+        <path d="M60 330V160a90 90 0 0 1 180 0v170Z" fill="none" stroke="currentColor" stroke-width="7" opacity=".6"/>
+        <path d="M100 330V170a50 50 0 0 1 100 0v160Z" fill="currentColor" opacity=".18"/>
+        <circle cx="150" cy="150" r="22" fill="currentColor"/>
+        <path d="M0 330h300" stroke="currentColor" stroke-width="10"/>
+      </svg>
+    </section>
+
+    <section data-l="canvas" data-surface="accent" aria-label="What holds">
+      <p data-x="1-6" data-tone="strong">The picture above overlaps this band by the same share of the page on a laptop and on a large monitor. A fluid layout cannot promise that: there the overlap drifts as the window changes.</p>
+    </section>
+
+    <section data-l="canvas" data-pad aria-labelledby="parts">
+      <h2 id="parts" data-x="1-12">Three parts</h2>
+      <article data-x="1-4" data-surface="raised" data-l="stack" data-space="tight"><h3>The core</h3><p>One stylesheet: frames, canvas grid, plain HTML styled, and the relations for small assemblies.</p></article>
+      <article data-x="5-8" data-surface="raised" data-l="stack" data-space="tight"><h3>The manifest</h3><p>The whole vocabulary on one page, small enough to stay in an agent's context.</p></article>
+      <article data-x="9-12" data-surface="raised" data-l="stack" data-space="tight"><h3>The check</h3><p>Renders both edges of every frame and says what moved or broke.</p></article>
+    </section>
+
+    <section data-l="canvas" data-pad aria-label="A note on margins">
+      <p data-x="3-8" data-xw="4-8">On a wide window the canvas stops following it one to one, and what is left becomes margin. The composition does not change for that: only how large the picture is and how much air is around it.</p>
+      <aside data-x="10-12" data-l="stack" data-space="tight"><small data-tone="quiet">Margin note</small><p data-tone="quiet">Placed by columns, it stays level with the paragraph it belongs to.</p></aside>
+    </section>
+
+    <section data-l="canvas" data-pad aria-labelledby="try">
+      <form data-x="1-7" data-surface="raised" data-l="stack">
+        <h2 id="try">Try it on a page of yours</h2>
+        <label><span>Page address</span><input type="url" name="url" required placeholder="https://"></label>
+        <label><input type="checkbox" name="dark"> Check the dark scheme too</label>
+        <div data-l="cluster"><button type="submit" data-tone="accent">Check</button><button type="reset" data-tone="quiet">Clear</button></div>
+      </form>
+      <dl data-x="9-12">
+        <div><dt>Frames</dt><dd>3</dd></div>
+        <div><dt>Columns</dt><dd>4 and 12</dd></div>
+      </dl>
+    </section>
+  </main>
+
+  <footer data-l="cluster"><small data-tone="quiet">Prastora, a place of Plyń.</small></footer>
+</div>
+</body>
+</html>
