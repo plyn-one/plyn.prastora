@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Words on pictures: labels, outlines and balloons</title>
+<link rel="stylesheet" href="../core.css">
+</head>
+<body>
+<div data-l="page">
+
+  <header data-l="cluster">
+    <strong>Prastora</strong>
+    <small data-tone="quiet">Words on pictures: labels on parts, text round an outline, balloons</small>
+    <nav aria-label="Demonstrations" data-push>
+      <ul role="list" data-l="cluster"><li><a href="index.html">First</a></li><li><a href="longread.html">Longread</a></li><li><a href="document.html">Document</a></li></ul>
+    </nav>
+  </header>
+
+  <main data-l="stack" data-space="loose">
+
+    <section data-l="canvas" aria-labelledby="bike">
+      <div data-x="1-4" data-l="stack" data-space="tight">
+        <h1 id="bike">The parts of a bicycle</h1>
+        <p data-tone="quiet">Each label is text placed on a cell of the picture, and the line from it is drawn in the picture to the same place. On every screen of the frame the label meets its part.</p>
+      </div>
+      <figure data-x="5-12" data-l="layer" data-grid data-ratio="3/2" aria-label="A bicycle with its parts named">
+        <svg data-tone="accent" viewBox="0 0 1000 667" role="img" aria-label="A bicycle drawn in lines">
+          <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="250" cy="450" r="150"/><circle cx="750" cy="450" r="150"/>
+            <path d="M450 470 L400 230 L680 240 Z M450 470 L250 450 L400 230 M680 240 L750 450 M660 200 L720 190 L680 240"/>
+            <path d="M355 220 H445"/>
+            <circle cx="450" cy="470" r="40"/>
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="3" opacity=".75">
+            <path d="M232 36 L385 212"/><path d="M690 36 L705 192"/><path d="M530 168 L556 236"/>
+            <path d="M395 567 L448 512"/><path d="M64 548 L122 525"/><path d="M800 252 L718 350"/>
+          </g>
+        </svg>
+        <span data-col="5" data-row="1" data-tag>Saddle</span>
+        <span data-col="14" data-row="1" data-tag>Handlebar</span>
+        <span data-col="11" data-row="5" data-tag>Frame</span>
+        <span data-col="8" data-row="18" data-tag>Chainring</span>
+        <span data-col="1" data-row="17" data-tag>Wheel</span>
+        <span data-col="17" data-row="8" data-tag>Fork</span>
+      </figure>
+    </section>
+
+    <section data-l="canvas" aria-labelledby="vase">
+      <h2 id="vase" data-x="1-12">Text round an outline</h2>
+      <div data-x="1-8" data-l="columns">
+        <img data-float="end" data-w="third" data-shape="alpha" style="--shape: url(art/vase.svg)" src="art/vase.svg" alt="A blue vase with a narrow neck and a wide body">
+        <p>It is surely beyond a doubt that people should be a good deal idle in youth. For though here and there a Lord Macaulay may escape from school honours with all his wits about him, most boys pay so dear for their medals that they never afterwards have a shot in their locker, and begin the world bankrupt. And the same holds true during all the time a lad is educating himself, or suffering others to educate him.</p>
+        <p>Books are good enough in their own way, but they are a mighty bloodless substitute for life. It seems a pity to sit, like the Lady of Shalott, peering into a mirror, with your back turned on all the bustle and glamour of reality. And if a man reads very hard, as the old anecdote reminds us, he will have little time for thought.</p>
+      </div>
+      <aside data-x="10-12" data-l="stack" data-space="tight"><p data-tone="quiet">The lines follow the neck and the body of the vase, not a box round it. The outline is read from the transparency of the picture itself.</p></aside>
+    </section>
+
+    <section data-l="canvas" aria-labelledby="comic">
+      <h2 id="comic" data-x="1-12">A conversation on the road, drawn</h2>
+      <figure data-x="1-4" data-l="layer" data-grid data-ratio="1/1" data-surface="outline" aria-label="Panel 1: a gentleman in a tall hat stops by a young man lying in the grass">
+        <svg viewBox="0 0 600 600" data-tone="accent" role="img" aria-label="A gentleman in a tall hat and a young man lying in the grass">
+          <path d="M0 470 Q300 430 600 480 V600 H0Z" fill="currentColor" opacity=".18"/>
+          <g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round">
+            <circle cx="420" cy="260" r="34"/><path d="M392 222 h56 M402 222 v-50 h36 v50"/><path d="M420 294 V420 M420 420 L390 520 M420 420 L450 520 M420 330 L370 380 M420 330 L480 300 L510 250"/>
+            <circle cx="150" cy="470" r="26"/><path d="M176 476 L300 486 L360 470 M300 486 L340 440"/>
+          </g>
+        </svg>
+        <p data-col="9" data-row="2" data-balloon="end">How now, young fellow, what dost thou here?</p>
+      </figure>
+      <figure data-x="5-8" data-l="layer" data-grid data-ratio="1/1" data-surface="outline" aria-label="Panel 2: the young man answers without getting up">
+        <svg viewBox="0 0 600 600" data-tone="accent" role="img" aria-label="The young man answers from the grass">
+          <path d="M0 470 Q300 430 600 480 V600 H0Z" fill="currentColor" opacity=".18"/>
+          <g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round">
+            <circle cx="160" cy="460" r="30"/><path d="M190 466 L330 478 L400 460 M330 478 L370 430 M200 470 L240 420"/>
+          </g>
+        </svg>
+        <p data-col="2" data-row="4" data-balloon="start">Truly, sir, I take mine ease.</p>
+      </figure>
+      <figure data-x="9-12" data-l="layer" data-grid data-ratio="1/1" data-surface="outline" aria-label="Panel 3: the gentleman shakes his cane">
+        <svg viewBox="0 0 600 600" data-tone="accent" role="img" aria-label="The gentleman shakes his cane">
+          <path d="M0 470 Q300 430 600 480 V600 H0Z" fill="currentColor" opacity=".18"/>
+          <g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round">
+            <circle cx="300" cy="260" r="34"/><path d="M272 222 h56 M282 222 v-50 h36 v50"/><path d="M300 294 V420 M300 420 L270 520 M300 420 L330 520 M300 330 L250 380 M300 330 L370 260 L420 170"/>
+            <path d="M440 150 l20 -20 M455 175 l28 -6 M425 135 l6 -28" stroke-width="5"/>
+          </g>
+        </svg>
+        <p data-col="2" data-row="2" data-balloon="end">Learning, quotha! I would have all such rogues scourged by the Hangman!</p>
+      </figure>
+    </section>
+  </main>
+
+  <footer data-l="cluster"><small data-tone="quiet">Text: Robert Louis Stevenson, “An Apology for Idlers” (1877), public domain. Drawings: Prastora.</small></footer>
+</div>
+</body>
+</html>

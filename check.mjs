@@ -28,12 +28,14 @@ const VOCAB = {
   'data-l': ['page', 'canvas', 'columns', 'layer', 'spread', 'sheet', 'margin', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
   'data-bleed': ['up', 'down'],
   'data-pull': [''], 'data-initial': [''],
-  'data-float': ['start', 'end'], 'data-w': ['quarter', 'third', 'half'], 'data-wp': ['full'], 'data-shape': ['arch', 'circle'],
+  'data-float': ['start', 'end'], 'data-w': ['quarter', 'third', 'half'], 'data-wp': ['full'], 'data-shape': ['arch', 'circle', 'alpha'],
   'data-out': ['start', 'end', 'both'],
   'data-place': ['top-start', 'top-center', 'top-end', 'middle-start', 'middle-center', 'middle-end', 'bottom-start', 'bottom-center', 'bottom-end'],
   'data-ratio': ['21/9', '16/9', '3/2', '1/1', '3/4'], 'data-ratiop': ['21/9', '16/9', '3/2', '1/1', '3/4', '2/3', '9/16'],
   'data-size': ['1', '2', '3', '4', '5', '6', '7'], 'data-sizep': ['1', '2', '3', '4', '5', '6', '7'],
   'data-hide': ['portrait', 'landscape', 'wide', 'print'],
+  'data-grid': [''], 'data-tag': [''], 'data-balloon': ['start', 'end'],
+  'data-col': Array.from({ length: 20 }, (_, i) => String(i + 1)), 'data-row': Array.from({ length: 20 }, (_, i) => String(i + 1)),
   'data-numbered': [''], 'data-line': Array.from({ length: 46 }, (_, i) => String(i + 1)),
   'data-space': ['none', 'tight', 'loose'],
   'data-surface': ['raised', 'outline', 'accent'],
@@ -79,7 +81,10 @@ function inspect(VOCAB) {
     }
     if (el.hasAttribute('data-side') && el.parentElement?.dataset.l !== 'split') add('vocabulary', el, 'data-side outside split');
     if (el.hasAttribute('data-push') && !['stack', 'cluster', 'cover'].includes(el.parentElement?.dataset.l)) add('vocabulary', el, 'data-push outside stack, cluster or cover');
-    if (el.hasAttribute('style') || el.hasAttribute('class')) add('vocabulary', el, 'style and class are not used: say it with the vocabulary');
+    // the one style allowed names the image whose outline text runs round: --shape: url(…), with data-shape="alpha"
+    const st = el.getAttribute('style');
+    const shapeOnly = st && /^\s*--shape:\s*url\([^)]+\)\s*;?\s*$/.test(st) && el.getAttribute('data-shape') === 'alpha';
+    if ((st && !shapeOnly) || el.hasAttribute('class')) add('vocabulary', el, 'style and class are not used: say it with the vocabulary');
   }
 
   // a sheet holds what it was given, and every line on it stands on the grid its numbers name
@@ -111,7 +116,7 @@ function inspect(VOCAB) {
     if (ownText(el)) {
       const f = parseFloat(cs.fontSize);
       if (f < 8.5) add('text-too-small', el, `${f.toFixed(1)} px`);
-      if (el.matches('p, li, dd, td, blockquote') && !el.matches('[data-pull]') && el.textContent.trim().length > 40 && r.width < f * 14) add('narrow-measure', el, `${(r.width / f).toFixed(1)} em`);
+      if (el.matches('p, li, dd, td, blockquote') && !el.matches('[data-pull], [data-balloon]') && el.textContent.trim().length > 40 && r.width < f * 14) add('narrow-measure', el, `${(r.width / f).toFixed(1)} em`);
     }
     if (el.matches('button, input:not([type=hidden]), select, textarea, summary')) {
       const t = (el.closest('label') ?? el).getBoundingClientRect();

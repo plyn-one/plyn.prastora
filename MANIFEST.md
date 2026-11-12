@@ -47,7 +47,11 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 | `data-size` | `1` to `7` | a size set by hand, for a headline set line by line (each line a `span`); `data-sizep` for portrait |
 | `data-initial` | | on the first paragraph: an initial letter over three lines |
 | `data-pull` | | on a `blockquote` in `columns`: a quote set across the columns |
-| `data-float` | `start` `end` | a picture the text runs round, with `data-w` (`quarter` `third` `half` of the columns) and `data-shape` (`arch` `circle`) |
+| `data-float` | `start` `end` | a picture the text runs round, with `data-w` (`quarter` `third` `half` of the columns) and `data-shape` (`arch` `circle`, or `alpha`: the outline of the image itself, named again as `style="--shape: url(…)"`, the one style allowed) |
+| `data-grid` | | on a `layer`: a grid of 20 × 20 over the picture, for labels |
+| `data-col`, `data-row` | `1` to `20` | on a child of a gridded `layer`: the cell it starts at; draw its leader in the picture to the same place (a twentieth of the picture per cell) |
+| `data-tag` | | a label: one short line on a picture |
+| `data-balloon` | `start` `end` | a speech balloon, its tail at its start or end, toward the speaker below |
 | `data-numbered` | | on a `sheet`: numbers its lines in its left margin |
 | `data-line` | `1` to `46` | on a note in `margin`: the line of the sheet it stands at |
 | `data-hide` | `portrait` `landscape` `wide` `print` | not shown in that frame |

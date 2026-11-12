@@ -30,3 +30,6 @@
 "file:fonts/source-sans-3-latin-ext.woff2" = "Source Sans 3, variable weight 200 to 900, the latin-ext subset"
 "file:fonts/source-sans-3-latin.woff2" = "Source Sans 3, variable weight 200 to 900, the latin subset"
 "file:demo/document.html" = "a document in sheets the same on screen and on paper: numbered lines, clauses numbered through the sheets, notes in the margin at the lines they speak of"
+"file:demo/pictures.html" = "words on pictures: labels on the parts of a drawing with lines drawn to them, text round the outline of an image, a comic with balloons of real text"
+"dir:demo/art" = "pictures the demonstration pages use as files"
+"file:demo/art/vase.svg" = "a vase, whose outline the text of demo/pictures.html runs round"
