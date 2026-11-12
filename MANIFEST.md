@@ -20,6 +20,8 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 |---|---|---|
 | `page` | the whole page with its gutter; put it on the first element inside `body` | header, main, footer |
 | `canvas` | a band of the page laid on the columns of the frame; each child takes columns by `data-x` | placed children |
+| `columns` | running text in columns: two on landscape and wide, one on portrait | paragraphs, a pull quote, a floated picture |
+| `layer` | children lie on one another: a picture with words on it at set places | a picture and placed text |
 | `stack` | one under another | any |
 | `cluster` | short things in a wrapping row: links, buttons, marks | short items |
 | `split` | main beside side; folds into a stack when main would be under 24 units | two; mark the side `data-side` (default: the first) |
@@ -36,6 +38,14 @@ A page has a few frames: portrait (phones), landscape, wide. Each frame has its 
 | `data-xw` | `first-last`, 1 to 12 | the same for wide only, when it differs |
 | `data-xp` | `first-last`, 1 to 4 | the same for portrait; without it the child takes the whole width there |
 | `data-bleed` | `up` `down` | on a child of `canvas`: reaches 4 units into the band above or below |
+| `data-out` | `start` `end` `both` | on a `layer` or `figure`: its picture reaches the window edge on that side; the block and words on it stay on the canvas |
+| `data-place` | `top-start` … `bottom-end` (nine) | on a child of `layer`: where it lies |
+| `data-ratio` | `21/9` `16/9` `3/2` `1/1` `3/4` | the proportion of a block; `data-ratiop` (also `2/3` `9/16`) for portrait |
+| `data-size` | `1` to `7` | a size set by hand, for a headline set line by line (each line a `span`); `data-sizep` for portrait |
+| `data-initial` | | on the first paragraph: an initial letter over three lines |
+| `data-pull` | | on a `blockquote` in `columns`: a quote set across the columns |
+| `data-float` | `start` `end` | a picture the text runs round, with `data-w` (`quarter` `third` `half` of the columns) and `data-shape` (`arch` `circle`) |
+| `data-hide` | `portrait` `landscape` `wide` | not shown in that frame |
 | `data-space` | `none` `tight` `loose` | the gap of this relation only |
 | `data-side` | | on a child of `split`: the side |
 | `data-push` | | on a child of `stack`, `cluster` or `cover`: it and the ones after it go to the end |
@@ -63,6 +73,12 @@ Hero with a picture bound to the heading and reaching into the next band:
   <svg data-x="8-12" data-xp="2-4" data-bleed="down" …></svg></section>
 <section data-l="canvas" data-surface="accent"><p data-x="1-6">…</p></section>
 ```
+
+Longread: `<section data-l="canvas"><div data-x="1-9" data-l="columns"><p data-initial>…</p><svg data-float="end" data-w="quarter" data-shape="arch" …></svg><p>…</p><blockquote data-pull>…</blockquote><p>…</p></div><aside data-x="10-12" data-l="stack">notes</aside></section>`
+
+Cover: `<section data-l="layer" data-out="both" data-ratio="21/9" data-ratiop="3/4"><svg preserveAspectRatio="xMidYMid slice" …></svg><div data-place="top-start" data-pad><h1><span data-size="6" data-sizep="4">First line</span><span data-size="5" data-sizep="3">second</span></h1></div></section>`
+
+Text of more than one line is set at whole units (the core does this): only then its lines break the same on every screen of a frame. If the check still finds text moving within a frame, a line lies on the edge of its column: move the column by one, or change the words.
 
 Three in a row: `<section data-l="canvas"><article data-x="1-4">…</article><article data-x="5-8">…</article><article data-x="9-12">…</article></section>`
 

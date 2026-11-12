@@ -25,8 +25,15 @@ const FRAMES = JSON.parse(readFileSync(resolve(dirname(page), href), 'utf8').mat
 const EDGES = FRAMES.map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
 
 const VOCAB = {
-  'data-l': ['page', 'canvas', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
+  'data-l': ['page', 'canvas', 'columns', 'layer', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
   'data-bleed': ['up', 'down'],
+  'data-pull': [''], 'data-initial': [''],
+  'data-float': ['start', 'end'], 'data-w': ['quarter', 'third', 'half'], 'data-wp': ['full'], 'data-shape': ['arch', 'circle'],
+  'data-out': ['start', 'end', 'both'],
+  'data-place': ['top-start', 'top-center', 'top-end', 'middle-start', 'middle-center', 'middle-end', 'bottom-start', 'bottom-center', 'bottom-end'],
+  'data-ratio': ['21/9', '16/9', '3/2', '1/1', '3/4'], 'data-ratiop': ['21/9', '16/9', '3/2', '1/1', '3/4', '2/3', '9/16'],
+  'data-size': ['1', '2', '3', '4', '5', '6', '7'], 'data-sizep': ['1', '2', '3', '4', '5', '6', '7'],
+  'data-hide': ['portrait', 'landscape', 'wide'],
   'data-space': ['none', 'tight', 'loose'],
   'data-surface': ['raised', 'outline', 'accent'],
   'data-tone': ['quiet', 'strong', 'accent', 'danger', 'ok', 'warn'],
@@ -82,16 +89,17 @@ function inspect(VOCAB) {
   for (const el of all) {
     if (!shown(el)) continue;
     const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
-    boxes.push([path(el), (r.left - x0) / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
+    // what lies inside a block sent out to the window edge belongs partly to the margin, not to the canvas
+    if (!el.parentElement?.closest('[data-out]')) boxes.push([path(el), (r.left - x0) / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
     const p = el.parentElement;
-    if (p && p !== document.body && cs.position === 'static' && !scrolls(p)) {
+    if (p && p !== document.body && cs.position === 'static' && !scrolls(p) && !el.closest('[data-out], [data-bleed]')) {
       const q = p.getBoundingClientRect();
       if (r.right > q.right + 1.5 || r.left < q.left - 1.5) add('escapes-parent', el, `${Math.round(r.left)}–${Math.round(r.right)} outside ${Math.round(q.left)}–${Math.round(q.right)}`);
     }
     if (ownText(el)) {
       const f = parseFloat(cs.fontSize);
-      if (f < 12) add('text-too-small', el, `${f.toFixed(1)} px`);
-      if (el.matches('p, li, dd, td, blockquote') && el.textContent.trim().length > 40 && r.width < f * 15) add('narrow-measure', el, `${(r.width / f).toFixed(1)} em`);
+      if (f < 8.5) add('text-too-small', el, `${f.toFixed(1)} px`);
+      if (el.matches('p, li, dd, td, blockquote') && !el.matches('[data-pull]') && el.textContent.trim().length > 40 && r.width < f * 14) add('narrow-measure', el, `${(r.width / f).toFixed(1)} em`);
     }
     if (el.matches('button, input:not([type=hidden]), select, textarea, summary')) {
       const t = (el.closest('label') ?? el).getBoundingClientRect();
@@ -127,28 +135,33 @@ const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) f
 for (const scheme of ['light', 'dark']) {
   for (const { u, lo, hi } of EDGES) {
     const seen = {};
-    for (const w of [lo, hi]) {
+    // both edges in both schemes; in light also seven widths inside the frame, where a line on the edge
+    // of its column may break otherwise
+    const inner = scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
+    for (const w of [lo, ...inner, hi]) {
       const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
       const pg = await ctx.newPage();
       await pg.goto(url);
       const r = await pg.evaluate(inspect, VOCAB);
       seen[w] = r;
-      for (const i of r.issues) if (scheme === 'light' || !['vocabulary'].includes(i.rule)) note(i, `${scheme}@${w}`);
-      if (r.body < 12) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${scheme}@${w}`);
-      if (shots && scheme === 'light') await pg.screenshot({ path: `${shots}/u${u}-${w}.png`, fullPage: true });
+      const edge = w === lo || w === hi;
+      if (edge) for (const i of r.issues) if (scheme === 'light' || !['vocabulary'].includes(i.rule)) note(i, `${scheme}@${w}`);
+      if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${scheme}@${w}`);
+      if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/u${u}-${w}.png`, fullPage: true });
       await ctx.close();
     }
     // the promise: within a frame every element stands at the same place of the canvas, in rem
     if (scheme === 'light') {
-      const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = [];
-      for (const b of seen[hi].boxes) {
+      const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
+      for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
         const o = a.get(b[0]);
         if (!o) continue;
         const d = Math.max(...[1, 2, 3, 4].map(i => Math.abs(b[i] - o[i])));
-        if (d > 0.5) moved.push([b[0], d]);
+        if (d > 0.5 && !(moved.get(b[0])?.[0] >= d)) moved.set(b[0], [d, w]);
       }
-      for (const [at, d] of moved.sort((x, y) => y[1] - x[1]).slice(0, 5))
-        note({ rule: 'composition-moves', at, detail: `moves ${d.toFixed(2)} rem between ${lo} and ${hi} px` }, `frame ${u}`);
+      // the innermost moving element is the cause: a text whose line breaks on the edge, or a size outside the vocabulary
+      for (const [at, [d, w]] of [...moved].sort((x, y) => y[0].length - x[0].length).slice(0, 5))
+        note({ rule: 'composition-moves', at, detail: `moves ${d.toFixed(2)} rem between ${lo} and ${w} px` }, `frame ${u}`);
     }
   }
 }

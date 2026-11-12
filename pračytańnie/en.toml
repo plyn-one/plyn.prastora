@@ -18,3 +18,4 @@
 "file:variants.mjs" = "builds core.css from the frames of a variant, and a lab page for each variant, to be looked at by resizing or zooming the window"
 "dir:lab" = "the lab: variants of frames compared on the same page"
 "file:lab/variants.json" = "the variants of frames: where each frame begins, its units and columns, and how its canvas follows the window"
+"file:demo/longread.html" = "a longread laid out with devices of print: a cover with words on its picture, a headline set by hand, an initial letter, justified columns with a pulled quote, text round a shape, a picture reaching into the margin, a staggered dialogue"

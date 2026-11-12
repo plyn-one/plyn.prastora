@@ -29,19 +29,35 @@ function placement(cols, attr) {
   return r.join('\n');
 }
 
+// on portrait a few things take their own value: size and proportion, as columns take data-xp
+const SIZES = { 1: '1rem', 2: '1.4rem', 3: '2rem', 4: '2.8rem', 5: '4rem', 6: '5.6rem', 7: '8rem' };
+const RATIOS = { '21/9': '21 / 9', '16/9': '16 / 9', '3/2': '3 / 2', '1/1': '1', '3/4': '3 / 4', '2/3': '2 / 3', '9/16': '9 / 16' };
+const portraitOverrides = [
+  ...Object.entries(SIZES).map(([k, v]) => `  :where([data-sizep="${k}"]) { font-size: ${v}; }`),
+  ...Object.entries(RATIOS).map(([k, v]) => `  :where([data-ratiop="${k}"]) { aspect-ratio: ${v}; }`),
+  `  :where([data-float][data-wp=full]) { float: none; inline-size: auto; margin-inline: 0; }`,
+  `  :where([data-l=columns]) > :where(p) { text-align: start; }`,
+].join('\n');
+
 function css(v) {
   const frames = v.frames.map((f, i) => ({ ...f, start: Math.max(f.from, 20), to: v.frames[i + 1]?.from ?? null }));
   const block = f => [
-    // the root size is set from the window, in rem of the window; the canvas is then exactly `units` rem
-    `  :root { --units: ${f.units}; --cols: ${f.cols}; --gutter: ${f.name === 'portrait' ? '1rem' : '2rem'}; font-size: calc(${canvasExpr(f)} / ${f.units}); }`,
+    // the root size is set from the window, in rem of the window, and rounded down to a quarter of a pixel (1/64 of
+    // the base size): text advances are exactly proportional only at such sizes, so lines break the same on every
+    // screen of the frame; the canvas is then exactly `units` rem and the little that is left joins the margins
+    `  :root { --units: ${f.units}; --cols: ${f.cols}; --text-cols: ${f.name === 'portrait' ? 1 : 2}; --gutter: ${f.name === 'portrait' ? '1rem' : '2rem'}; font-size: calc(${canvasExpr(f)} / ${f.units}); font-size: round(down, calc(${canvasExpr(f)} / ${f.units}), calc(1rem / 64)); }`,
+    `  :where([data-hide~=${f.name}]) { display: none !important; }`,
+    f.name === 'portrait' ? portraitOverrides : '',
     f.name === 'portrait'
       ? `  :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }\n  :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }\n  :where([data-l=canvas][data-pad]) { padding-inline: 0; }\n${placement(f.cols, 'data-xp')}`
       : `${placement(f.cols, 'data-x')}${f.name === 'wide' ? '\n' + placement(f.cols, 'data-xw') : ''}`,
-  ].join('\n');
+  ].filter(Boolean).join('\n');
   const head = `/* prastora core, variant ${v.id}: ${v.title}. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
    frames (rem of the window): ${JSON.stringify(frames.map(({ name, from, to, units, cols, grow }) => ({ name, from, to, units, cols, grow })))} */\n`;
-  const frameCss = `@layer frame {\n` + frames.map((f, i) =>
-    (i === 0 ? '' : `  @media (width >= ${f.from}rem) {\n`) + block(f).replace(/^/gm, i === 0 ? '' : '  ') + (i === 0 ? '\n' : '\n  }\n')).join('') + `}\n`;
+  // every frame's rules hold only within its windows; the root size of the first frame is also the default
+  const when = f => [f.from > 0 && `(width >= ${f.from}rem)`, f.to && `(width < ${f.to}rem)`].filter(Boolean).join(' and ');
+  const frameCss = `@layer frame {\n` + block(frames[0]).split('\n')[0] + '\n' + frames.map(f =>
+    `  @media ${when(f)} {\n` + block(f).replace(/^/gm, '  ') + '\n  }\n').join('') + `}\n`;
   const canvasRel = `@layer relation {
   /* canvas: the grid of the frame; a child takes columns by data-x (data-xw on wide, data-xp on portrait),
      and without them the whole width; data-bleed lets it reach into the next or previous band */

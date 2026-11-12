@@ -51,6 +51,8 @@
   :where(body) {
     inline-size: calc(var(--units) * 1rem); margin-inline: auto; min-block-size: 100dvh;
     font-family: var(--font); font-size: var(--t0); line-height: 1.5;
+    /* letters keep their shapes at every size, so lines break the same on every screen of a frame */
+    font-optical-sizing: none; text-rendering: geometricPrecision; font-kerning: normal;
     color: var(--ink); background: var(--paper);
     -webkit-font-smoothing: antialiased;
   }
@@ -188,4 +190,73 @@
   :where(button[data-tone=accent]) { background: var(--accent); color: var(--on-accent); border-color: transparent; }
   :where(button[data-tone=danger]) { background: var(--danger); color: var(--on-accent); border-color: transparent; }
   :where(button[data-tone=quiet])  { background: transparent; border-color: transparent; color: var(--ink); }
+}
+
+/*
+ * Magazine devices. Text of more than one line is set at whole units (1rem, 2rem, 4rem): only at such sizes its
+ * width is exactly proportional, so its lines break the same on every screen of a frame, and what print layout does by hand
+ * holds here: text set in columns with a quote pulled across them, an initial letter, text running round a
+ * shape, a picture leaving the canvas for the margin, words laid on a picture at a set place.
+ */
+@layer relation {
+  /* columns of running text: two on landscape and wide, one on portrait (set by the frame) */
+  :where([data-l=columns]) { columns: var(--text-cols, 2); column-gap: var(--s2); }
+  :where([data-l=columns]) > :where(* + *) { margin-block-start: var(--s0); }
+  :where([data-l=columns]) > :where(p) { orphans: 2; widows: 2; max-inline-size: none; text-align: justify; hyphens: auto; }
+  :where([data-pull]) {
+    column-span: all; margin-block: var(--s1); padding-block: var(--s0); max-inline-size: none;
+    border-block: .125rem solid currentColor; font-size: 2rem; line-height: 1.15; font-weight: 600; text-wrap: balance;
+  }
+  /* the initial letter floats at a whole number of units: a size the browser computes from the lines
+     (initial-letter) is fractional and breaks the lines beside it differently from screen to screen */
+  :where([data-initial])::first-letter { float: inline-start; font-size: 4rem; line-height: 3rem; margin: .25rem .5rem 0 0; font-weight: 700; color: var(--accent); }
+
+  /* a shape the text runs round */
+  :where([data-float=start]) { float: inline-start; margin: .3rem var(--s1) var(--s0) 0; }
+  :where([data-float=end])   { float: inline-end;   margin: .3rem 0 var(--s0) var(--s1); }
+  /* a share of the column block: in columns, of all of them together */
+  :where([data-w=quarter]) { inline-size: 25%; }
+  :where([data-w=third])   { inline-size: 33.333%; }
+  :where([data-w=half])    { inline-size: 50%; }
+  :where([data-shape=arch])   { shape-outside: inset(0 round 50% 50% 0 0 / 30% 30% 0 0); shape-margin: var(--s0); }
+  :where([data-shape=circle]) { shape-outside: circle(50%); shape-margin: var(--s0); }
+
+  /* layer: children lie on one another; each takes its place by data-place */
+  :where([data-l=layer]) { display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); min-block-size: 0; }
+  :where([data-l=layer]) > :where(*) { grid-area: 1 / 1; min-inline-size: 0; z-index: 1; }
+  :where([data-l=layer]) > :where(svg, img, picture, video) { inline-size: 100%; block-size: 100%; min-block-size: 0; object-fit: cover; z-index: 0; }
+  /* a proportion set on a layer holds against what lies in it */
+  :where([data-l=layer][data-ratio], [data-l=layer][data-ratiop]) { contain: size; }
+  :where([data-place|=top])    { align-self: start; }
+  :where([data-place|=middle]) { align-self: center; }
+  :where([data-place|=bottom]) { align-self: end; }
+  :where([data-place$=start])  { justify-self: start; }
+  :where([data-place$=center]) { justify-self: center; text-align: center; }
+  :where([data-place$=end])    { justify-self: end; text-align: end; }
+
+  /* out of the canvas into the margin, to the edge of the window: the block keeps its place and proportion on the
+     canvas, and only the picture in it reaches the window edge; words laid on it stay on the canvas */
+  :where([data-out]) { --bleed: calc((100vw - var(--units) * 1rem) / 2 + var(--gutter)); }
+  :where([data-out]) > :where(svg, img, picture, video) { max-inline-size: none; }
+  :where([data-out=end]) > :where(svg, img, picture, video)   { inline-size: calc(100% + var(--bleed)); }
+  :where([data-out=start]) > :where(svg, img, picture, video) { inline-size: calc(100% + var(--bleed)); margin-inline-start: calc(var(--bleed) * -1); }
+  :where([data-out=both]) > :where(svg, img, picture, video)  { inline-size: calc(100% + var(--bleed) * 2); margin-inline-start: calc(var(--bleed) * -1); }
+
+  /* the proportion of a block: a picture keeps its shape, so what lies on it keeps its place */
+  :where([data-ratio="21/9"]) { aspect-ratio: 21 / 9; }
+  :where([data-ratio="16/9"]) { aspect-ratio: 16 / 9; }
+  :where([data-ratio="3/2"])  { aspect-ratio: 3 / 2; }
+  :where([data-ratio="1/1"])  { aspect-ratio: 1; }
+  :where([data-ratio="3/4"])  { aspect-ratio: 3 / 4; }
+
+  /* a size set by hand, for headlines set line by line */
+  :where([data-size]) { line-height: 1.02; letter-spacing: -.02em; }
+  :where(h1, h2, h3) > :where([data-size]) { display: block; }
+  :where([data-size="1"]) { font-size: 1rem; }
+  :where([data-size="2"]) { font-size: 1.4rem; }
+  :where([data-size="3"]) { font-size: 2rem; }
+  :where([data-size="4"]) { font-size: 2.8rem; }
+  :where([data-size="5"]) { font-size: 4rem; }
+  :where([data-size="6"]) { font-size: 5.6rem; }
+  :where([data-size="7"]) { font-size: 8rem; }
 }
