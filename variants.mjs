@@ -9,6 +9,8 @@
 // Everything inside the canvas is in units, so its composition holds exactly whatever the growth.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
+// The version of a release lives here only. A release: set it, run this script, land, then tag v<VERSION>.
+// core.css, CONNECT.md and README.md are written from it, so no text names an old version.
 const VERSION = '0.1.1';
 const variants = JSON.parse(readFileSync('lab/variants.json', 'utf8'));
 const base = readFileSync('src/base.css', 'utf8');
@@ -165,4 +167,5 @@ for (const v of variants) {
   if (v.core) writeFileSync('core.css', css(v));
 }
 writeFileSync('lab/index.html', labIndex());
+for (const f of ['CONNECT.md', 'README.md']) writeFileSync(f, readFileSync(`src/${f}`, 'utf8').replaceAll('{{VERSION}}', VERSION));
 console.log('built', variants.map(v => v.id + (v.core ? ' (core)' : '')).join(', '));

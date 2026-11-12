@@ -29,6 +29,8 @@ kola = "usie"
 "file:demo/art/vase.svg" = { faza = "ściah", rola = "prajava" }
 "dir:src" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/base.css" = { faza = "dadzienaść", rola = "prajava" }
+"file:src/CONNECT.md" = { faza = "dadzienaść", rola = "prajava" }
+"file:src/README.md" = { faza = "dadzienaść", rola = "prajava" }
 "file:variants.mjs" = { faza = "ściah", rola = "ruch" }
 "dir:lab" = { faza = "ściah", rola = "sens" }
 "file:lab/variants.json" = { faza = "ściah", rola = "sens" }

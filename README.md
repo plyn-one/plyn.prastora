@@ -1,3 +1,4 @@
+<!-- written by variants.mjs from src/README.md with the version of the release; edit src/README.md -->
 # Prastora
 
 A web page layout framework made first for AI agents. A page is laid out the way a picture is composed: for each class of screen (a frame: phone, landscape screen, wide screen, and print on A4) its layout is set once on a canvas of fixed units and columns, and within the frame the whole layout scales with the window, so every element keeps its place against every other. This makes devices of print layout hold on the web: columns, initial letters, text round shapes, words placed on pictures, documents and blanks the same on screen and on paper.

@@ -1,3 +1,4 @@
+<!-- written by variants.mjs from src/CONNECT.md with the version of the release; edit src/CONNECT.md -->
 # Connecting Prastora to a project (for agents)
 
 Prastora is a web page layout framework: a page is composed like a picture, once per frame (portrait, landscape, wide, print), and scales as a whole within a frame. Plain CSS, no build step, no JavaScript. Repository: https://github.com/plyn-one/plyn.prastora, release `v0.1.1`.
