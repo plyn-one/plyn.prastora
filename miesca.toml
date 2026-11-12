@@ -119,4 +119,23 @@ kola = "usie"
 "file:fonts/source-sans-3-vietnamese.woff2" = { faza = "dadzienaść", rola = "prajava" }
 "file:fonts/source-sans-3-latin-ext.woff2" = { faza = "dadzienaść", rola = "prajava" }
 "file:fonts/source-sans-3-latin.woff2" = { faza = "dadzienaść", rola = "prajava" }
-
+"dir:site/v0.1.2" = { faza = "asadak", rola = "prajava" }
+"dir:site/v0.1.2/fonts" = { faza = "asadak", rola = "prajava" }
+"dir:site/v0.1.2/manifest" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/CONNECT.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/MANIFEST.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/README.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/check.mjs" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/core.css" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/manifest/documents.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/manifest/magazine.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/manifest/pictures.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/manifest/type.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/fonts/OFL.txt" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/fonts/source-sans-3-cyrillic-ext.woff2" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/fonts/source-sans-3-cyrillic.woff2" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/fonts/source-sans-3-greek-ext.woff2" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/fonts/source-sans-3-greek.woff2" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/fonts/source-sans-3-latin-ext.woff2" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/fonts/source-sans-3-latin.woff2" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.2/fonts/source-sans-3-vietnamese.woff2" = { faza = "asadak", rola = "prajava" }
