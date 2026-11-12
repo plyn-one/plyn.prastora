@@ -17,6 +17,12 @@ kola = "usie"
 "file:demo/type.html" = { faza = "ściah", rola = "prajava" }
 "file:demo/journey.html" = { faza = "ściah", rola = "prajava" }
 "file:demo/blank.html" = { faza = "ściah", rola = "prajava" }
+"file:CONNECT.md" = { faza = "dadzienaść", rola = "sens" }
+"dir:manifest" = { faza = "dadzienaść", rola = "sens" }
+"file:manifest/magazine.md" = { faza = "dadzienaść", rola = "sens" }
+"file:manifest/documents.md" = { faza = "dadzienaść", rola = "sens" }
+"file:manifest/pictures.md" = { faza = "dadzienaść", rola = "sens" }
+"file:manifest/type.md" = { faza = "dadzienaść", rola = "sens" }
 "dir:demo/art" = { faza = "ściah", rola = "prajava" }
 "file:demo/art/vase.svg" = { faza = "ściah", rola = "prajava" }
 "dir:src" = { faza = "dadzienaść", rola = "prajava" }

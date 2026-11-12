@@ -9,6 +9,7 @@
 // Everything inside the canvas is in units, so its composition holds exactly whatever the growth.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
+const VERSION = '0.1';
 const variants = JSON.parse(readFileSync('lab/variants.json', 'utf8'));
 const base = readFileSync('src/base.css', 'utf8');
 const demo = readFileSync('demo/index.html', 'utf8');
@@ -57,13 +58,13 @@ const portraitOverrides = [
   `  :where([data-l=margin]) > :where([data-line])::before { content: "Line " attr(data-line) ". "; position: static; border: 0; inline-size: auto; font-weight: 600; color: var(--accent); }`,
 ].join('\n');
 
-// print is a frame of its own: an A4 sheet is a canvas of 50 units at 10pt (176 mm of the 180 mm between
-// the margins), laid out with the landscape composition; nothing leaves the sheet, and blocks do not split
+// print is a frame of its own: an A4 sheet is a canvas of 56 units at 10pt, the whole width between its margins,
+// laid out with the landscape composition; nothing leaves the sheet, and blocks do not split
 // the print area is 56 × 78 units at 10pt (197.6 × 275.2 mm): a sheet on screen with its own margins, so a sheet
 // prints as it is shown, its line numbers and its foot included
 const PAGE = `@page { size: A4; margin: 10.9mm 6.2mm; }\n`;
 const printFrame = `  @media print {
-    :root { --units: 50; --cols: 12; --text-cols: 2; --gutter: 0rem; font-size: 10pt; color-scheme: light; --paper: white; --t4: 2.6rem; --t3: 1.6rem; --t2: 1.3rem; --t1: 1.1rem; }
+    :root { --units: 56; --cols: 12; --text-cols: 2; --gutter: 0rem; font-size: 10pt; color-scheme: light; --paper: white; --t4: 2.6rem; --t3: 1.6rem; --t2: 1.3rem; --t1: 1.1rem; }
     :where(body) { min-block-size: 0; }
     :where([data-l=page]) { padding: 0; }
     /* paper carries the content and its pictures; what is only for using the screen stays there */
@@ -79,6 +80,8 @@ const printFrame = `  @media print {
     :where([data-l=sheet]) { box-shadow: none; break-after: page; }
     :where([data-l=margin]) { display: none; }
     :where([data-l=book]) { box-shadow: none; padding: 0; }
+    :where([data-shaped]) { aspect-ratio: auto; overflow: visible; }
+    :where([data-shaped])::before, :where([data-shaped]) > :where(p)::before { content: none; }
     :where([data-l=book])::after { content: none; }
     /* a page of sheets prints its sheets only: the sheet is the page */
     :where(body:has([data-l=sheet])) :where([data-l=page] > header, [data-l=page] > footer) { display: none; }
@@ -101,7 +104,7 @@ function css(v) {
     // portrait's own values come last, so they are not undone by its general rules above
     f.name === 'portrait' ? portraitOverrides : '',
   ].filter(Boolean).join('\n');
-  const head = `/* prastora core, variant ${v.id}: ${v.title}. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
+  const head = `/* prastora core v${VERSION}, variant ${v.id}: ${v.title}. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
    frames (rem of the window): ${JSON.stringify(frames.map(({ name, from, to, units, cols, grow }) => ({ name, from, to, units, cols, grow })))} */\n`;
   // every frame's rules hold only within its windows; the root size of the first frame is also the default
   const when = f => ['screen', f.from > 0 && `(width >= ${f.from}rem)`, f.to && `(width < ${f.to}rem)`].filter(Boolean).join(' and ');

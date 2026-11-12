@@ -1,4 +1,4 @@
-/* prastora core, variant a: pure scaling as in the earlier Prastora, with margins on wide screens. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
+/* prastora core v0.1, variant a: pure scaling as in the earlier Prastora, with margins on wide screens. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
    frames (rem of the window): [{"name":"portrait","from":0,"to":50,"units":22,"cols":4,"grow":"pure"},{"name":"landscape","from":50,"to":125,"units":80,"cols":12,"grow":"pure"},{"name":"wide","from":125,"to":null,"units":85,"cols":12,"grow":{"share":0.85}}] */
 /* The core's own font, Source Sans 3 (SIL Open Font License, fonts/OFL.txt), served in subsets: a browser loads
    only those whose letters a page uses. One font everywhere keeps lines breaking the same on every system. */
@@ -928,7 +928,7 @@
     :where([data-xw="12-12"]) { grid-column: 12 / 13; }
   }
   @media print {
-    :root { --units: 50; --cols: 12; --text-cols: 2; --gutter: 0rem; font-size: 10pt; color-scheme: light; --paper: white; --t4: 2.6rem; --t3: 1.6rem; --t2: 1.3rem; --t1: 1.1rem; }
+    :root { --units: 56; --cols: 12; --text-cols: 2; --gutter: 0rem; font-size: 10pt; color-scheme: light; --paper: white; --t4: 2.6rem; --t3: 1.6rem; --t2: 1.3rem; --t1: 1.1rem; }
     :where(body) { min-block-size: 0; }
     :where([data-l=page]) { padding: 0; }
     /* paper carries the content and its pictures; what is only for using the screen stays there */
@@ -944,6 +944,8 @@
     :where([data-l=sheet]) { box-shadow: none; break-after: page; }
     :where([data-l=margin]) { display: none; }
     :where([data-l=book]) { box-shadow: none; padding: 0; }
+    :where([data-shaped]) { aspect-ratio: auto; overflow: visible; }
+    :where([data-shaped])::before, :where([data-shaped]) > :where(p)::before { content: none; }
     :where([data-l=book])::after { content: none; }
     /* a page of sheets prints its sheets only: the sheet is the page */
     :where(body:has([data-l=sheet])) :where([data-l=page] > header, [data-l=page] > footer) { display: none; }

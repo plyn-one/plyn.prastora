@@ -1,28 +1,49 @@
 #!/usr/bin/env node
-// The check of a page laid out with prastora: renders it at both edges of every frame
-// and in both colour schemes, and prints what broke as JSON. Exit 0 when nothing did.
-//   node check.mjs <page.html> [--shots <dir>]
-// Needs Playwright with Chromium.
+// The check of pages laid out with prastora. Each page is rendered in every frame of the core it links,
+// at both edges and seven widths inside, in light and dark, and printed on A4 (the print frame); what broke
+// is printed as JSON, each problem with a fix. Exit 0 when nothing did.
+//   node check.mjs <page.html> [more pages…] [--shots <dir>]
+// Needs Playwright with Chromium (npm i -D playwright; npx playwright install chromium).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
-import { resolve } from 'node:path';
-import { mkdirSync } from 'node:fs';
+import { resolve, dirname, basename } from 'node:path';
+import { mkdirSync, readFileSync } from 'node:fs';
 const { chromium } = createRequire(import.meta.url)('playwright');
 
 const args = process.argv.slice(2);
-const page = args.find((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--'));
+const pages = args.filter((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--'));
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
-if (!page) { console.error('usage: node check.mjs <page.html> [--shots <dir>]'); process.exit(2); }
+if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
 
-// the frames are read from the stylesheet the page links: its first comment lists them
-import { readFileSync } from 'node:fs';
-import { dirname } from 'node:path';
-const html = readFileSync(page, 'utf8');
-const href = html.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/)?.[1] ?? html.match(/<link[^>]+href="([^"]+)"[^>]+rel="stylesheet"/)?.[1];
-const FRAMES = JSON.parse(readFileSync(resolve(dirname(page), href), 'utf8').match(/frames[^:]*: (\[.*\])/)[1]);
-// frames are in rem of the window; 16 px to the rem at the browser's default
-const EDGES = FRAMES.map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
+// the frames are read from the core the page links: its first comment lists them, in rem of the window
+// (16 px to the rem at the browser's default)
+function framesOf(page) {
+  const html = readFileSync(page, 'utf8');
+  const href = [...html.matchAll(/<link[^>]+>/g)].map(m => m[0]).filter(l => /rel="stylesheet"/.test(l)).map(l => l.match(/href="([^"]+)"/)?.[1]).find(Boolean);
+  if (!href) throw new Error(`${page}: no stylesheet linked; link core.css`);
+  const css = readFileSync(resolve(dirname(page), href), 'utf8');
+  const m = css.match(/frames[^:]*: (\[.*\])/);
+  if (!m) throw new Error(`${page}: ${href} is not the prastora core (no list of frames in its first comment)`);
+  return JSON.parse(m[1]).map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
+}
+
+// what to do about each problem, for the agent that reads the report
+const FIX = {
+  'composition-moves': 'a line lies on the edge of its column, or something is sized outside the vocabulary: move the column by one, or change the words',
+  'page-scroll-x': 'something is wider than the window: see escapes-parent for which',
+  'escapes-parent': 'give it more columns, let it wrap, or set it in a reel',
+  'narrow-measure': 'prose in a column under 12 em: give it more columns, or hide it in that frame',
+  'text-too-small': 'use a size from the vocabulary; in a narrow frame, one step larger',
+  'body-text-small': 'the frame starts too narrow for its units',
+  'target-too-small': 'a control under 24×24 px: put it in a label or give it its own line',
+  'contrast': 'text too pale on its background: drop data-tone="quiet" there, or change the surface',
+  'vocabulary': 'only the attributes and values of MANIFEST.md and its sections in manifest/',
+  'sheet-overflow': 'move the last clauses to the next sheet',
+  'off-grid': 'something in a gridded block is sized outside the vocabulary; borders and odd sizes push lines off',
+  'shaped-overflow': 'shorten the text of the figure',
+  'print-pages': 'each sheet should print as one page: a sheet overflows on paper, or something outside the sheets prints',
+};
 
 const VOCAB = {
   'data-l': ['page', 'canvas', 'columns', 'layer', 'spread', 'sheet', 'margin', 'book', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
@@ -127,7 +148,7 @@ function inspect(VOCAB) {
     if (ownText(el) && !shrunk) {
       const f = parseFloat(cs.fontSize);
       if (f < 8.5) add('text-too-small', el, `${f.toFixed(1)} px`);
-      if (el.matches('p, li, dd, td, blockquote') && !el.matches('[data-pull], [data-balloon]') && el.textContent.trim().length > 40 && r.width < f * 14) add('narrow-measure', el, `${(r.width / f).toFixed(1)} em`);
+      if (el.matches('p, li, dd, td, blockquote') && !el.matches('[data-pull], [data-balloon]') && el.textContent.trim().length > 40 && r.width < f * 12) add('narrow-measure', el, `${(r.width / f).toFixed(1)} em`);
     }
     if (!shrunk && el.matches('button, input:not([type=hidden]), select, textarea, summary')) {
       const t = (el.closest('label') ?? el).getBoundingClientRect();
@@ -156,45 +177,66 @@ function inspect(VOCAB) {
 }
 
 const browser = await chromium.launch();
-const url = pathToFileURL(resolve(page)).href;
-const found = new Map();
-const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
+const reports = [];
+for (const page of pages) {
+  const EDGES = framesOf(page);
+  const url = pathToFileURL(resolve(page)).href;
+  const found = new Map();
+  const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
 
-for (const scheme of ['light', 'dark']) {
-  for (const { u, lo, hi } of EDGES) {
-    const seen = {};
-    // both edges in both schemes; in light also seven widths inside the frame, where a line on the edge
-    // of its column may break otherwise
-    const inner = scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
-    for (const w of [lo, ...inner, hi]) {
-      const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
-      const pg = await ctx.newPage();
-      await pg.goto(url);
-      await pg.evaluate(() => document.fonts.ready);
-      const r = await pg.evaluate(inspect, VOCAB);
-      seen[w] = r;
-      const edge = w === lo || w === hi;
-      if (edge) for (const i of r.issues) if (scheme === 'light' || !['vocabulary'].includes(i.rule)) note(i, `${scheme}@${w}`);
-      if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${scheme}@${w}`);
-      if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/u${u}-${w}.png`, fullPage: true });
-      await ctx.close();
-    }
-    // the promise: within a frame every element stands at the same place of the canvas, in rem
-    if (scheme === 'light') {
-      const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
-      for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
-        const o = a.get(b[0]);
-        if (!o) continue;
-        const d = Math.max(...[1, 2, 3, 4].map(i => Math.abs(b[i] - o[i])));
-        if (d > 0.5 && !(moved.get(b[0])?.[0] >= d)) moved.set(b[0], [d, w]);
+  for (const scheme of ['light', 'dark']) {
+    for (const { u, lo, hi } of EDGES) {
+      const seen = {};
+      // both edges in both schemes; in light also seven widths inside the frame, where a line on the edge
+      // of its column may break otherwise
+      const inner = scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
+      for (const w of [lo, ...inner, hi]) {
+        const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
+        const pg = await ctx.newPage();
+        await pg.goto(url);
+        await pg.evaluate(() => document.fonts.ready);
+        const r = await pg.evaluate(inspect, VOCAB);
+        seen[w] = r;
+        const edge = w === lo || w === hi;
+        if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
+        if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
+        if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
+        await ctx.close();
       }
-      // the innermost moving element is the cause: a text whose line breaks on the edge, or a size outside the vocabulary
-      for (const [at, [d, w]] of [...moved].sort((x, y) => y[0].length - x[0].length).slice(0, 5))
-        note({ rule: 'composition-moves', at, detail: `moves ${d.toFixed(2)} rem between ${lo} and ${w} px` }, `frame ${u}`);
+      // the promise: within a frame every element stands at the same place of the canvas, in rem
+      if (scheme === 'light') {
+        const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
+        for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
+          const o = a.get(b[0]);
+          if (!o) continue;
+          const d = Math.max(...[1, 2, 3, 4].map(i => Math.abs(b[i] - o[i])));
+          if (d > 0.5 && !(moved.get(b[0])?.[0] >= d)) moved.set(b[0], [d, w]);
+        }
+        // the innermost moving element is the cause: a text whose line breaks on the edge, or a size outside the vocabulary
+        for (const [at, [d, w]] of [...moved].sort((x, y) => y[0].length - x[0].length).slice(0, 5))
+          note({ rule: 'composition-moves', at, detail: `moves ${d.toFixed(2)} rem between ${lo} and ${w} px` }, `${u}`);
+      }
     }
   }
+
+  // print, the fourth frame: the layout on an A4 sheet (197.6 mm between the margins, 747 px), then the pages
+  const ctx = await browser.newContext({ viewport: { width: 747, height: 1040 }, colorScheme: 'light', reducedMotion: 'reduce' });
+  const pg = await ctx.newPage();
+  await pg.goto(url);
+  await pg.emulateMedia({ media: 'print' });
+  await pg.evaluate(() => document.fonts.ready);
+  const r = await pg.evaluate(inspect, VOCAB);
+  for (const i of r.issues) if (!['vocabulary', 'target-too-small', 'contrast'].includes(i.rule)) note(i, 'print');
+  const pdf = await pg.pdf({ preferCSSPageSize: true, printBackground: true });
+  const sheets = await pg.evaluate(() => document.querySelectorAll('[data-l=sheet]').length);
+  const printed = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
+  if (sheets && printed !== sheets) note({ rule: 'print-pages', at: 'body', detail: `${sheets} sheets print on ${printed} pages` }, 'print');
+  if (shots) await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-print.png`, fullPage: true });
+  await ctx.close();
+
+  const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: FIX[p.rule] }));
+  reports.push({ page, ok: problems.length === 0, frames: EDGES.map(e => `${e.u} ${e.lo}–${e.hi}px`).concat('print A4'), printed_pages: printed, problems });
 }
 await browser.close();
-const problems = [...found.values()];
-console.log(JSON.stringify({ page, ok: problems.length === 0, frames: EDGES.map(e => `${e.u}: ${e.lo}–${e.hi} px`), problems }, null, 2));
-process.exit(problems.length ? 1 : 0);
+console.log(JSON.stringify(reports.length === 1 ? reports[0] : reports, null, 2));
+process.exit(reports.every(r => r.ok) ? 0 : 1);

@@ -1,6 +1,6 @@
 ["apisańnie"]
-"uvachod" = "plyn.prastora: the web layout framework of Plyń, made first for agents: plain HTML and CSS in which a page keeps its composition across screens, with a closed vocabulary an agent reads whole and a check that renders a page and tells the agent what broke."
-"kirunak" = "A framework an agent lays pages out with on its first or second try: proportional scaling within a few regimes, as A-Rozum/prastora showed, joined with a closed vocabulary of relations that works at every scale, a manifest that fits in an agent's context, and a check by rendering. Made anew: A-Rozum/prastora and the prototype at plyn-css-proto.pages.dev are sources, not material moved here."
+"uvachod" = "plyn.prastora: the web page layout framework of Plyń, made first for agents. A page is laid out the way a picture is composed: for each class of screen (a frame: phone, landscape screen, wide screen, and print on A4) its layout is set once on a canvas of fixed units and columns, and within the frame the whole layout scales with the window, so every element keeps its place against every other. Plain HTML and CSS, a manifest an agent reads in parts, and a check that renders a page in every frame and on paper and tells the agent what to fix."
+"kirunak" = "Page layout an agent gets right on the first or second try and can prove: layout set per frame and scaling as a whole within it, as A-Rozum/prastora began, with a closed vocabulary of attributes, devices of print layout that fluid web layout could not hold (columns, initial letters, text round shapes, words placed on pictures, documents and blanks the same on screen and paper), and a check by rendering. Made anew: A-Rozum/prastora and the prototype at plyn-css-proto.pages.dev are sources, not material moved here."
 
 ["samaadrasavańnie"]
 "file:AGENTS.md" = "the orientation of this place, written by plyn.dojlid"
@@ -9,8 +9,8 @@
 "dir:pračytańnie" = "the readings of this place, one file per language"
 "file:pračytańnie/en.toml" = "the readings of this place in English"
 "file:core.css" = "the core stylesheet, built by variants.mjs: three screen frames and a print frame, each a canvas of fixed units and columns that scales as a whole, with margins beyond it; plain HTML styled, the relations and the devices of print"
-"file:MANIFEST.md" = "the manifest for agents: the whole vocabulary, its rules and patterns, read before laying a page out"
-"file:check.mjs" = "the check of a page by rendering: both edges of every frame in both colour schemes, and whether anything moved on the canvas within a frame"
+"file:MANIFEST.md" = "the manifest for agents, read before laying a page out: frames, the canvas, the relations, the common patterns, and which section of manifest/ to read for what"
+"file:check.mjs" = "the check of pages by rendering: every frame at both edges and seven widths inside, light and dark, and print on A4; whether anything moved on the canvas within a frame; each problem with a fix"
 "dir:demo" = "pages laid out with the core, which the check passes"
 "file:demo/index.html" = "the demonstration page: a picture bound to the heading and reaching into the next band, columns of the canvas"
 "dir:src" = "the sources the core is built from"
@@ -36,3 +36,9 @@
 "file:demo/type.html" = "typography of print: headline lines filling their column exactly, columns and notes on one grid of lines, hanging quotes, paragraphs set in a circle and a diamond"
 "file:demo/journey.html" = "composition across the page: a road drawn through the page past blocks set at its bends, drawn as the reader scrolls, and a book spread with a picture across the gutter"
 "file:demo/blank.html" = "a blank like a paper form on a sheet: boxed letters, lines to write on, choices, filled in on screen and printed as the form with what was entered"
+"file:CONNECT.md" = "for agents: how to connect Prastora to a project, by a pinned release, copied files or a submodule, and how to run the check"
+"dir:manifest" = "sections of the manifest an agent reads only when a page needs them"
+"file:manifest/magazine.md" = "the manifest section on devices of magazine layout"
+"file:manifest/documents.md" = "the manifest section on documents in sheets and blanks"
+"file:manifest/pictures.md" = "the manifest section on words on pictures and composition across the page"
+"file:manifest/type.md" = "the manifest section on typography of print"
