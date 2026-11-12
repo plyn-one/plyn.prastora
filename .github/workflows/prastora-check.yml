@@ -31,18 +31,27 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - name: Check all frames and A4
+      - name: Check all work pages, all frames and A4
         shell: bash
         run: |
-          set -o pipefail
-          node check.mjs site/try/coffee/index.html --shots prastora-shots | tee prastora-report.json
+          set -euo pipefail
+          mkdir -p prastora-reports prastora-shots
+          mapfile -d '' pages < <(find site/try -type f -name '*.html' -print0 | sort -z)
+          if (("${#pages[@]}" == 0)); then
+            echo "No work pages to verify" >&2
+            exit 1
+          fi
+          for file in "${pages[@]}"; do
+            name="${file//\//_}"
+            node check.mjs "$file" --shots "prastora-shots/$name" > "prastora-reports/$name.json"
+          done
       - name: Upload verdict and screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: prastora-browser-check
           path: |
-            prastora-report.json
+            prastora-reports/
             prastora-shots/
           retention-days: 1
           if-no-files-found: warn
