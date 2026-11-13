@@ -1,18 +1,8 @@
 name: Prastora browser check
 
+# A spare check for an agent that cannot run Chromium where it works: started by hand (Actions, Run workflow);
+# landing and publishing do not wait for it.
 on:
-  push:
-    paths:
-      - 'site/try/**'
-      - 'site/v0.1.2/**'
-      - 'check.mjs'
-      - '.github/workflows/prastora-check.yml'
-  pull_request:
-    paths:
-      - 'site/try/**'
-      - 'site/v0.1.2/**'
-      - 'check.mjs'
-      - '.github/workflows/prastora-check.yml'
   workflow_dispatch:
 
 permissions:

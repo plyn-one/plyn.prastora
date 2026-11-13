@@ -26,7 +26,7 @@ So a way that was expensive to make and cheap to verify is now cheap in both. Ma
 
 ## Found on the way
 
-- Text width is exactly proportional to its size only when the size is a multiple of a quarter of a pixel (spread 0.0018 % against 0.13 % at eighths). The core rounds the page unit down to a quarter of a pixel and sets text of more than one line at whole units; otherwise a line that nearly fills its column loses its last word on some screens.
+- Text width is exactly proportional to its size only when the size is a multiple of a quarter of a pixel (spread 0.0018 % against 0.13 % at eighths). The core rounded the page unit down to a quarter of a pixel until 0.1.3; from 0.1.4 it does not, as the steps it made were seen as the page jumping, and a line that nearly fills its column may lose its last word on some screens (the check finds it).
 - A size the browser derives from lines (initial-letter) or from optical sizing of a font breaks the proportion; the core avoids both.
 - A block reaching the window edge must keep its size on the canvas and let only its picture reach the edge, or what follows it shifts with the margin.
 

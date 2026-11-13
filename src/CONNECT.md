@@ -5,10 +5,10 @@ Prastora is a web page layout framework: a page is composed like a picture, once
 
 ## 1. Link the core
 
-Any one of these; the font comes with the core from the same place.
+Any one of these.
 
 - **By the release tag, nothing copied:** `https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v{{VERSION}}/core.min.css` (minified by the CDN; `core.css` is the readable one)
-- **Copied files:** put `core.css` and the folder `fonts/` side by side in the project's static files (the core loads `fonts/…` relative to itself). Take them from the repository at tag `v{{VERSION}}`.
+- **Copied file:** put `core.css` in the project's static files, taken from the repository at tag `v{{VERSION}}`.
 - **In a place of Plyń:** add the repository as the submodule `prastora/`, pinned at a commit on its main branch, and link `prastora/core.css`.
 
 ```html

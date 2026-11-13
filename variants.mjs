@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 // The version of a release lives here only. A release: set it, run this script, land, then tag v<VERSION>.
 // core.css, CONNECT.md and README.md are written from it, so no text names an old version.
-const VERSION = '0.1.3';
+const VERSION = '0.1.4';
 const variants = JSON.parse(readFileSync('lab/variants.json', 'utf8'));
 const base = readFileSync('src/base.css', 'utf8');
 const demo = readFileSync('demo/index.html', 'utf8');
@@ -95,14 +95,12 @@ ${placement(12, 'data-x').replace(/^/gm, '  ')}
 function css(v) {
   const frames = v.frames.map((f, i) => ({ ...f, start: Math.max(f.from, 20), to: v.frames[i + 1]?.from ?? null }));
   const block = f => [
-    // the root size is set from the window, in rem of the window, and rounded down to a quarter of a pixel (1/64 of
-    // the base size): text advances are exactly proportional only at such sizes, so lines break the same on every
-    // screen of the frame; the canvas is then exactly `units` rem
-    `  :root { --units: ${f.units}; --cols: ${f.cols}; --text-cols: ${f.name === 'portrait' ? 1 : 2}; --gutter: ${f.name === 'portrait' ? '1rem' : '2rem'}; font-size: calc(${canvasExpr(f)} / ${f.units}); font-size: round(down, calc(${canvasExpr(f)} / ${f.units}), calc(1rem / 64)); }`,
+    // the root size is the window's share, unrounded, so the page follows the window smoothly; the canvas is exactly
+    // `units` rem
+    `  :root { --units: ${f.units}; --cols: ${f.cols}; --text-cols: ${f.name === 'portrait' ? 1 : 2}; --gutter: ${f.name === 'portrait' ? '1rem' : '2rem'}; font-size: calc(${canvasExpr(f)} / ${f.units}); }`,
     // what the rounding leaves (under a sixtieth) is made up by scaling the canvas as a picture: the page follows the
     // window smoothly, with no step at each quarter pixel, while its text is laid out at the exact size (only for a
     // canvas given in vw: rem here would be read at the rounded size)
-    canvasExpr(f).includes('rem') ? '' : `  body { scale: tan(atan2(calc(${canvasExpr(f)} / ${f.units}), 1rem)); transform-origin: 50% 0; }`,
     `  :where([data-hide~=${f.name}]) { display: none !important; }`,
     f.name === 'portrait'
       ? `  :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }\n  :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }\n  :where([data-l=canvas][data-pad]) { padding-inline: 0; }\n${placement(f.cols, 'data-xp')}`
@@ -166,7 +164,7 @@ ${variants.map((v, i) => `      <article data-x="${i % 2 ? 7 : 1}-${i % 2 ? 12 :
 
 for (const v of variants) {
   mkdirSync(`lab/${v.id}`, { recursive: true });
-  writeFileSync(`lab/${v.id}/core.css`, css(v).replaceAll('url("fonts/', 'url("../../fonts/'));
+  writeFileSync(`lab/${v.id}/core.css`, css(v));
   writeFileSync(`lab/${v.id}/index.html`, labPage(v));
   if (v.core) writeFileSync('core.css', css(v));
 }
@@ -181,7 +179,7 @@ import { cpSync, rmSync, readdirSync } from 'node:fs';
 mkdirSync('site', { recursive: true });
 for (const f of readdirSync('site')) if (f !== 'try') rmSync(`site/${f}`, { recursive: true, force: true });
 for (const f of ['core.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs']) cpSync(f, `site/${f}`);
-for (const d of ['fonts', 'manifest', 'demo']) cpSync(d, `site/${d}`, { recursive: true });
+for (const d of ['manifest', 'demo']) cpSync(d, `site/${d}`, { recursive: true });
 cpSync('src/site-index.html', 'site/index.html');
 // site/v<tag>/: what each release tag holds of the core, as it was then, for addresses that name a release
 import { execFileSync } from 'node:child_process';
