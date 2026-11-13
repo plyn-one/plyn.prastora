@@ -52,6 +52,9 @@ const FIX = {
   'shaped-overflow': 'shorten the text of the figure',
   'basics': 'give the page lang and a title, and every picture words for those who cannot see it',
   'print-pages': 'each sheet should print as one page: a sheet overflows on paper, or something outside the sheets prints',
+  'keyboard-trap': 'check focus management and keydown handlers; allow Tab to leave every component',
+  'tab-order': 'remove positive tabindex and follow the DOM reading order',
+  'keyboard-unavailable': 'test nested frames separately; this pass inspects only the top document',
 };
 
 const VOCAB = {
@@ -196,6 +199,49 @@ function inspect(VOCAB) {
   return { issues, boxes, rem, body };
 }
 
+// Test real Tab navigation after the layout inspection (temporary probes are removed).
+async function keyboardAudit(pg) {
+  const setup = await pg.evaluate(() => {
+    if (document.querySelector('iframe, frame')) return { unsupported: 'nested frames need their own keyboard audit' };
+    const positive = [...document.querySelectorAll('[tabindex]')]
+      .filter(e => Number(e.getAttribute('tabindex')) > 0)
+      .map(e => e.localName + (e.id ? '#' + e.id : ''));
+    for (const [id, edge] of [['__prastora_tab_start__', 'prepend'], ['__prastora_tab_end__', 'append']]) {
+      const b = document.createElement('button');
+      b.id = id; b.type = 'button'; b.setAttribute('aria-hidden', 'true');
+      b.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none';
+      document.body[edge](b);
+    }
+    document.getElementById('__prastora_tab_start__').focus();
+    return { positive, limit: Math.min(512, document.querySelectorAll('*').length + 2) };
+  });
+  if (setup.unsupported) return { unavailable: setup.unsupported, issues: [] };
+  const issues = setup.positive.map(at => ({ rule: 'tab-order', at, detail: 'positive tabindex changes the natural order' }));
+  const visited = new Set();
+  let finished = false;
+  try {
+    for (let step = 0; step < setup.limit; step++) {
+      await pg.keyboard.press('Tab');
+      const focus = await pg.evaluate(() => {
+        const e = document.activeElement;
+        if (e?.id === '__prastora_tab_end__') return 'end';
+        if (!e || e === document.body || e === document.documentElement) return 'outside';
+        return [...document.querySelectorAll('*')].indexOf(e);
+      });
+      if (focus === 'end') { finished = true; break; }
+      if (focus === 'outside' || visited.has(focus)) break;
+      visited.add(focus);
+    }
+    if (!finished) issues.push({ rule: 'keyboard-trap', at: 'document', detail: 'Tab cannot reach the end of the document; inspect focus management' });
+  } finally {
+    await pg.evaluate(() => {
+      document.getElementById('__prastora_tab_start__')?.remove();
+      document.getElementById('__prastora_tab_end__')?.remove();
+    });
+  }
+  return { issues };
+}
+
 const browser = await chromium.launch();
 const reports = [];
 for (const page of pages) {
@@ -221,6 +267,11 @@ for (const page of pages) {
         if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
         if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
         if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
+        if (edge && scheme === 'light') {
+          const keyboard = await keyboardAudit(pg);
+          if (keyboard.unavailable) note({ rule: 'keyboard-unavailable', at: 'document', detail: keyboard.unavailable }, `${u} ${w}px`);
+          for (const i of keyboard.issues) note(i, `${u} ${w}px`);
+        }
         await ctx.close();
       }
       // the promise: within a frame every element stands at the same place of the canvas, in rem
