@@ -11,6 +11,7 @@
 "file:core.css" = "the core stylesheet, built by variants.mjs: three screen frames and a print frame, each a canvas of fixed units and columns that scales as a whole, with margins beyond it; plain HTML styled, the relations and the devices of print"
 "file:MANIFEST.md" = "the manifest for agents, read before laying a page out: frames, the canvas, the relations, the common patterns, and which section of manifest/ to read for what"
 "file:check.mjs" = "the check of pages by rendering: every frame at both edges and seven widths inside, light and dark, and print on A4; whether anything moved on the canvas within a frame; each problem with a fix"
+"file:check.test.mjs" = "browser regressions: an alpha outline keeps the document base across stylesheet directories and encoded paths; the real check passes a valid page and refuses a missing CSS-only outline; node --test check.test.mjs"
 "dir:demo" = "pages laid out with the core, which the check passes"
 "file:demo/index.html" = "the demonstration page: a picture bound to the heading and reaching into the next band, columns of the canvas"
 "dir:src" = "the sources the core is built from"

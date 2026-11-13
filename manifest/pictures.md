@@ -10,9 +10,11 @@ A gridded layer lays 20 × 20 cells over its picture (a twentieth of its width a
 | `data-tag` | | a label: one short line |
 | `data-balloon` | `start` `end` | a speech balloon, its tail at its start or end, toward the speaker below |
 | `data-stackp` | | on a gridded layer: on portrait its blocks become a stack, the drawing is hidden |
-| `data-shape="alpha"` | | on an `img` with `data-float`: text runs round the image's outline; name the image again as `style="--shape: url(…)"`, the only style allowed |
+| `data-shape="alpha"` | | on an `img` with `data-float`: text runs round the image's outline; name the image again as `style="--shape: url(…)"`, the only style allowed; an inline relative URL is relative to the document, just like `src` |
 | `data-l="book"` | | two pages with a gutter, one page on portrait; a child with `data-across` crosses both |
 | `data-reveal` | `fade` `rise` `draw` | appears as it scrolls into view; `draw` on an SVG `path` with `pathLength="1"` draws it; off for readers who ask for less motion |
+
+The core registers `--shape` as a URL so it keeps the base of its declaration when used by the stylesheet. Keep the image and its outline at the same address; no copy beside the stylesheet is needed. Alpha outlines require a browser with CSS `@property` support, and the image must be same-origin or served with CORS permission. The rendering check reports resource loading failures, including missing outline images.
 
 Labels on a drawing: draw the leader in the SVG from the label's cell to the part. With `viewBox="0 0 1000 667"`, cell (col, row) starts at x = (col − 1) × 50, y = (row − 1) × 33.35.
 ```html

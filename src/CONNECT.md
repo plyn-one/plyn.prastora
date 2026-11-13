@@ -40,6 +40,8 @@ node check.mjs page.html [more pages…]
 ```
 It renders each page in every frame (both edges and seven widths inside, light and dark) and on A4, and prints JSON: `ok`, the pages printed, and problems, each with a `fix`. The page is done when `ok` is `true`. `--shots <dir>` saves a picture of each frame and of print.
 
+The check serves the input pages and their linked local core on a temporary loopback HTTP origin. This lets CSS alpha outlines load under the same origin and CORS rules as a real site; opening a file directly in a browser does not provide that origin. Missing or failed resources are reported as `resource-load`.
+
 If Chromium cannot be installed where you work, say so in your report and hand over the page unchecked; do not call it checked.
 
 ## Colours and type of a project

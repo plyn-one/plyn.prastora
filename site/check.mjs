@@ -6,8 +6,9 @@
 // Needs Playwright with Chromium (npm i -D playwright; npx playwright install chromium).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
-import { resolve, dirname, basename } from 'node:path';
-import { mkdirSync, readFileSync } from 'node:fs';
+import { resolve, dirname, basename, relative, isAbsolute, sep } from 'node:path';
+import { mkdirSync, readFileSync, readFile } from 'node:fs';
+import { createServer } from 'node:http';
 // Playwright is looked for beside this file and in the folder the check is run from
 const { chromium } = (() => {
   for (const base of [import.meta.url, pathToFileURL(process.cwd() + '/').href]) {
@@ -25,10 +26,15 @@ if (shots) mkdirSync(shots, { recursive: true });
 
 // the frames are read from the core the page links: its first comment lists them, in rem of the window
 // (16 px to the rem at the browser's default)
-async function framesOf(page) {
+function stylesheetOf(page) {
   const html = readFileSync(page, 'utf8');
   const href = [...html.matchAll(/<link[^>]+>/g)].map(m => m[0]).filter(l => /rel="stylesheet"/.test(l)).map(l => l.match(/href="([^"]+)"/)?.[1]).find(Boolean);
   if (!href) throw new Error(`${page}: no stylesheet linked; link core.css`);
+  return href;
+}
+
+async function framesOf(page) {
+  const href = stylesheetOf(page);
   // the core may be a file beside the page or a pinned release at an address
   const css = /^https?:/.test(href) ? await (await fetch(href)).text() : readFileSync(resolve(dirname(page), href), 'utf8');
   const m = css.match(/frames[^:]*: (\[.*\])/);
@@ -38,6 +44,8 @@ async function framesOf(page) {
 
 // what to do about each problem, for the agent that reads the report
 const FIX = {
+  'resource-load': 'repair the resource address or its server/CORS permissions; an inline --shape URL is relative to the document, like the image src',
+  'shape-outline': 'give the alpha image --shape: url(...) and use a browser with CSS @property support',
   'composition-moves': 'a line lies on the edge of its column, or something is sized outside the vocabulary: move the column by one, or change the words',
   'page-scroll-x': 'something is wider than the window: see escapes-parent for which',
   'escapes-parent': 'give it more columns, let it wrap, or set it in a reel',
@@ -119,6 +127,7 @@ function inspect(VOCAB) {
     const st = el.getAttribute('style');
     const shapeOnly = st && /^\s*--shape:\s*url\([^)]+\)\s*;?\s*$/.test(st) && el.getAttribute('data-shape') === 'alpha';
     if ((st && !shapeOnly) || el.hasAttribute('class')) add('vocabulary', el, 'style and class are not used: say it with the vocabulary');
+    if (el.matches('[data-shape=alpha]') && getComputedStyle(el).shapeOutside === 'none') add('shape-outline', el, 'the alpha image has no computed outline');
   }
 
   // a sheet holds what it was given, and every line on it stands on the grid its numbers name
@@ -196,67 +205,119 @@ function inspect(VOCAB) {
   return { issues, boxes, rem, body };
 }
 
-const browser = await chromium.launch();
-const reports = [];
-for (const page of pages) {
-  const EDGES = await framesOf(page);
-  const url = pathToFileURL(resolve(page)).href;
-  const found = new Map();
-  const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
+// A missing CSS outline must not silently turn into a passing layout.
+async function openPage(pg, url, note, where) {
+  pg.on('requestfailed', request => {
+    const error = request.failure()?.errorText ?? 'request failed';
+    if (error !== 'net::ERR_ABORTED') note({ rule: 'resource-load', at: request.url(), detail: `${request.resourceType()}: ${error}` }, where);
+  });
+  pg.on('response', response => {
+    if (response.status() >= 400) note({ rule: 'resource-load', at: response.url(), detail: `${response.request().resourceType()}: HTTP ${response.status()}` }, where);
+  });
+  await pg.goto(url);
+}
 
-  for (const scheme of ['light', 'dark']) {
-    for (const { u, lo, hi } of EDGES) {
-      const seen = {};
-      // both edges in both schemes; in light also seven widths inside the frame, where a line on the edge
-      // of its column may break otherwise
-      const inner = scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
-      for (const w of [lo, ...inner, hi]) {
-        const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
-        const pg = await ctx.newPage();
-        await pg.goto(url);
-        await pg.evaluate(() => document.fonts.ready);
-        const r = await pg.evaluate(inspect, VOCAB);
-        seen[w] = r;
-        const edge = w === lo || w === hi;
-        if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
-        if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
-        if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
-        await ctx.close();
-      }
-      // the promise: within a frame every element stands at the same place of the canvas, in rem
-      if (scheme === 'light') {
-        const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
-        for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
-          const o = a.get(b[0]);
-          if (!o) continue;
-          const d = Math.max(...[1, 2, 3, 4].map(i => Math.abs(b[i] - o[i])));
-          if (d > 0.5 && !(moved.get(b[0])?.[0] >= d)) moved.set(b[0], [d, w]);
+// CSS shape images use CORS: file URLs are not a same-origin web site, even when the image exists.
+// Serve the page and its linked local core from one temporary loopback origin, without changing either.
+async function servePages(pages) {
+  const files = pages.flatMap(page => {
+    const href = stylesheetOf(page);
+    return [resolve(page), ...(/^https?:/.test(href) ? [] : [resolve(dirname(page), href)])];
+  });
+  const inside = (parent, file) => !isAbsolute(relative(parent, file)) && relative(parent, file).split(sep)[0] !== '..';
+  // Keep the caller's project paths when its core is on a CDN and images live beside the page directory.
+  let root = files.every(file => inside(process.cwd(), file)) ? resolve('.') : dirname(files[0]);
+  for (const file of files) while (isAbsolute(relative(root, file)) || relative(root, file).split(sep)[0] === '..') {
+    const parent = dirname(root);
+    if (parent === root) throw new Error('pages must be on the same filesystem volume');
+    root = parent;
+  }
+  const types = { html: 'text/html; charset=utf-8', css: 'text/css', svg: 'image/svg+xml', js: 'text/javascript', mjs: 'text/javascript', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', woff2: 'font/woff2' };
+  const server = createServer((request, response) => {
+    let file;
+    try { file = resolve(root, '.' + decodeURIComponent(new URL(request.url, 'http://localhost').pathname)); }
+    catch { response.writeHead(400).end(); return; }
+    const rel = relative(root, file);
+    if (isAbsolute(rel) || rel.split(sep).some(p => p === '..' || p === '.git')) { response.writeHead(404).end(); return; }
+    readFile(file, (error, data) => {
+      if (error) { response.writeHead(404).end(); return; }
+      response.writeHead(200, { 'Content-Type': types[file.split('.').pop()] ?? 'application/octet-stream' });
+      response.end(request.method === 'HEAD' ? undefined : data);
+    });
+  });
+  await new Promise((done, fail) => { server.once('error', fail); server.listen(0, '127.0.0.1', done); });
+  return {
+    url: page => `http://127.0.0.1:${server.address().port}/` + relative(root, resolve(page)).split(sep).map(encodeURIComponent).join('/'),
+    close: () => new Promise(done => server.close(done)),
+  };
+}
+
+const local = await servePages(pages);
+const browser = await chromium.launch().catch(async error => { await local.close(); throw error; });
+const reports = [];
+try {
+  for (const page of pages) {
+    const EDGES = await framesOf(page);
+    const url = local.url(page);
+    const found = new Map();
+    const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
+
+    for (const scheme of ['light', 'dark']) {
+      for (const { u, lo, hi } of EDGES) {
+        const seen = {};
+        // both edges in both schemes; in light also seven widths inside the frame, where a line on the edge
+        // of its column may break otherwise
+        const inner = scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
+        for (const w of [lo, ...inner, hi]) {
+          const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
+          const pg = await ctx.newPage();
+          await openPage(pg, url, note, `${u} ${w}px ${scheme}`);
+          await pg.evaluate(() => document.fonts.ready);
+          const r = await pg.evaluate(inspect, VOCAB);
+          seen[w] = r;
+          const edge = w === lo || w === hi;
+          if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
+          if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
+          if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
+          await ctx.close();
         }
-        // the innermost moving element is the cause: a text whose line breaks on the edge, or a size outside the vocabulary
-        for (const [at, [d, w]] of [...moved].sort((x, y) => y[0].length - x[0].length).slice(0, 5))
-          note({ rule: 'composition-moves', at, detail: `moves ${d.toFixed(2)} rem between ${lo} and ${w} px` }, `${u}`);
+        // the promise: within a frame every element stands at the same place of the canvas, in rem
+        if (scheme === 'light') {
+          const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
+          for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
+            const o = a.get(b[0]);
+            if (!o) continue;
+            const d = Math.max(...[1, 2, 3, 4].map(i => Math.abs(b[i] - o[i])));
+            if (d > 0.5 && !(moved.get(b[0])?.[0] >= d)) moved.set(b[0], [d, w]);
+          }
+          // the innermost moving element is the cause: a text whose line breaks on the edge, or a size outside the vocabulary
+          for (const [at, [d, w]] of [...moved].sort((x, y) => y[0].length - x[0].length).slice(0, 5))
+            note({ rule: 'composition-moves', at, detail: `moves ${d.toFixed(2)} rem between ${lo} and ${w} px` }, `${u}`);
+        }
       }
     }
+
+    // print, the fourth frame: the layout on an A4 sheet (197.6 mm between the margins, 747 px), then the pages
+    const ctx = await browser.newContext({ viewport: { width: 747, height: 1040 }, colorScheme: 'light', reducedMotion: 'reduce' });
+    const pg = await ctx.newPage();
+    await openPage(pg, url, note, 'print');
+    await pg.emulateMedia({ media: 'print' });
+    await pg.evaluate(() => document.fonts.ready);
+    const r = await pg.evaluate(inspect, VOCAB);
+    for (const i of r.issues) if (!['vocabulary', 'target-too-small', 'contrast'].includes(i.rule)) note(i, 'print');
+    const pdf = await pg.pdf({ preferCSSPageSize: true, printBackground: true });
+    const sheets = await pg.evaluate(() => document.querySelectorAll('[data-l=sheet]').length);
+    const printed = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
+    if (sheets && printed !== sheets) note({ rule: 'print-pages', at: 'body', detail: `${sheets} sheets print on ${printed} pages` }, 'print');
+    if (shots) await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-print.png`, fullPage: true });
+    await ctx.close();
+
+    const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: FIX[p.rule] }));
+    reports.push({ page, ok: problems.length === 0, frames: EDGES.map(e => `${e.u} ${e.lo}–${e.hi}px`).concat('print A4'), printed_pages: printed, problems });
   }
-
-  // print, the fourth frame: the layout on an A4 sheet (197.6 mm between the margins, 747 px), then the pages
-  const ctx = await browser.newContext({ viewport: { width: 747, height: 1040 }, colorScheme: 'light', reducedMotion: 'reduce' });
-  const pg = await ctx.newPage();
-  await pg.goto(url);
-  await pg.emulateMedia({ media: 'print' });
-  await pg.evaluate(() => document.fonts.ready);
-  const r = await pg.evaluate(inspect, VOCAB);
-  for (const i of r.issues) if (!['vocabulary', 'target-too-small', 'contrast'].includes(i.rule)) note(i, 'print');
-  const pdf = await pg.pdf({ preferCSSPageSize: true, printBackground: true });
-  const sheets = await pg.evaluate(() => document.querySelectorAll('[data-l=sheet]').length);
-  const printed = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
-  if (sheets && printed !== sheets) note({ rule: 'print-pages', at: 'body', detail: `${sheets} sheets print on ${printed} pages` }, 'print');
-  if (shots) await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-print.png`, fullPage: true });
-  await ctx.close();
-
-  const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: FIX[p.rule] }));
-  reports.push({ page, ok: problems.length === 0, frames: EDGES.map(e => `${e.u} ${e.lo}–${e.hi}px`).concat('print A4'), printed_pages: printed, problems });
+} finally {
+  await browser.close();
+  await local.close();
 }
-await browser.close();
 console.log(JSON.stringify(reports.length === 1 ? reports[0] : reports, null, 2));
 process.exit(reports.every(r => r.ok) ? 0 : 1);
