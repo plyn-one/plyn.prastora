@@ -80,7 +80,8 @@ const VOCAB = {
 // runs in the page: what breaks at this width, and the geometry of every element in rem from the canvas edge
 function inspect(VOCAB) {
   const issues = [], boxes = [];
-  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  // the core scales the canvas by what rounding the root size left: a rem on screen is that much larger
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) * (parseFloat(getComputedStyle(document.body).scale) || 1);
   const path = el => {
     const parts = [];
     for (let e = el; e && e !== document.body; e = e.parentElement) {
@@ -123,7 +124,7 @@ function inspect(VOCAB) {
   // a sheet holds what it was given, and every line on it stands on the grid its numbers name
   for (const s of document.querySelectorAll('[data-l=sheet], [data-lines]')) {
     if (s.matches('[data-l=sheet]') && s.scrollHeight > s.clientHeight + 1) add('sheet-overflow', s, `content ${Math.round((s.scrollHeight - s.clientHeight) / rem * 10) / 10} rem taller than the sheet: move text to the next sheet`);
-    const top = s.getBoundingClientRect().top + parseFloat(getComputedStyle(s).paddingTop) * (parseFloat(getComputedStyle(s).zoom) || 1);
+    const top = s.getBoundingClientRect().top + parseFloat(getComputedStyle(s).paddingTop) * (parseFloat(getComputedStyle(s).zoom) || 1) * (parseFloat(getComputedStyle(document.body).scale) || 1);
     const grid = 1.5 * rem * (parseFloat(getComputedStyle(s).zoom) || 1);
     for (const e of s.querySelectorAll('h1, h2, h3, h4, p, li, dt, dd, blockquote')) {
       const off = ((e.getBoundingClientRect().top - top) / grid) % 1;

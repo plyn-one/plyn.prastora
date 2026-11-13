@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 // The version of a release lives here only. A release: set it, run this script, land, then tag v<VERSION>.
 // core.css, CONNECT.md and README.md are written from it, so no text names an old version.
-const VERSION = '0.1.2';
+const VERSION = '0.1.3';
 const variants = JSON.parse(readFileSync('lab/variants.json', 'utf8'));
 const base = readFileSync('src/base.css', 'utf8');
 const demo = readFileSync('demo/index.html', 'utf8');
@@ -97,8 +97,12 @@ function css(v) {
   const block = f => [
     // the root size is set from the window, in rem of the window, and rounded down to a quarter of a pixel (1/64 of
     // the base size): text advances are exactly proportional only at such sizes, so lines break the same on every
-    // screen of the frame; the canvas is then exactly `units` rem and the little that is left joins the margins
+    // screen of the frame; the canvas is then exactly `units` rem
     `  :root { --units: ${f.units}; --cols: ${f.cols}; --text-cols: ${f.name === 'portrait' ? 1 : 2}; --gutter: ${f.name === 'portrait' ? '1rem' : '2rem'}; font-size: calc(${canvasExpr(f)} / ${f.units}); font-size: round(down, calc(${canvasExpr(f)} / ${f.units}), calc(1rem / 64)); }`,
+    // what the rounding leaves (under a sixtieth) is made up by scaling the canvas as a picture: the page follows the
+    // window smoothly, with no step at each quarter pixel, while its text is laid out at the exact size (only for a
+    // canvas given in vw: rem here would be read at the rounded size)
+    canvasExpr(f).includes('rem') ? '' : `  body { scale: tan(atan2(calc(${canvasExpr(f)} / ${f.units}), 1rem)); transform-origin: 50% 0; }`,
     `  :where([data-hide~=${f.name}]) { display: none !important; }`,
     f.name === 'portrait'
       ? `  :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }\n  :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }\n  :where([data-l=canvas][data-pad]) { padding-inline: 0; }\n${placement(f.cols, 'data-xp')}`

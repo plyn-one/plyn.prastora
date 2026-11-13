@@ -1,4 +1,4 @@
-/*! prastora core v0.1.2, variant a: pure scaling as in the earlier Prastora, with margins on wide screens. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
+/*! prastora core v0.1.3, variant a: pure scaling as in the earlier Prastora, with margins on wide screens. Built by variants.mjs from lab/variants.json; edit src/base.css or the variant, not this file.
    frames (rem of the window): [{"name":"portrait","from":0,"to":50,"units":22,"cols":4,"grow":"pure"},{"name":"landscape","from":50,"to":125,"units":80,"cols":12,"grow":"pure"},{"name":"wide","from":125,"to":null,"units":85,"cols":12,"grow":{"share":0.85}}] */
 /* The core's own font, Source Sans 3 (SIL Open Font License, fonts/OFL.txt), served in subsets: a browser loads
    only those whose letters a page uses. One font everywhere keeps lines breaking the same on every system. */
@@ -84,6 +84,8 @@
   :where(h1, h2, h3, h4, h5, h6) { line-height: 1.12; font-weight: 650; text-wrap: balance; letter-spacing: -.01em; }
   :where(p, li, dd, blockquote) { max-inline-size: 68ch; text-wrap: pretty; }
   :where(small, figcaption, caption) { font-size: var(--t-1); }
+  /* smaller text inside a line keeps to the line's height: its own would make the line a little taller at some sizes */
+  :where(p, li, th, td, dt, dd, figcaption, blockquote, h1, h2, h3, h4) :where(small, sub, sup, code, kbd) { line-height: 1; }
   :where(strong, b) { font-weight: 650; }
   :where(code, kbd, samp, pre) { font-family: var(--font-mono); font-size: .92em; }
   :where(:not(pre) > code) { padding: .1em .35em; border-radius: .3em; background: var(--veil); }
@@ -150,6 +152,8 @@
 
   :where([data-l=stack]) { display: flex; flex-direction: column; gap: var(--gap, var(--s1)); }
   :where([data-l=stack]) > :where([data-push]) { margin-block-start: auto; }
+  /* a stack on the canvas with something pushed to its end fills its row, so the push reaches the foot of the row */
+  :where([data-l=canvas]) > :where([data-l=stack]:has(> [data-push])) { align-self: stretch; }
   :where([data-l=stack]) > :where(mark, button, a, small, span, strong, data, img, svg) { align-self: flex-start; }
 
   :where([data-l=cluster]) { display: flex; flex-flow: row wrap; align-items: center; gap: var(--gap, var(--s0)); }
@@ -568,6 +572,7 @@
   :root { --units: 22; --cols: 4; --text-cols: 1; --gutter: 1rem; font-size: calc(100vw / 22); font-size: round(down, calc(100vw / 22), calc(1rem / 64)); }
   @media screen and (width < 50rem) {
     :root { --units: 22; --cols: 4; --text-cols: 1; --gutter: 1rem; font-size: calc(100vw / 22); font-size: round(down, calc(100vw / 22), calc(1rem / 64)); }
+    body { scale: tan(atan2(calc(100vw / 22), 1rem)); transform-origin: 50% 0; }
     :where([data-hide~=portrait]) { display: none !important; }
     :root { --t4: 2.25rem; --t3: 1.75rem; --t2: 1.4rem; --t1: 1.15rem; }
     :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; }
@@ -691,6 +696,7 @@
   }
   @media screen and (width >= 50rem) and (width < 125rem) {
     :root { --units: 80; --cols: 12; --text-cols: 2; --gutter: 2rem; font-size: calc(100vw / 80); font-size: round(down, calc(100vw / 80), calc(1rem / 64)); }
+    body { scale: tan(atan2(calc(100vw / 80), 1rem)); transform-origin: 50% 0; }
     :where([data-hide~=landscape]) { display: none !important; }
     :where([data-x="1-1"]) { grid-column: 1 / 2; }
     :where([data-x="1-2"]) { grid-column: 1 / 3; }
@@ -773,6 +779,7 @@
   }
   @media screen and (width >= 125rem) {
     :root { --units: 85; --cols: 12; --text-cols: 2; --gutter: 2rem; font-size: calc(calc(100vw * 0.85) / 85); font-size: round(down, calc(calc(100vw * 0.85) / 85), calc(1rem / 64)); }
+    body { scale: tan(atan2(calc(calc(100vw * 0.85) / 85), 1rem)); transform-origin: 50% 0; }
     :where([data-hide~=wide]) { display: none !important; }
     :where([data-x="1-1"]) { grid-column: 1 / 2; }
     :where([data-x="1-2"]) { grid-column: 1 / 3; }

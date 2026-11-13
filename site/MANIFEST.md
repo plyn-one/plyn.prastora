@@ -45,7 +45,7 @@ A child of `data-l="canvas"` takes columns with `data-x="first-last"` in landsca
 |---|---|---|
 | `data-space` | `none` `tight` `loose` | the gap of this relation |
 | `data-side` | | the side of a `split` |
-| `data-push` | | in `stack`, `cluster`, `cover`: this and what follows go to the end |
+| `data-push` | | in `stack`, `cluster`, `cover`: this and what follows go to the end; a `stack` on the canvas with it fills its row, so text beside a picture can stand at the picture's foot |
 | `data-pad` | | padding without a panel |
 | `data-surface` | `raised` `outline` `accent` | a panel |
 | `data-tone` | `quiet` `strong` `accent` `danger` `ok` `warn` | emphasis; on `button`: `accent` main action, `danger` destructive, `quiet` minor |

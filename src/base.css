@@ -82,6 +82,8 @@
   :where(h1, h2, h3, h4, h5, h6) { line-height: 1.12; font-weight: 650; text-wrap: balance; letter-spacing: -.01em; }
   :where(p, li, dd, blockquote) { max-inline-size: 68ch; text-wrap: pretty; }
   :where(small, figcaption, caption) { font-size: var(--t-1); }
+  /* smaller text inside a line keeps to the line's height: its own would make the line a little taller at some sizes */
+  :where(p, li, th, td, dt, dd, figcaption, blockquote, h1, h2, h3, h4) :where(small, sub, sup, code, kbd) { line-height: 1; }
   :where(strong, b) { font-weight: 650; }
   :where(code, kbd, samp, pre) { font-family: var(--font-mono); font-size: .92em; }
   :where(:not(pre) > code) { padding: .1em .35em; border-radius: .3em; background: var(--veil); }
@@ -148,6 +150,8 @@
 
   :where([data-l=stack]) { display: flex; flex-direction: column; gap: var(--gap, var(--s1)); }
   :where([data-l=stack]) > :where([data-push]) { margin-block-start: auto; }
+  /* a stack on the canvas with something pushed to its end fills its row, so the push reaches the foot of the row */
+  :where([data-l=canvas]) > :where([data-l=stack]:has(> [data-push])) { align-self: stretch; }
   :where([data-l=stack]) > :where(mark, button, a, small, span, strong, data, img, svg) { align-self: flex-start; }
 
   :where([data-l=cluster]) { display: flex; flex-flow: row wrap; align-items: center; gap: var(--gap, var(--s0)); }
