@@ -65,3 +65,9 @@ adras = [2, 1]
 "čakańnie" = "Every demonstration and the coffee page score 100 in each Lighthouse category on desktop and phone and pass axe-core, the keyboard pass and the validator; check.mjs runs them and reports each problem with its fix."
 "mieryła" = "ahient"
 "upeŭnienaść" = 0.6
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 0
+adras = [2,2]
+vynik = "A second blind test waits unlanded: branch agent/prastora-blind-test-20261113 (pull request 4) holds site/try/atlas-rzeczy/index.html, laid out by another agent on 13 November 2026; the other work branches of the coffee page were removed as landed or replaced."
