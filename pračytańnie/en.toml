@@ -10,7 +10,7 @@
 "file:pračytańnie/en.toml" = "the readings of this place in English"
 "file:core.css" = "the core stylesheet, built by variants.mjs: three screen frames and a print frame, each a canvas of fixed units and columns that scales as a whole, with margins beyond it; plain HTML styled, the relations and the devices of print"
 "file:MANIFEST.md" = "the manifest for agents, read before laying a page out: frames, the canvas, the relations, the common patterns, and which section of manifest/ to read for what"
-"file:check.mjs" = "the rendering check: portrait and landscape in both schemes and A4; --extended checks every frame and scaling within it; real Tab traversal, resource failures and missing outlines; each problem with a fix"
+"file:check.mjs" = "the rendering check: portrait and landscape in both schemes and A4; --extended checks scaling, --axe runs a locally installed accessibility engine; real Tab traversal, resource failures and missing outlines; each problem with a fix"
 "file:check.test.mjs" = "browser regressions: document-relative alpha resources, remote cores, real Tab traversal, radio groups, focus traps, positive tabindex and nested frames; cleanup and combined resource/keyboard failures in both modes; node --test check.test.mjs"
 "dir:demo" = "pages laid out with the core, which the check passes"
 "file:demo/index.html" = "the demonstration page: a picture bound to the heading and reaching into the next band, columns of the canvas"

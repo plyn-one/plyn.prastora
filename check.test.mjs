@@ -112,19 +112,32 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
         }
       });
     }
-    await t.test('axe-core reports an unnamed button with a repair', {
+    await t.test('missing optional axe-core is explicit while standard mode still works', async () => {
+      const hide = join(dir, 'hide-axe.cjs');
+      await writeFile(hide, "const M=require('node:module'),resolve=M._resolveFilename;M._resolveFilename=function(name,...args){if(name==='axe-core'){const e=new Error('axe-core unavailable in dependency test');e.code='MODULE_NOT_FOUND';throw e;}return resolve.call(this,name,...args);};");
+      let failure;
+      try { await execute(process.execPath, ['--require', hide, join(root, 'check.mjs'), '--axe', join(pageDir, 'good.html')], { cwd: root, timeout: 60000 }); }
+      catch (error) { failure = error; }
+      assert.equal(failure?.code, 2);
+      assert.match(failure.stderr, /needs a local axe-core/);
+      const { stdout } = await execute(process.execPath, ['--require', hide, join(root, 'check.mjs'), join(pageDir, 'good.html')], { cwd: root, timeout: 60000 });
+      assert.equal(JSON.parse(stdout).ok, true);
+    });
+    await t.test('axe-core reports an unnamed button with a repair, flags before or after the page', {
       skip: (() => { try { require.resolve('axe-core'); return false; } catch { return 'axe-core not installed'; } })(),
     }, async () => {
       const file = join(pageDir, 'unnamed-button.html');
       await writeFile(file, keyboardPage('<button id="unnamed-button"></button>'));
-      let failure;
-      try { await execute(process.execPath, [join(root, 'check.mjs'), file, '--axe'], { cwd: root, timeout: 60000 }); }
-      catch (error) { failure = error; }
-      assert.equal(failure?.code, 1, 'an unnamed control must fail the axe audit');
-      const report = JSON.parse(failure.stdout);
-      const issue = report.problems.find(p => p.rule === 'axe:button-name' && p.at.includes('unnamed-button'));
-      assert.ok(issue, JSON.stringify(report.problems));
-      assert.ok(issue.fix && issue.detail, 'a violation should provide a diagnosis and repair');
+      for (const args of [[file, '--axe'], ['--axe', file]]) {
+        let failure;
+        try { await execute(process.execPath, [join(root, 'check.mjs'), ...args], { cwd: root, timeout: 60000 }); }
+        catch (error) { failure = error; }
+        assert.equal(failure?.code, 1, 'an unnamed control must fail the axe audit');
+        const report = JSON.parse(failure.stdout);
+        const issue = report.problems.find(p => p.rule === 'axe:button-name' && p.at.includes('unnamed-button'));
+        assert.ok(issue, JSON.stringify(report.problems));
+        assert.ok(issue.fix && issue.detail, 'a violation should provide a diagnosis and repair');
+      }
     });
   } finally {
     if (browser) await browser.close();

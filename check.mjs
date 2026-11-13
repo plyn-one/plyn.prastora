@@ -4,7 +4,7 @@
 // --extended checks every screen frame at both edges and seven interior widths, to verify scaling invariants.
 // --axe runs the local axe-core engine on portrait and landscape in both colour schemes.
 // Reports each problem with a fix. Exit 0 when nothing broke.
-//   node check.mjs <page.html> [more pages…] [--axe] [--axe] [--extended] [--shots <dir>]
+//   node check.mjs <page.html> [more pages…] [--axe] [--extended] [--shots <dir>]
 // Needs Playwright with Chromium (npm i -D playwright; npx playwright install chromium).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
@@ -33,7 +33,7 @@ const axeSource = useAxe ? (() => {
   console.error('check.mjs --axe needs a local axe-core package. Install with: npm i -D axe-core');
   process.exit(2);
 })() : null;
-if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--extended] [--shots <dir>]'); process.exit(2); }
+if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--axe] [--extended] [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
 
 // the frames are read from the core the page links: its first comment lists them, in rem of the window
