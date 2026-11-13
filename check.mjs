@@ -2,8 +2,9 @@
 // The check of pages laid out with prastora. Each page is rendered in every frame of the core it links,
 // once in each distinct screen composition (portrait, landscape), in light and dark, plus A4 print.
 // --extended checks every screen frame at both edges and seven interior widths, to verify scaling invariants.
+// --axe runs the local axe-core engine on portrait and landscape in both colour schemes.
 // Reports each problem with a fix. Exit 0 when nothing broke.
-//   node check.mjs <page.html> [more pages…] [--extended] [--shots <dir>]
+//   node check.mjs <page.html> [more pages…] [--axe] [--axe] [--extended] [--shots <dir>]
 // Needs Playwright with Chromium (npm i -D playwright; npx playwright install chromium).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
@@ -23,6 +24,15 @@ const args = process.argv.slice(2);
 const pages = args.filter((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--'));
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
 const extended = args.includes('--extended');
+const useAxe = args.includes('--axe');
+const axeSource = useAxe ? (() => {
+  for (const base of [import.meta.url, pathToFileURL(process.cwd() + '/').href]) {
+    try { return createRequire(base)('axe-core').source; }
+    catch (error) { if (error.code !== 'MODULE_NOT_FOUND') throw error; }
+  }
+  console.error('check.mjs --axe needs a local axe-core package. Install with: npm i -D axe-core');
+  process.exit(2);
+})() : null;
 if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--extended] [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
 
@@ -253,6 +263,22 @@ async function keyboardAudit(pg) {
   return { issues };
 }
 
+// Run an installed axe-core engine on the actual rendered page; do not fetch scripts at audit time.
+async function axeAudit(pg) {
+  await pg.addScriptTag({ content: axeSource });
+  const violations = await pg.evaluate(async () => {
+    const result = await window.axe.run(document);
+    return result.violations.map(v => ({
+      rule: 'axe:' + v.id, detail: v.help + (v.impact ? ' (' + v.impact + ')' : ''),
+      helpUrl: v.helpUrl,
+      nodes: v.nodes.map(n => ({ at: n.target.join(' -> '), fix: n.failureSummary || v.help }))
+    }));
+  });
+  return violations.flatMap(v => v.nodes.map(n => ({
+    rule: v.rule, at: n.at, detail: v.detail, fix: n.fix + ' (' + v.helpUrl + ')'
+  })));
+}
+
 // A missing CSS outline must not silently turn into a passing layout.
 async function openPage(pg, url, note, where) {
   pg.on('requestfailed', request => {
@@ -328,6 +354,9 @@ try {
           if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
           if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
           if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
+          if (useAxe && w === lo && (u === 'portrait' || u === 'landscape')) {
+            for (const issue of await axeAudit(pg)) note(issue, `${u} ${w}px ${scheme} axe`);
+          }
           if (w === lo && scheme === 'light' && (u === 'portrait' || u === 'landscape')) {
             const keyboard = await keyboardAudit(pg);
             if (keyboard.unavailable) note({ rule: 'keyboard-unavailable', at: 'document', detail: keyboard.unavailable }, `${u} ${w}px`);
@@ -366,7 +395,7 @@ try {
     if (shots) await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-print.png`, fullPage: true });
     await ctx.close();
 
-    const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: FIX[p.rule] }));
+    const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: p.fix ?? FIX[p.rule] }));
     reports.push({ page, ok: problems.length === 0, frames: FRAMES.map(e => extended ? `${e.u} ${e.lo}–${e.hi}px` : `${e.u} ${e.lo}px`).concat('print A4'), printed_pages: printed, problems });
   }
 } finally {
