@@ -270,9 +270,9 @@ function htmlAudit(page) {
   try { report = JSON.parse(run.stdout); }
   catch { throw new Error('Nu Html Checker produced invalid JSON for ' + page + ': ' + run.stdout.slice(0, 250)); }
   if (!Array.isArray(report.messages)) throw new Error('Nu Html Checker returned no messages array for ' + page);
-  return report.messages.filter(m => m.type === 'error' || m.type === 'non-document-error' || m.type === 'warning')
+  return report.messages.filter(m => m.type === 'error' || m.type === 'non-document-error' || (m.type === 'info' && m.subtype === 'warning'))
     .map(m => ({
-      rule: 'html:' + m.type, at: m.lastLine ? page + ':' + m.lastLine + ':' + (m.firstColumn || 1) : page,
+      rule: 'html:' + (m.type === 'info' ? 'warning' : m.type), at: m.lastLine ? page + ':' + m.lastLine + ':' + (m.firstColumn || 1) : page,
       detail: m.message, fix: 'Correct the HTML at the reported line/column; see https://validator.github.io/validator/'
     }));
 }

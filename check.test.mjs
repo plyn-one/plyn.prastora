@@ -116,7 +116,7 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const bin = join(dir, 'mockbin');
       await mkdir(bin);
       const java = join(bin, 'java');
-      await writeFile(java, '#!/bin/sh\necho \'{"messages":[{"type":"error","lastLine":3,"firstColumn":9,"message":"Bad element"}]}\'\n', { mode: 0o755 });
+      await writeFile(java, '#!/bin/sh\necho \'{"messages":[{"type":"error","lastLine":3,"firstColumn":9,"message":"Bad element"},{"type":"info","subtype":"warning","lastLine":4,"firstColumn":2,"message":"Questionable markup"}]}\'\n', { mode: 0o755 });
       const jar = join(dir, 'vnu.jar');
       await writeFile(jar, '');
       let error;
@@ -128,6 +128,8 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const issues = JSON.parse(error.stdout).problems;
       assert.ok(issues.some(i => i.rule === 'html:error' && i.at.includes(':3:9') &&
         i.detail === 'Bad element' && i.fix));
+      assert.ok(issues.some(i => i.rule === 'html:warning' && i.at.includes(':4:2') &&
+        i.detail === 'Questionable markup' && i.fix));
     });
   } finally {
     if (browser) await browser.close();
