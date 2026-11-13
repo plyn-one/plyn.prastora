@@ -33,7 +33,7 @@ jobs:
           fi
           for file in "${pages[@]}"; do
             name="${file//\//_}"
-            node check.mjs "$file" --shots "prastora-shots/$name" > "prastora-reports/$name.json"
+            node check.mjs "$file" --extended --shots "prastora-shots/$name" > "prastora-reports/$name.json"
           done
       - name: Upload verdict and screenshots
         if: always()
