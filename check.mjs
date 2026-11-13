@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // The check of pages laid out with prastora. Each page is rendered in every frame of the core it links,
-// at both edges and seven widths inside, in light and dark, and printed on A4 (the print frame); what broke
-// is printed as JSON, each problem with a fix. Exit 0 when nothing did.
-//   node check.mjs <page.html> [more pages…] [--shots <dir>]
+// once in each distinct screen composition (portrait, landscape), in light and dark, plus A4 print.
+// --extended checks every screen frame at both edges and seven interior widths, to verify scaling invariants.
+// Reports each problem with a fix. Exit 0 when nothing broke.
+//   node check.mjs <page.html> [more pages…] [--extended] [--shots <dir>]
 // Needs Playwright with Chromium (npm i -D playwright; npx playwright install chromium).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
@@ -20,7 +21,8 @@ const { chromium } = (() => {
 const args = process.argv.slice(2);
 const pages = args.filter((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--'));
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
-if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--shots <dir>]'); process.exit(2); }
+const extended = args.includes('--extended');
+if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--extended] [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
 
 // the frames are read from the core the page links: its first comment lists them, in rem of the window
@@ -246,28 +248,30 @@ const browser = await chromium.launch();
 const reports = [];
 for (const page of pages) {
   const EDGES = await framesOf(page);
+  // Wide differs from landscape by the margins only; print has a separate pass below.
+  const FRAMES = extended ? EDGES : EDGES.filter(f => f.u === 'portrait' || f.u === 'landscape');
   const url = pathToFileURL(resolve(page)).href;
   const found = new Map();
   const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
 
   for (const scheme of ['light', 'dark']) {
-    for (const { u, lo, hi } of EDGES) {
+    for (const { u, lo, hi } of FRAMES) {
       const seen = {};
-      // both edges in both schemes; in light also seven widths inside the frame, where a line on the edge
-      // of its column may break otherwise
-      const inner = scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
-      for (const w of [lo, ...inner, hi]) {
+      // A normal audit samples one composition per mode. Extended audits scaling across the full frame.
+      const inner = extended && scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
+      const widths = extended ? [lo, ...inner, hi] : [lo];
+      for (const w of widths) {
         const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
         const pg = await ctx.newPage();
         await pg.goto(url);
         await pg.evaluate(() => document.fonts.ready);
         const r = await pg.evaluate(inspect, VOCAB);
         seen[w] = r;
-        const edge = w === lo || w === hi;
+        const edge = !extended || w === lo || w === hi;
         if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
         if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
         if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
-        if (edge && scheme === 'light') {
+        if (w === lo && scheme === 'light' && (u === 'portrait' || u === 'landscape')) {
           const keyboard = await keyboardAudit(pg);
           if (keyboard.unavailable) note({ rule: 'keyboard-unavailable', at: 'document', detail: keyboard.unavailable }, `${u} ${w}px`);
           for (const i of keyboard.issues) note(i, `${u} ${w}px`);
@@ -275,7 +279,7 @@ for (const page of pages) {
         await ctx.close();
       }
       // the promise: within a frame every element stands at the same place of the canvas, in rem
-      if (scheme === 'light') {
+      if (extended && scheme === 'light') {
         const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
         for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
           const o = a.get(b[0]);
@@ -306,7 +310,7 @@ for (const page of pages) {
   await ctx.close();
 
   const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: FIX[p.rule] }));
-  reports.push({ page, ok: problems.length === 0, frames: EDGES.map(e => `${e.u} ${e.lo}–${e.hi}px`).concat('print A4'), printed_pages: printed, problems });
+  reports.push({ page, ok: problems.length === 0, frames: FRAMES.map(e => extended ? `${e.u} ${e.lo}–${e.hi}px` : `${e.u} ${e.lo}px`).concat('print A4'), printed_pages: printed, problems });
 }
 await browser.close();
 console.log(JSON.stringify(reports.length === 1 ? reports[0] : reports, null, 2));
