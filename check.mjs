@@ -21,7 +21,7 @@ const { chromium } = (() => {
 })();
 
 const args = process.argv.slice(2);
-const pages = args.filter((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--'));
+const pages = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--shots');
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
 const extended = args.includes('--extended');
 const useAxe = args.includes('--axe');
