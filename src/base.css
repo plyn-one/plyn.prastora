@@ -2,6 +2,13 @@
 
 @layer reset, tokens, base, relation, surface, tone;
 
+/* Resolve an inline image URL where it is declared, before var() carries it into this stylesheet. */
+@property --shape {
+  syntax: "<url> | none";
+  inherits: false;
+  initial-value: none;
+}
+
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
   * { margin: 0; }
