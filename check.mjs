@@ -2,14 +2,16 @@
 // The check of pages laid out with prastora. Each page is rendered in every frame of the core it links,
 // once in each distinct screen composition (portrait, landscape), in light and dark, plus A4 print.
 // --extended checks every screen frame at both edges and seven interior widths, to verify scaling invariants.
+// --html validates source HTML with the locally installed Nu Html Checker (VNU_JAR path).
 // Reports each problem with a fix. Exit 0 when nothing broke.
-//   node check.mjs <page.html> [more pages…] [--extended] [--shots <dir>]
+//   node check.mjs <page.html> [more pages…] [--html] [--html] [--extended] [--shots <dir>]
 // Needs Playwright with Chromium (npm i -D playwright; npx playwright install chromium).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { resolve, dirname, basename, relative, isAbsolute, sep } from 'node:path';
 import { mkdirSync, readFileSync, readFile } from 'node:fs';
 import { createServer } from 'node:http';
+import { spawnSync } from 'node:child_process';
 // Playwright is looked for beside this file and in the folder the check is run from
 const { chromium } = (() => {
   for (const base of [import.meta.url, pathToFileURL(process.cwd() + '/').href]) {
@@ -23,8 +25,11 @@ const args = process.argv.slice(2);
 const pages = args.filter((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--'));
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
 const extended = args.includes('--extended');
+const useHtml = args.includes('--html');
+const vnuJar = process.env.VNU_JAR;
 if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--extended] [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
+if (useHtml && !vnuJar) { console.error('check.mjs --html requires VNU_JAR pointing to a local vnu.jar'); process.exit(2); }
 
 // the frames are read from the core the page links: its first comment lists them, in rem of the window
 // (16 px to the rem at the browser's default)
@@ -253,6 +258,25 @@ async function keyboardAudit(pg) {
   return { issues };
 }
 
+// Validate the original HTML once, without a remote service or a browser DOM rewrite.
+function htmlAudit(page) {
+  const run = spawnSync('java', ['-jar', resolve(vnuJar), '--format', 'json', '--stdout',
+    '--exit-zero-always', '--skip-info-messages', resolve(page)], { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  if (run.error || run.status !== 0) {
+    throw new Error('Nu Html Checker could not run for ' + page + ': ' +
+      (run.error?.message || run.stderr?.trim() || 'exit ' + run.status));
+  }
+  let report;
+  try { report = JSON.parse(run.stdout); }
+  catch { throw new Error('Nu Html Checker produced invalid JSON for ' + page + ': ' + run.stdout.slice(0, 250)); }
+  if (!Array.isArray(report.messages)) throw new Error('Nu Html Checker returned no messages array for ' + page);
+  return report.messages.filter(m => m.type === 'error' || m.type === 'non-document-error' || m.type === 'warning')
+    .map(m => ({
+      rule: 'html:' + m.type, at: m.lastLine ? page + ':' + m.lastLine + ':' + (m.firstColumn || 1) : page,
+      detail: m.message, fix: 'Correct the HTML at the reported line/column; see https://validator.github.io/validator/'
+    }));
+}
+
 // A missing CSS outline must not silently turn into a passing layout.
 async function openPage(pg, url, note, where) {
   pg.on('requestfailed', request => {
@@ -310,6 +334,7 @@ try {
     const url = local.url(page);
     const found = new Map();
     const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
+    if (useHtml) for (const issue of htmlAudit(page)) note(issue, 'source HTML');
 
     for (const scheme of ['light', 'dark']) {
       for (const { u, lo, hi } of FRAMES) {
@@ -366,7 +391,7 @@ try {
     if (shots) await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-print.png`, fullPage: true });
     await ctx.close();
 
-    const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: FIX[p.rule] }));
+    const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: p.fix ?? FIX[p.rule] }));
     reports.push({ page, ok: problems.length === 0, frames: FRAMES.map(e => extended ? `${e.u} ${e.lo}–${e.hi}px` : `${e.u} ${e.lo}px`).concat('print A4'), printed_pages: printed, problems });
   }
 } finally {

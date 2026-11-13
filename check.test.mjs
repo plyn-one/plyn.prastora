@@ -112,6 +112,23 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
         }
       });
     }
+    await t.test('optional HTML validation maps Nu JSON messages and fails explicitly', async () => {
+      const bin = join(dir, 'mockbin');
+      await mkdir(bin);
+      const java = join(bin, 'java');
+      await writeFile(java, '#!/bin/sh\necho \'{"messages":[{"type":"error","lastLine":3,"firstColumn":9,"message":"Bad element"}]}\'\n', { mode: 0o755 });
+      const jar = join(dir, 'vnu.jar');
+      await writeFile(jar, '');
+      let error;
+      try {
+        await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'good.html'), '--html'],
+          { cwd: root, timeout: 60000, env: { ...process.env, PATH: bin + ':' + process.env.PATH, VNU_JAR: jar } });
+      } catch (e) { error = e; }
+      assert.equal(error?.code, 1);
+      const issues = JSON.parse(error.stdout).problems;
+      assert.ok(issues.some(i => i.rule === 'html:error' && i.at.includes(':3:9') &&
+        i.detail === 'Bad element' && i.fix));
+    });
   } finally {
     if (browser) await browser.close();
     await new Promise(done => server.close(done));

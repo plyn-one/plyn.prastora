@@ -37,8 +37,13 @@ curl -fsSLo check.mjs https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v{{VERS
 npm i -D playwright
 npx playwright install chromium
 node check.mjs page.html [more pages…]
+
+# Optional local Nu Html Checker (Java 17+, vnu.jar downloaded once and stored locally):
+VNU_JAR=/path/to/vnu.jar node check.mjs page.html --html
 ```
 The normal audit renders portrait and landscape once each in light and dark, plus A4 print. `--extended` adds the wide frame, both frame edges and seven interior widths in light, checking whether the composition moves. Both modes test real Tab traversal in portrait and landscape, reporting positive tabindex and focus traps; temporary focus probes are removed before the page closes. Nested frames are reported as requiring their own keyboard check. Focus appearance and screen-reader completeness are not evaluated by this pass.
+
+Optional `--html` checks the original source with the Nu Html Checker locally, reporting errors and warnings with line numbers and fixes; it requires Java and `VNU_JAR`, and fails explicitly when the checker cannot run. It does not use the public validator service, an API key or a network request during checking.
 
 The check prints JSON: `ok`, the pages printed, and problems, each with a `fix`. The page is done when `ok` is `true`. `--shots <dir>` saves a picture of the checked frame edges and of print.
 
