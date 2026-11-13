@@ -144,3 +144,14 @@ kola = "usie"
 "file:site/v0.1.3/fonts/source-sans-3-latin-ext.woff2" = { faza = "asadak", rola = "prajava" }
 "file:site/v0.1.3/fonts/source-sans-3-latin.woff2" = { faza = "asadak", rola = "prajava" }
 "file:site/v0.1.3/fonts/source-sans-3-vietnamese.woff2" = { faza = "asadak", rola = "prajava" }
+"dir:site/v0.1.4" = { faza = "asadak", rola = "prajava" }
+"dir:site/v0.1.4/manifest" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/CONNECT.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/MANIFEST.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/README.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/check.mjs" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/core.css" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/manifest/documents.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/manifest/magazine.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/manifest/pictures.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.4/manifest/type.md" = { faza = "asadak", rola = "prajava" }
