@@ -112,6 +112,20 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
         }
       });
     }
+    await t.test('axe-core reports an unnamed button with a repair', {
+      skip: (() => { try { require.resolve('axe-core'); return false; } catch { return 'axe-core not installed'; } })(),
+    }, async () => {
+      const file = join(pageDir, 'unnamed-button.html');
+      await writeFile(file, keyboardPage('<button id="unnamed-button"></button>'));
+      let failure;
+      try { await execute(process.execPath, [join(root, 'check.mjs'), file, '--axe'], { cwd: root, timeout: 60000 }); }
+      catch (error) { failure = error; }
+      assert.equal(failure?.code, 1, 'an unnamed control must fail the axe audit');
+      const report = JSON.parse(failure.stdout);
+      const issue = report.problems.find(p => p.rule === 'axe:button-name' && p.at.includes('unnamed-button'));
+      assert.ok(issue, JSON.stringify(report.problems));
+      assert.ok(issue.fix && issue.detail, 'a violation should provide a diagnosis and repair');
+    });
   } finally {
     if (browser) await browser.close();
     await new Promise(done => server.close(done));
