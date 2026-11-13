@@ -178,3 +178,14 @@ kola = "usie"
 "file:site/v0.1.6/manifest/magazine.md" = { faza = "asadak", rola = "prajava" }
 "file:site/v0.1.6/manifest/pictures.md" = { faza = "asadak", rola = "prajava" }
 "file:site/v0.1.6/manifest/type.md" = { faza = "asadak", rola = "prajava" }
+"dir:site/v0.1.7" = { faza = "asadak", rola = "prajava" }
+"dir:site/v0.1.7/manifest" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/CONNECT.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/MANIFEST.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/README.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/check.mjs" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/core.css" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/manifest/documents.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/manifest/magazine.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/manifest/pictures.md" = { faza = "asadak", rola = "prajava" }
+"file:site/v0.1.7/manifest/type.md" = { faza = "asadak", rola = "prajava" }
