@@ -34,3 +34,34 @@ faza = "ściah"
 "cełaść" = 0
 adras = [2,2]
 vynik = "First blind test of the expectation at zapis 4, 12 November 2026. Another agent, given only a task (a one-page site of a coffee house) and the published address of CONNECT.md, could not open that address from its environment, found the framework through the map of Plyń and the repository, and laid the page out from the manifest alone. It ran the check once and stopped at MODULE_NOT_FOUND, as the guide did not say to fetch check.mjs into the project and install Playwright beside it. The page, checked afterwards in this session, passed at the first run in every frame, light and dark, and in print on two sheets; it used only the vocabulary, no class and no style. Fixed after it: README.md for agents outside Plyń, CONNECT.md linking the core by release tag through a CDN serving the repository and telling how to get and run the check, the check finding Playwright from the folder it runs in. The expectation stays open until an agent runs the check itself within two runs."
+
+[[zapis]]
+faza = "dadzienaść"
+"hłybinia" = 2
+vynik = "How does a page laid out with Prastora meet PageSpeed Insights and the automatic checks of SEO, screen readers and keyboard use out of the box, and how does check.mjs prove it?"
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 6
+adras = [1,1]
+vynik = "core.css and its sources, MANIFEST.md and manifest/, check.mjs, the demonstrations and site/try/coffee/."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 6
+adras = [1,2]
+vynik = "Locally, with no key or quota: Lighthouse (performance, accessibility, best practices, SEO), axe-core, a keyboard pass with Playwright (every control reached by Tab, in order, focus visible, no trap), the accessibility tree a screen reader reads, the Nu HTML validator. What the core can secure it secures; what only a page can, the check names with its fix."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 6
+adras = [1,3]
+vynik = "At release 0.1.4 (system font, unrounded root size) Lighthouse gave the coffee page on 13 November 2026 100 performance, 100 accessibility, 100 best practices and 92 SEO on desktop and phone. It noted photographs larger than shown (about 120 KB), the core as a render-blocking stylesheet (about 0.3 s on a phone; the build makes no minified core) and no robots.txt on the site. The core has no focus style or skip link of its own."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 6
+adras = [2, 1]
+"čakańnie" = "Every demonstration and the coffee page score 100 in each Lighthouse category on desktop and phone and pass axe-core, the keyboard pass and the validator; check.mjs runs them and reports each problem with its fix."
+"mieryła" = "ahient"
+"upeŭnienaść" = 0.6
