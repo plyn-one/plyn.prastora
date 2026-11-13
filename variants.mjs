@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 // The version of a release lives here only. A release: set it, run this script, land, then tag v<VERSION>.
 // core.css, CONNECT.md and README.md are written from it, so no text names an old version.
-const VERSION = '0.1.6';
+const VERSION = '0.1.7';
 const variants = JSON.parse(readFileSync('lab/variants.json', 'utf8'));
 const base = readFileSync('src/base.css', 'utf8');
 const demo = readFileSync('demo/index.html', 'utf8');

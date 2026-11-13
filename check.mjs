@@ -3,8 +3,9 @@
 // once in each distinct screen composition (portrait, landscape), in light and dark, plus A4 print.
 // --extended checks every screen frame at both edges and seven interior widths, to verify scaling invariants.
 // --html validates source HTML with the locally installed Nu Html Checker (VNU_JAR path).
+// --axe runs the local axe-core engine on portrait and landscape in both colour schemes.
 // Reports each problem with a fix. Exit 0 when nothing broke.
-//   node check.mjs <page.html> [more pages…] [--html] [--html] [--extended] [--shots <dir>]
+//   node check.mjs <page.html> [more pages…] [--axe] [--html] [--extended] [--shots <dir>]
 // Needs Playwright with Chromium (npm i -D playwright; npx playwright install chromium).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
@@ -22,13 +23,23 @@ const { chromium } = (() => {
 })();
 
 const args = process.argv.slice(2);
-const pages = args.filter((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--'));
+const pages = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--shots');
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
 const extended = args.includes('--extended');
 const useHtml = args.includes('--html');
 const vnuJar = process.env.VNU_JAR;
-if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--extended] [--shots <dir>]'); process.exit(2); }
+const useAxe = args.includes('--axe');
+const axeSource = useAxe ? (() => {
+  for (const base of [import.meta.url, pathToFileURL(process.cwd() + '/').href]) {
+    try { return createRequire(base)('axe-core').source; }
+    catch (error) { if (error.code !== 'MODULE_NOT_FOUND') throw error; }
+  }
+  console.error('check.mjs --axe needs a local axe-core package. Install with: npm i -D axe-core');
+  process.exit(2);
+})() : null;
+if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--axe] [--html] [--extended] [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
+
 if (useHtml && !vnuJar) { console.error('check.mjs --html requires VNU_JAR pointing to a local vnu.jar'); process.exit(2); }
 
 // the frames are read from the core the page links: its first comment lists them, in rem of the window
@@ -258,6 +269,22 @@ async function keyboardAudit(pg) {
   return { issues };
 }
 
+// Run an installed axe-core engine on the actual rendered page; do not fetch scripts at audit time.
+async function axeAudit(pg) {
+  await pg.addScriptTag({ content: axeSource });
+  const violations = await pg.evaluate(async () => {
+    const result = await window.axe.run(document);
+    return result.violations.map(v => ({
+      rule: 'axe:' + v.id, detail: v.help + (v.impact ? ' (' + v.impact + ')' : ''),
+      helpUrl: v.helpUrl,
+      nodes: v.nodes.map(n => ({ at: n.target.join(' -> '), fix: n.failureSummary || v.help }))
+    }));
+  });
+  return violations.flatMap(v => v.nodes.map(n => ({
+    rule: v.rule, at: n.at, detail: v.detail, fix: n.fix + ' (' + v.helpUrl + ')'
+  })));
+}
+
 // Validate the original HTML once, without a remote service or a browser DOM rewrite.
 function htmlAudit(page) {
   const run = spawnSync('java', ['-jar', resolve(vnuJar), '--format', 'json', '--stdout',
@@ -270,7 +297,7 @@ function htmlAudit(page) {
   try { report = JSON.parse(run.stdout); }
   catch { throw new Error('Nu Html Checker produced invalid JSON for ' + page + ': ' + run.stdout.slice(0, 250)); }
   if (!Array.isArray(report.messages)) throw new Error('Nu Html Checker returned no messages array for ' + page);
-  return report.messages.filter(m => m.type === 'error' || m.type === 'non-document-error' || (m.type === 'info' && m.subtype === 'warning'))
+  return report.messages.filter(m => m.type === 'error' || m.type === 'non-document-error' || (m.type === 'info' && m.subType === 'warning'))
     .map(m => ({
       rule: 'html:' + (m.type === 'info' ? 'warning' : m.type), at: m.lastLine ? page + ':' + m.lastLine + ':' + (m.firstColumn || 1) : page,
       detail: m.message, fix: 'Correct the HTML at the reported line/column; see https://validator.github.io/validator/'
@@ -287,6 +314,14 @@ async function openPage(pg, url, note, where) {
     if (response.status() >= 400) note({ rule: 'resource-load', at: response.url(), detail: `${response.request().resourceType()}: HTTP ${response.status()}` }, where);
   });
   await pg.goto(url);
+}
+
+// Font loading can invalidate SVG geometry; sample after the browser renders that layout.
+async function renderedLayout(pg) {
+  await pg.evaluate(async () => {
+    await document.fonts.ready;
+    await new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done)));
+  });
 }
 
 // CSS shape images use CORS: file URLs are not a same-origin web site, even when the image exists.
@@ -334,6 +369,7 @@ try {
     const url = local.url(page);
     const found = new Map();
     const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
+
     if (useHtml) for (const issue of htmlAudit(page)) note(issue, 'source HTML');
 
     for (const scheme of ['light', 'dark']) {
@@ -346,13 +382,16 @@ try {
           const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
           const pg = await ctx.newPage();
           await openPage(pg, url, note, `${u} ${w}px ${scheme}`);
-          await pg.evaluate(() => document.fonts.ready);
+          await renderedLayout(pg);
           const r = await pg.evaluate(inspect, VOCAB);
           seen[w] = r;
           const edge = !extended || w === lo || w === hi;
           if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
           if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
           if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
+          if (useAxe && w === lo && (u === 'portrait' || u === 'landscape')) {
+            for (const issue of await axeAudit(pg)) note(issue, `${u} ${w}px ${scheme} axe`);
+          }
           if (w === lo && scheme === 'light' && (u === 'portrait' || u === 'landscape')) {
             const keyboard = await keyboardAudit(pg);
             if (keyboard.unavailable) note({ rule: 'keyboard-unavailable', at: 'document', detail: keyboard.unavailable }, `${u} ${w}px`);
@@ -381,7 +420,7 @@ try {
     const pg = await ctx.newPage();
     await openPage(pg, url, note, 'print');
     await pg.emulateMedia({ media: 'print' });
-    await pg.evaluate(() => document.fonts.ready);
+    await renderedLayout(pg);
     const r = await pg.evaluate(inspect, VOCAB);
     for (const i of r.issues) if (!['vocabulary', 'target-too-small', 'contrast'].includes(i.rule)) note(i, 'print');
     const pdf = await pg.pdf({ preferCSSPageSize: true, printBackground: true });

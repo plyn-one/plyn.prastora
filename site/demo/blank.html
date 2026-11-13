@@ -13,13 +13,13 @@
     <strong>Prastora</strong>
     <small data-tone="quiet">A blank: filled in on screen, printed as the form with what was entered</small>
     <nav aria-label="Demonstrations" data-push>
-      <ul role="list" data-l="cluster"><li><a href="document.html">Document</a></li><li><a href="index.html">First</a></li></ul>
+      <ul data-l="cluster"><li><a href="document.html">Document</a></li><li><a href="index.html">First</a></li></ul>
     </nav>
   </header>
 
   <main data-l="stack" data-space="loose">
-    <section data-l="spread" aria-label="The blank">
-      <article data-l="sheet">
+    <div role="group" data-l="spread" aria-label="The blank">
+      <div data-l="sheet">
         <form data-l="canvas" action="#" aria-labelledby="blank-title">
           <h1 id="blank-title" data-x="1-12">Request for copies of documents</h1>
           <p data-x="1-12"><small>Form R-7 · Fill in block letters, one letter in each box. Fields marked * are required.</small></p>
@@ -34,7 +34,7 @@
 
           <fieldset data-x="1-12" data-l="canvas">
             <legend data-x="1-12">2. Address for delivery</legend>
-            <label data-x="1-8">Street and house *<input name="street" required autocomplete="street-address"></label>
+            <label data-x="1-8">Street and house *<input name="street" required autocomplete="address-line1"></label>
             <label data-x="9-12">Postal code *<input data-comb="6" maxlength="6" name="postcode" required autocomplete="postal-code"></label>
             <label data-x="1-8">City *<input name="city" required autocomplete="address-level2"></label>
             <label data-x="9-12">Country<input name="country" autocomplete="country-name"></label>
@@ -66,8 +66,8 @@
           <div data-x="1-12" data-l="cluster"><button type="submit" data-tone="accent">Send</button><button type="button" data-tone="quiet">Print</button></div>
         </form>
         <footer>Form R-7 · a fictional blank for demonstration</footer>
-      </article>
-    </section>
+      </div>
+    </div>
   </main>
 </div>
 </body>

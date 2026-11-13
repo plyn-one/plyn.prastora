@@ -112,24 +112,63 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
         }
       });
     }
-    await t.test('optional HTML validation maps Nu JSON messages and fails explicitly', async () => {
-      const bin = join(dir, 'mockbin');
-      await mkdir(bin);
-      const java = join(bin, 'java');
-      await writeFile(java, '#!/bin/sh\necho \'{"messages":[{"type":"error","lastLine":3,"firstColumn":9,"message":"Bad element"},{"type":"info","subtype":"warning","lastLine":4,"firstColumn":2,"message":"Questionable markup"}]}\'\n', { mode: 0o755 });
-      const jar = join(dir, 'vnu.jar');
-      await writeFile(jar, '');
-      let error;
-      try {
-        await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'good.html'), '--html'],
-          { cwd: root, timeout: 60000, env: { ...process.env, PATH: bin + ':' + process.env.PATH, VNU_JAR: jar } });
-      } catch (e) { error = e; }
-      assert.equal(error?.code, 1);
-      const issues = JSON.parse(error.stdout).problems;
-      assert.ok(issues.some(i => i.rule === 'html:error' && i.at.includes(':3:9') &&
-        i.detail === 'Bad element' && i.fix));
-      assert.ok(issues.some(i => i.rule === 'html:warning' && i.at.includes(':4:2') &&
-        i.detail === 'Questionable markup' && i.fix));
+    await t.test('missing optional axe-core is explicit while standard mode still works', async () => {
+      const hide = join(dir, 'hide-axe.cjs');
+      await writeFile(hide, "const M=require('node:module'),resolve=M._resolveFilename;M._resolveFilename=function(name,...args){if(name==='axe-core'){const e=new Error('axe-core unavailable in dependency test');e.code='MODULE_NOT_FOUND';throw e;}return resolve.call(this,name,...args);};");
+      let failure;
+      try { await execute(process.execPath, ['--require', hide, join(root, 'check.mjs'), '--axe', join(pageDir, 'good.html')], { cwd: root, timeout: 60000 }); }
+      catch (error) { failure = error; }
+      assert.equal(failure?.code, 2);
+      assert.match(failure.stderr, /needs a local axe-core/);
+      const { stdout } = await execute(process.execPath, ['--require', hide, join(root, 'check.mjs'), join(pageDir, 'good.html')], { cwd: root, timeout: 60000 });
+      assert.equal(JSON.parse(stdout).ok, true);
+    });
+    await t.test('axe-core reports an unnamed button with a repair, flags before or after the page', {
+      skip: (() => { try { require.resolve('axe-core'); return false; } catch { return 'axe-core not installed'; } })(),
+    }, async () => {
+      const file = join(pageDir, 'unnamed-button.html');
+      await writeFile(file, keyboardPage('<button id="unnamed-button"></button>'));
+      for (const args of [[file, '--axe'], ['--axe', file]]) {
+        let failure;
+        try { await execute(process.execPath, [join(root, 'check.mjs'), ...args], { cwd: root, timeout: 60000 }); }
+        catch (error) { failure = error; }
+        assert.equal(failure?.code, 1, 'an unnamed control must fail the axe audit');
+        const report = JSON.parse(failure.stdout);
+        const issue = report.problems.find(p => p.rule === 'axe:button-name' && p.at.includes('unnamed-button'));
+        assert.ok(issue, JSON.stringify(report.problems));
+        assert.ok(issue.fix && issue.detail, 'a violation should provide a diagnosis and repair');
+      }
+    });
+    await t.test('missing optional VNU_JAR fails explicitly and normal mode still works', async () => {
+      const env = { ...process.env }; delete env.VNU_JAR;
+      let failure;
+      try { await execute(process.execPath, [join(root, 'check.mjs'), '--html', join(pageDir, 'good.html')], { cwd: root, timeout: 60000, env }); }
+      catch (error) { failure = error; }
+      assert.equal(failure?.code, 2);
+      assert.match(failure.stderr, /requires VNU_JAR/);
+      const { stdout } = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'good.html')], { cwd: root, timeout: 60000, env });
+      assert.equal(JSON.parse(stdout).ok, true);
+    });
+    await t.test('real Nu maps errors and warnings with source positions', {
+      skip: !process.env.VNU_JAR && 'VNU_JAR not configured',
+    }, async () => {
+      const file = join(pageDir, 'invalid-markup.html');
+      await writeFile(file, keyboardPage('<section><p id="duplicate">First</p><p id="duplicate">Second</p></section>'));
+      for (const args of [[file, '--html'], ['--html', file]]) {
+        let failure;
+        try { await execute(process.execPath, [join(root, 'check.mjs'), ...args], { cwd: root, timeout: 60000 }); }
+        catch (error) { failure = error; }
+        assert.equal(failure?.code, 1);
+        const issues = JSON.parse(failure.stdout).problems;
+        assert.ok(issues.some(i => i.rule === 'html:error' && /duplicate id/i.test(i.detail) && /:\d+:\d+$/.test(i.at) && i.fix), JSON.stringify(issues));
+        assert.ok(issues.some(i => i.rule === 'html:warning' && /section lacks heading/i.test(i.detail) && /:\d+:\d+$/.test(i.at) && i.fix), JSON.stringify(issues));
+      }
+      const broken = join(dir, 'invalid.jar'); await writeFile(broken, 'invalid jar');
+      let failure;
+      try { await execute(process.execPath, [join(root, 'check.mjs'), file, '--html'], { cwd: root, timeout: 60000, env: { ...process.env, VNU_JAR: broken } }); }
+      catch (error) { failure = error; }
+      assert.notEqual(failure?.code, 0);
+      assert.match(failure.stderr, /Nu Html Checker could not run/);
     });
   } finally {
     if (browser) await browser.close();

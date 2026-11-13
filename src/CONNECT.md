@@ -38,10 +38,16 @@ npm i -D playwright
 npx playwright install chromium
 node check.mjs page.html [more pages…]
 
-# Optional local Nu Html Checker (Java 17+, vnu.jar downloaded once and stored locally):
+# Optional local accessibility engine; no API key or runtime network dependency:
+npm i -D axe-core
+node check.mjs page.html --axe
+
+# Optional local Nu Html Checker (Java 17+):
 VNU_JAR=/path/to/vnu.jar node check.mjs page.html --html
 ```
 The normal audit renders portrait and landscape once each in light and dark, plus A4 print. `--extended` adds the wide frame, both frame edges and seven interior widths in light, checking whether the composition moves. Both modes test real Tab traversal in portrait and landscape, reporting positive tabindex and focus traps; temporary focus probes are removed before the page closes. Nested frames are reported as requiring their own keyboard check. Focus appearance and screen-reader completeness are not evaluated by this pass.
+
+The optional `--axe` checks portrait and landscape in both colour schemes with locally installed axe-core. Missing axe-core fails explicitly instead of silently passing. Each axe violation has a relevant fix; a clean axe scan is not proof of complete WCAG compliance. Standard mode does not require axe-core.
 
 Optional `--html` checks the original source with the Nu Html Checker locally, reporting errors and warnings with line numbers and fixes; it requires Java and `VNU_JAR`, and fails explicitly when the checker cannot run. It does not use the public validator service, an API key or a network request during checking.
 
