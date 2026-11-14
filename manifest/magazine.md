@@ -9,7 +9,7 @@ Within a frame lines break the same on every screen, so devices of print hold. R
 | `data-initial` | | on the first paragraph: an initial letter over three lines |
 | `data-float` | `start` `end` | a picture the text runs round; with `data-w` (`quarter` `third` `half` of the columns block) and `data-shape` (`arch` `circle`) |
 | `data-l="layer"` | | children lie on one another: a picture and words on it |
-| `data-place` | `top-start` `top-center` `top-end` `middle-…` `bottom-…` | on a child of `layer`: where it lies |
+| `data-place` | `top-start` `top-center` `top-end` `middle-…` `bottom-…` | on a child of `layer`: where it lies; on a direct child of `stack`, `middle-…` centers it vertically in that stack’s available height |
 | `data-ratio` | `21/9` `16/9` `3/2` `1/1` `3/4` | the proportion of a block; `data-ratiop` for portrait (also `2/3` `9/16`) |
 | `data-out` | `start` `end` `both` | on a `layer` or `figure`: its picture reaches the window edge on that side; the block and its words stay on the canvas |
 | `data-size` | `1` to `7` | the size of one line of a headline set by hand (each line a `span`); `data-sizep` for portrait |
@@ -26,6 +26,20 @@ Longread:
 </section>
 ```
 Text after a `data-pull` is laid in the columns again, split between them: leave at least eight lines after it, or put the quote earlier; two or three lines split in two are set with gaps between the words.
+
+Text beside a taller picture, vertically centered **without a layer**:
+```html
+<section data-l="canvas">
+  <div data-x="1-7" data-l="stack">
+    <p data-tone="accent">ISSUE 01</p>
+    <div data-place="middle-start" data-l="stack">
+      <h1>Editorial title</h1><p>Introduction</p>
+    </div>
+  </div>
+  <figure data-x="8-12"><img src="cover.webp" alt="…"></figure>
+</section>
+```
+The outer `stack` stretches to its canvas row height when it has a direct `middle-…` child. That child uses the free height above and below it, while the kicker stays at the top. This requires a taller adjacent canvas element; with no extra height, it does not shift the child. `data-place` here is an intentional stack layout rule, not a picture overlay.
 
 Cover, picture to both window edges, words on it:
 ```html
