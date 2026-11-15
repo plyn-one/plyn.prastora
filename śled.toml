@@ -114,3 +114,9 @@ faza = "ściah"
 "cełaść" = 12
 adras = [2, 3]
 vynik = "As expected: the page passed check.mjs --extended in every frame, both schemes and print, every demonstration still passed, and the owner accepted it on 16 November 2026; it is the front page of the site, src/site-index.html, and site/try/home is gone. On the way PageSpeed Insights gave it 100 in performance, accessibility and best practices on a phone; what it found led to WebP screenshots at the size shown, robots.txt, llms.txt, a 404 page, response headers, core.min.css, and an ARD manifest naming an agent skill. check.test.mjs proves that core.min.css renders every demonstration as core.css does, so a page is checked against one of them only."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 12
+adras = [3, 1]
+vynik = "The site's publisher refuses a file that changes how the whole site is served (_headers) and a folder whose name starts with a dot (.well-known), so the landed tree could not be published. The headers are left out, and the ARD manifest is ard.json at the root, which robots.txt names with Agentmap and the front page with a link of rel ard, both ways the specification allows."

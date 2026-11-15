@@ -76,15 +76,14 @@ kola = "usie"
 "file:src/robots.txt" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/llms.txt" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/404.html" = { faza = "dadzienaść", rola = "prajava" }
-"file:src/_headers" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/robots.txt" = { faza = "asadak", rola = "prajava" }
 "file:site/llms.txt" = { faza = "asadak", rola = "prajava" }
 "file:site/404.html" = { faza = "asadak", rola = "prajava" }
-"file:site/_headers" = { faza = "asadak", rola = "prajava" }
 "file:core.min.css" = { faza = "ściah", rola = "prajava" }
 "file:site/core.min.css" = { faza = "asadak", rola = "prajava" }
 "file:src/SKILL.md" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/ard.json" = { faza = "dadzienaść", rola = "prajava" }
+"file:site/ard.json" = { faza = "asadak", rola = "prajava" }
 "dir:site/skills" = { faza = "asadak", rola = "prajava" }
 "dir:site/skills/prastora-layout" = { faza = "asadak", rola = "prajava" }
 "file:site/skills/prastora-layout/SKILL.md" = { faza = "asadak", rola = "prajava" }

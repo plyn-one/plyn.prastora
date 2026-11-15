@@ -208,10 +208,9 @@ for (const f of ['core.css', 'core.min.css', 'MANIFEST.md', 'CONNECT.md', 'READM
 for (const d of ['manifest', 'demo', 'palette']) cpSync(d, `site/${d}`, { recursive: true });
 cpSync('src/site-index.html', 'site/index.html');
 // what crawlers and agents look for at the root of a site, and the page for an address that leads nowhere
-for (const f of ['robots.txt', 'llms.txt', '404.html', '_headers']) cpSync(`src/${f}`, `site/${f}`);
-// for agents that look for resources: the ARD manifest at its well-known place, and the skill it names, with the release
-mkdirSync('site/.well-known', { recursive: true });
-cpSync('src/ard.json', 'site/.well-known/ard.json');
+for (const f of ['robots.txt', 'llms.txt', '404.html', 'ard.json']) cpSync(`src/${f}`, `site/${f}`);
+// for agents that look for resources: the skill the ARD manifest names, with the release. The manifest is ard.json at the
+// root, named by robots.txt and the front page: the site's publisher takes no folder whose name starts with a dot.
 mkdirSync('site/skills/prastora-layout', { recursive: true });
 writeFileSync('site/skills/prastora-layout/SKILL.md', readFileSync('src/SKILL.md', 'utf8').replaceAll('{{VERSION}}', VERSION));
 // site/v<tag>/: what each release tag holds of the core, as it was then, for addresses that name a release

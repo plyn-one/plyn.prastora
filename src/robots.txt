@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Agentmap: https://plyn-prastora.pages.dev/ard.json
