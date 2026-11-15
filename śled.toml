@@ -71,3 +71,46 @@ faza = "ściah"
 "cełaść" = 0
 adras = [2,2]
 vynik = "A second blind test waits unlanded: branch agent/prastora-blind-test-20261113 (pull request 4) holds site/try/atlas-rzeczy/index.html, laid out by another agent on 13 November 2026; the other work branches of the coffee page were removed as landed or replaced."
+
+[[zapis]]
+faza = "dadzienaść"
+"hłybinia" = 2
+vynik = "A front page for the site that shows the framework at work, in place of the list of demonstrations: the owner asked on 15 November 2026 for the old homepage of A-Rozum/prastora to be remade on this framework, not pixel for pixel, so that it demonstrates the framework better, with a phone version a visitor of the screen version recognises."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 12
+adras = [1, 1]
+vynik = "The owner's decisions of 15 November 2026: palettes live apart from the core and are linked to it; this page is white with a cobalt accent in light and graphite with an orange accent in dark; on a phone, rows of cards are swiped sideways and it must be plain that they are; a print button in the top bar is enough for paper; JavaScript only where HTML and CSS have no answer. Added for it: palette/ with cobalt and paper, data-button on a link, data-surface=solid, data-reelp, several frames in data-hide, and code inside pre no longer shrunk twice."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 12
+adras = [2, 1]
+"čakańnie" = "site/try/home passes check.mjs --extended in every frame, both schemes and print, every demonstration still passes, and the owner accepts the page as the front page of the site."
+"mieryła" = "ŭładalnik"
+"upeŭnienaść" = 0.7
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 12
+adras = [1, 2]
+vynik = "Found while making the page: data-theme on the root element did not choose the scheme, because the colour scheme set on :root outweighed it; it now has no weight of its own, and the theme button of the page works."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 12
+adras = [1, 3]
+vynik = "Found while making the page: data-bleed inside a band that is a panel reached 4 units from inside the panel's padding, so less than 4 units into the band beside it; the reach is now counted from the band's edge. On paper the page leaves the contact band out and keeps its address in the foot, and prints on two sheets."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 12
+adras = [2, 2]
+vynik = "The owner wanted the sloth at its full size, lying with its belly on the band's edge. A reach of 4 units cannot do that for a picture of any size, so data-bleed has a third value, over: the picture lies on the top edge of its band with its middle on the edge and takes no room in the band. The page draws the sloth with its belly at the middle of the drawing; on a phone, where the band's heading stands under it, it reaches up 4 units instead."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 12
+adras = [2, 3]
+vynik = "As expected: the page passed check.mjs --extended in every frame, both schemes and print, every demonstration still passed, and the owner accepted it on 16 November 2026; it is the front page of the site, src/site-index.html, and site/try/home is gone. On the way PageSpeed Insights gave it 100 in performance, accessibility and best practices on a phone; what it found led to WebP screenshots at the size shown, robots.txt, llms.txt, a 404 page, response headers, core.min.css, and an ARD manifest naming an agent skill. check.test.mjs proves that core.min.css renders every demonstration as core.css does, so a page is checked against one of them only."

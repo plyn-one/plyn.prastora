@@ -177,3 +177,37 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
     await rm(dir, { recursive: true, force: true });
   }
 });
+
+// The minified core is the same core: every demonstration, in every screen frame and both schemes, renders the same
+// pixels with core.min.css put in place of core.css. A page laid out with one needs no check against the other.
+test('core.min.css renders every demonstration exactly as core.css', async () => {
+  const min = await readFile(join(root, 'core.min.css'), 'utf8');
+  assert.match(min, /^\/\*![\s\S]*?frames[^:]*: \[/, 'the first comment, with the frames the check reads, stays');
+  const types = { html: 'text/html; charset=utf-8', css: 'text/css', svg: 'image/svg+xml', webp: 'image/webp', jpg: 'image/jpeg', png: 'image/png' };
+  const server = createServer(async (request, response) => {
+    const path = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
+    try { response.writeHead(200, { 'Content-Type': types[path.split('.').pop()] ?? 'application/octet-stream' }).end(await readFile(join(root, path))); }
+    catch { response.writeHead(404).end(); }
+  });
+  await new Promise(done => server.listen(0, '127.0.0.1', done));
+  const browser = await chromium.launch();
+  try {
+    const pages = ['index', 'longread', 'document', 'blank', 'pictures', 'type', 'journey'];
+    for (const width of [390, 1280, 2560]) for (const colorScheme of ['light', 'dark']) for (const name of pages) {
+      const shots = [];
+      for (const swap of [false, true]) {
+        const pg = await browser.newPage({ viewport: { width, height: 900 }, colorScheme });
+        if (swap) await pg.route(/\/core\.css$/, route => route.fulfill({ contentType: 'text/css', body: min }));
+        await pg.goto(`http://127.0.0.1:${server.address().port}/demo/${name}.html`);
+        await pg.evaluate(() => document.querySelectorAll('[data-reveal]').forEach(e => e.removeAttribute('data-reveal')));
+        await pg.evaluate(() => document.fonts.ready);
+        shots.push(await pg.screenshot({ fullPage: true, animations: 'disabled' }));
+        await pg.close();
+      }
+      assert.ok(shots[0].equals(shots[1]), `demo/${name}.html differs with core.min.css at ${width} px, ${colorScheme}`);
+    }
+  } finally {
+    await browser.close();
+    await promisify(server.close.bind(server))();
+  }
+});

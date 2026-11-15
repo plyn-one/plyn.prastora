@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "identifier": "urn:air:plyn-prastora.pages.dev:skills:prastora-layout",
+      "displayName": "Prastora page layout",
+      "description": "Lay out a web page that keeps its composition on every screen and on paper, with a closed vocabulary of attributes and a rendering check that says what to fix.",
+      "type": "application/agent-skills+md",
+      "url": "https://plyn-prastora.pages.dev/skills/prastora-layout/SKILL.md",
+      "representativeQueries": [
+        "Lay out a landing page that looks the same on a phone and a 4K screen",
+        "Make a web page that prints on A4 exactly as it is laid out",
+        "Check a page laid out with Prastora and fix what the check reports"
+      ]
+    }
+  ]
+}

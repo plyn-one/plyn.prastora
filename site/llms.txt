@@ -1,0 +1,24 @@
+# Prastora
+
+> A web page layout framework made first for AI agents. A page is composed like a picture, once for each frame (phone, landscape screen, wide screen, A4 paper), and scales as a whole within a frame. Plain HTML and CSS, a closed vocabulary of attributes, and a check that renders a page in every frame and says what to fix.
+
+Read the manifest before laying out a page, and only the section of it the page needs.
+
+## Docs
+
+- [Skill](https://plyn-prastora.pages.dev/skills/prastora-layout/SKILL.md): the steps of laying out a page with Prastora, as an agent skill
+- [Manifest](https://plyn-prastora.pages.dev/MANIFEST.md): frames, the canvas, relations, modifiers, palettes and common patterns
+- [Connect](https://plyn-prastora.pages.dev/CONNECT.md): how to link the core to a project and run the check
+- [Magazine devices](https://plyn-prastora.pages.dev/manifest/magazine.md): columns, pulled quotes, initial letters, text round shapes, words on pictures
+- [Documents and blanks](https://plyn-prastora.pages.dev/manifest/documents.md): sheets the same on screen and paper, numbered lines, notes, boxed letters
+- [Pictures](https://plyn-prastora.pages.dev/manifest/pictures.md): labels on drawings, text round an outline, balloons, a drawing through the page
+- [Type](https://plyn-prastora.pages.dev/manifest/type.md): headline lines filling their column, a shared grid of lines, hanging quotes
+
+## Demonstrations
+
+- [Longread](https://plyn-prastora.pages.dev/demo/longread.html)
+- [Document](https://plyn-prastora.pages.dev/demo/document.html)
+- [Blank](https://plyn-prastora.pages.dev/demo/blank.html)
+- [Pictures](https://plyn-prastora.pages.dev/demo/pictures.html)
+- [Type](https://plyn-prastora.pages.dev/demo/type.html)
+- [Across the page](https://plyn-prastora.pages.dev/demo/journey.html)

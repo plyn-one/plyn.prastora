@@ -85,7 +85,7 @@ const FIX = {
 
 const VOCAB = {
   'data-l': ['page', 'canvas', 'columns', 'layer', 'spread', 'sheet', 'margin', 'book', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover'],
-  'data-bleed': ['up', 'down'],
+  'data-bleed': ['up', 'down', 'over'],
   'data-pull': [''], 'data-initial': [''],
   'data-float': ['start', 'end'], 'data-w': ['quarter', 'third', 'half'], 'data-wp': ['full'], 'data-shape': ['arch', 'circle', 'alpha'],
   'data-out': ['start', 'end', 'both'],
@@ -96,11 +96,11 @@ const VOCAB = {
   'data-grid': [''], 'data-tag': [''], 'data-balloon': ['start', 'end'],
   'data-col': Array.from({ length: 20 }, (_, i) => String(i + 1)), 'data-row': Array.from({ length: 20 }, (_, i) => String(i + 1)),
   'data-fit': [''], 'data-lines': ['', 'shown'], 'data-hang': [''], 'data-shaped': ['circle', 'diamond'],
-  'data-stackp': [''], 'data-across': [''], 'data-reveal': ['fade', 'rise', 'draw'],
+  'data-stackp': [''], 'data-reelp': [''], 'data-button': [''], 'data-across': [''], 'data-reveal': ['fade', 'rise', 'draw'],
   'data-comb': Array.from({ length: 24 }, (_, i) => String(i + 1)),
   'data-numbered': [''], 'data-line': Array.from({ length: 46 }, (_, i) => String(i + 1)),
   'data-space': ['none', 'tight', 'loose'],
-  'data-surface': ['raised', 'outline', 'accent'],
+  'data-surface': ['raised', 'outline', 'accent', 'solid'],
   'data-tone': ['quiet', 'strong', 'accent', 'danger', 'ok', 'warn'],
   'data-theme': ['light', 'dark'],
   'data-side': [''], 'data-push': [''], 'data-pad': [''],
@@ -140,7 +140,8 @@ function inspect(VOCAB) {
         continue;
       }
       if (!(a in VOCAB)) add('vocabulary', el, `unknown attribute ${a}`);
-      else if (!VOCAB[a].includes(el.getAttribute(a))) add('vocabulary', el, `${a}="${el.getAttribute(a)}" is not one of ${VOCAB[a].join(' ')}`);
+      // data-hide takes several frames at once, separated by spaces
+      else if (!(a === 'data-hide' ? el.getAttribute(a).trim().split(/\s+/) : [el.getAttribute(a)]).every(v => VOCAB[a].includes(v))) add('vocabulary', el, `${a}="${el.getAttribute(a)}" is not one of ${VOCAB[a].join(' ')}`);
     }
     if (el.hasAttribute('data-side') && el.parentElement?.dataset.l !== 'split') add('vocabulary', el, 'data-side outside split');
     if (el.hasAttribute('data-push') && !['stack', 'cluster', 'cover'].includes(el.parentElement?.dataset.l)) add('vocabulary', el, 'data-push outside stack, cluster or cover');
@@ -189,7 +190,7 @@ function inspect(VOCAB) {
     // what lies inside a block sent out to the window edge belongs partly to the margin, not to the canvas
     if (!el.parentElement?.closest('[data-out]')) boxes.push([path(el), (r.left - x0) / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
     const p = el.parentElement;
-    if (p && p !== document.body && cs.position === 'static' && !scrolls(p) && !el.closest('[data-out], [data-bleed]')) {
+    if (p && p !== document.body && cs.position === 'static' && !scrolls(p) && !el.closest('[data-out], [data-bleed], [data-reelp]')) {
       const q = p.getBoundingClientRect();
       if (r.right > q.right + 1.5 || r.left < q.left - 1.5) add('escapes-parent', el, `${Math.round(r.left)}–${Math.round(r.right)} outside ${Math.round(q.left)}–${Math.round(q.right)}`);
     }
@@ -245,7 +246,7 @@ async function keyboardAudit(pg) {
   if (setup.unsupported) return { unavailable: setup.unsupported, issues: [] };
   const issues = setup.positive.map(at => ({ rule: 'tab-order', at, detail: 'positive tabindex changes the natural order' }));
   const visited = new Set();
-  let finished = false;
+  let finished = false, last = -1;
   try {
     for (let step = 0; step < setup.limit; step++) {
       await pg.keyboard.press('Tab');
@@ -253,11 +254,16 @@ async function keyboardAudit(pg) {
         const e = document.activeElement;
         if (e?.id === '__prastora_tab_end__') return 'end';
         if (!e || e === document.body || e === document.documentElement) return 'outside';
-        return [...document.querySelectorAll('*')].indexOf(e);
+        // the dots of a strip are stops of their own, and each reports the strip as the focused element
+        const dots = (getComputedStyle(e).scrollMarkerGroup ?? 'none') !== 'none';
+        return { at: [...document.querySelectorAll('*')].indexOf(e), dots };
       });
       if (focus === 'end') { finished = true; break; }
-      if (focus === 'outside' || visited.has(focus)) break;
-      visited.add(focus);
+      if (focus === 'outside') break;
+      if (focus.dots && focus.at === last) continue;
+      if (visited.has(focus.at)) break;
+      visited.add(focus.at);
+      last = focus.at;
     }
     if (!finished) issues.push({ rule: 'keyboard-trap', at: 'document', detail: 'Tab cannot reach the end of the document; inspect focus management' });
   } finally {

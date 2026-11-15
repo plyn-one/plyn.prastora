@@ -1,0 +1,10 @@
+/* Prastora palette: cobalt. Light: white paper, deep ink, a cobalt accent. Dark: graphite, an orange accent.
+   Link it after core.css. It sets colours only; everything else stays the core's. */
+@layer tokens {
+  :root {
+    --paper:     light-dark(oklch(1 0 0),            oklch(0.19 0.006 250));
+    --ink:       light-dark(oklch(0.22 0.04 258),    oklch(0.94 0.004 250));
+    --accent:    light-dark(oklch(0.52 0.23 266),    oklch(0.73 0.17 52));
+    --on-accent: light-dark(oklch(1 0 0),            oklch(0.19 0.006 250));
+  }
+}

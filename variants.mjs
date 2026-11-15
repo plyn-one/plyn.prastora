@@ -16,6 +16,15 @@ const variants = JSON.parse(readFileSync('lab/variants.json', 'utf8'));
 const base = readFileSync('src/base.css', 'utf8');
 const demo = readFileSync('demo/index.html', 'utf8');
 
+// The core without what only a reader needs: comments go (the first stays, the check reads the frames from it),
+// runs of space become one, and none stays around braces, semicolons and commas. Strings are kept as written.
+function minify(text) {
+  const first = text.match(/^\/\*![\s\S]*?\*\//)[0];
+  return first + '\n' + text.slice(first.length).replace(/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|\/\*[\s\S]*?\*\/|\s+/g, (m, str) => str ?? (m.startsWith('/*') ? '' : ' '))
+    .replace(/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|\s*([{};,])\s*/g, (m, str, p) => str ?? p)
+    .replace(/;}/g, '}').trim() + '\n';
+}
+
 const canvasExpr = f => {
   const g = f.grow;
   if (g === 'pure') return '100vw';
@@ -44,6 +53,16 @@ const portraitOverrides = [
   `  :where([data-l=layer][data-stackp]) { display: flex; flex-direction: column; gap: var(--s1); aspect-ratio: auto; contain: none; }`,
   `  :where([data-l=layer][data-stackp]) > :where(svg) { display: none; }`,
   `  :where([data-l=layer][data-stackp]) > :where(*) { inline-size: auto; }`,
+  // a canvas marked data-reelp is a strip on a phone: its children side by side, the next one showing at the
+  // window's edge, scrolled with a finger and stopping at each; dots under it where the browser draws them
+  `  :where([data-l=canvas][data-reelp]) { display: flex; gap: var(--s0); overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter); padding-block-end: var(--s-1); }`,
+  `  :where([data-l=canvas][data-reelp]) > :where(*) { flex: 0 0 84%; scroll-snap-align: start; }`,
+  `  @supports (scroll-marker-group: after) {`,
+  `    :where([data-l=canvas][data-reelp]) { scroll-marker-group: after; }`,
+  `    :where([data-l=canvas][data-reelp])::scroll-marker-group { display: flex; justify-content: center; gap: var(--s-1); padding-block-start: var(--s-1); }`,
+  `    :where([data-l=canvas][data-reelp]) > :where(*)::scroll-marker { content: ""; inline-size: .5rem; block-size: .5rem; border-radius: 50%; background: var(--line); }`,
+  `    :where([data-l=canvas][data-reelp]) > :where(*)::scroll-marker:target-current { background: var(--accent); }`,
+  `  }`,
   // a book shows one page at a time on a phone
   `  :where([data-l=book]) { grid-template-columns: minmax(0, 1fr); padding: var(--s1); }`,
   `  :where([data-l=book])::after { content: none; }`,
@@ -122,6 +141,13 @@ function css(v) {
   :where([data-l=canvas]) > :where(*) { grid-column: 1 / -1; min-inline-size: 0; }
   :where([data-bleed=down]) { margin-block-end: calc(var(--s3) * -1); position: relative; z-index: 1; }
   :where([data-bleed=up]) { margin-block-start: calc(var(--s3) * -1); position: relative; z-index: 1; }
+  /* in a band that is a panel, the reach is counted from the band's edge, not from inside its padding */
+  :where([data-surface] > [data-bleed=down]) { margin-block-end: calc((var(--s3) + 1.25rem) * -1); }
+  :where([data-surface] > [data-bleed=up]) { margin-block-start: calc((var(--s3) + 1.25rem) * -1); }
+  /* over: lies on the top edge of its band, its middle on the edge, whatever its size; it takes no room in
+     the band, so what follows starts where it would without it */
+  :where([data-l=canvas]:has(> [data-bleed=over])) { position: relative; }
+  :where([data-l=canvas]) > :where([data-bleed=over]) { position: absolute; inset-block-start: 0; inline-size: 100%; translate: 0 -50%; z-index: 1; }
 }\n`;
   return head + base.replace('@layer reset, tokens, base, relation, surface, tone;', '@layer reset, tokens, base, relation, frame, surface, tone;') + canvasRel + frameCss;
 }
@@ -166,7 +192,7 @@ for (const v of variants) {
   mkdirSync(`lab/${v.id}`, { recursive: true });
   writeFileSync(`lab/${v.id}/core.css`, css(v));
   writeFileSync(`lab/${v.id}/index.html`, labPage(v));
-  if (v.core) writeFileSync('core.css', css(v));
+  if (v.core) { writeFileSync('core.css', css(v)); writeFileSync('core.min.css', minify(css(v))); }
 }
 writeFileSync('lab/index.html', labIndex());
 for (const f of ['CONNECT.md', 'README.md']) writeFileSync(f, readFileSync(`src/${f}`, 'utf8').replaceAll('{{VERSION}}', VERSION));
@@ -178,12 +204,19 @@ import { cpSync, rmSync, readdirSync } from 'node:fs';
 // site/try/ is not written here: work pages are made in it directly; everything else of site/ is written anew
 mkdirSync('site', { recursive: true });
 for (const f of readdirSync('site')) if (f !== 'try') rmSync(`site/${f}`, { recursive: true, force: true });
-for (const f of ['core.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs']) cpSync(f, `site/${f}`);
-for (const d of ['manifest', 'demo']) cpSync(d, `site/${d}`, { recursive: true });
+for (const f of ['core.css', 'core.min.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs']) cpSync(f, `site/${f}`);
+for (const d of ['manifest', 'demo', 'palette']) cpSync(d, `site/${d}`, { recursive: true });
 cpSync('src/site-index.html', 'site/index.html');
+// what crawlers and agents look for at the root of a site, and the page for an address that leads nowhere
+for (const f of ['robots.txt', 'llms.txt', '404.html', '_headers']) cpSync(`src/${f}`, `site/${f}`);
+// for agents that look for resources: the ARD manifest at its well-known place, and the skill it names, with the release
+mkdirSync('site/.well-known', { recursive: true });
+cpSync('src/ard.json', 'site/.well-known/ard.json');
+mkdirSync('site/skills/prastora-layout', { recursive: true });
+writeFileSync('site/skills/prastora-layout/SKILL.md', readFileSync('src/SKILL.md', 'utf8').replaceAll('{{VERSION}}', VERSION));
 // site/v<tag>/: what each release tag holds of the core, as it was then, for addresses that name a release
 import { execFileSync } from 'node:child_process';
-const RELEASED = ['core.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs', 'fonts', 'manifest'];
+const RELEASED = ['core.css', 'core.min.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs', 'fonts', 'manifest', 'palette'];
 for (const tag of execFileSync('git', ['tag', '-l', 'v*'], { encoding: 'utf8' }).split('\n').filter(Boolean)) {
   const held = execFileSync('git', ['ls-tree', '--name-only', tag], { encoding: 'utf8' }).split('\n');
   const files = RELEASED.filter(f => held.includes(f));

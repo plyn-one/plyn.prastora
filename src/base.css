@@ -19,8 +19,9 @@
 }
 
 @layer tokens {
+  /* without weight, so data-theme on the root element chooses the scheme */
+  :where(:root) { color-scheme: light dark; }
   :root {
-    color-scheme: light dark;
 
     --hue: 250;
     --paper:     light-dark(oklch(0.985 0.004 var(--hue)), oklch(0.19 0.012 var(--hue)));
@@ -33,6 +34,9 @@
     --quiet:     color-mix(in oklch, var(--ink) 66%, var(--paper));
     --line:      color-mix(in oklch, var(--ink) 16%, transparent);
     --veil:      color-mix(in oklch, var(--ink) 4.5%, transparent);
+    /* a solid band takes the accent as its paper; held here, so the band can swap accent and paper */
+    --solid:     var(--accent);
+    --on-solid:  var(--on-accent);
 
     /* type and space: plain rem, so they scale with the page and keep proportion */
     --t-1: .875rem; --t0: 1rem; --t1: 1.25rem; --t2: 1.6rem; --t3: 2.25rem; --t4: 3.25rem;
@@ -78,6 +82,7 @@
   :where(p, li, th, td, dt, dd, figcaption, blockquote, h1, h2, h3, h4) :where(small, sub, sup, code, kbd) { line-height: 1; }
   :where(strong, b) { font-weight: 650; }
   :where(code, kbd, samp, pre) { font-family: var(--font-mono); font-size: .92em; }
+  :where(pre) :where(code, kbd, samp) { font-size: 1em; }
   :where(:not(pre) > code) { padding: .1em .35em; border-radius: .3em; background: var(--veil); }
   :where(pre) { padding: var(--s0); border-radius: var(--radius); background: var(--veil); overflow-x: auto; }
   /* a hairline that takes room is drawn as a shadow or a fill: a border is rounded to whole device pixels, which
@@ -88,13 +93,14 @@
   :where(a) { color: var(--accent); text-underline-offset: .2em; text-decoration-thickness: from-font; }
   :where(:focus-visible) { outline: .125rem solid var(--accent); outline-offset: .125rem; }
 
-  :where(button, input[type=button], input[type=submit], input[type=reset]) {
+  :where(button, input[type=button], input[type=submit], input[type=reset], a[data-button]) {
     display: inline-flex; align-items: center; justify-content: center; gap: var(--s-1);
     min-block-size: var(--target); min-inline-size: var(--target); padding: var(--s-2) var(--s0);
     border: .0625rem solid var(--line); border-radius: var(--radius);
     background: var(--veil); font-weight: 550; line-height: 1.2; cursor: pointer;
   }
-  :where(button:hover) { background: color-mix(in oklch, var(--ink) 9%, transparent); }
+  :where(a[data-button]) { color: var(--ink); text-decoration: none; }
+  :where(button:hover, a[data-button]:hover) { background: color-mix(in oklch, var(--ink) 9%, transparent); }
   :where(button:disabled) { opacity: .55; cursor: not-allowed; }
   :where(input:not([type=checkbox], [type=radio], [type=range], [type=button], [type=submit], [type=reset]), select, textarea) {
     inline-size: 100%; min-inline-size: 0; min-block-size: var(--target); padding: var(--s-2) var(--s0);
@@ -186,6 +192,14 @@
   :where([data-surface=raised])  { background: var(--veil); }
   :where([data-surface=outline]) { box-shadow: inset 0 0 0 .0625rem var(--line); }
   :where([data-surface=accent])  { background: color-mix(in oklch, var(--accent) 10%, transparent); }
+  /* solid: the accent is the paper; what is inside reads on it as on the page */
+  :where([data-surface=solid]) {
+    --paper: var(--solid); --ink: var(--on-solid); --accent: var(--on-solid); --on-accent: var(--solid);
+    --quiet: color-mix(in oklch, var(--ink) 88%, var(--paper));
+    --line:  color-mix(in oklch, var(--ink) 30%, transparent);
+    --veil:  color-mix(in oklch, var(--ink) 10%, transparent);
+    color: var(--ink); background: var(--paper);
+  }
 }
 
 @layer tone {
@@ -201,6 +215,7 @@
   :where(mark[data-tone=ok])     { background: color-mix(in oklch, var(--ok) 18%, transparent); }
   :where(mark[data-tone=warn])   { background: color-mix(in oklch, var(--warn) 20%, transparent); }
   :where(mark[data-tone=quiet])  { color: var(--quiet); }
+  :where(a[data-button][data-tone=accent]) { background: var(--accent); color: var(--on-accent); border-color: transparent; }
   :where(button[data-tone=accent]) { background: var(--accent); color: var(--on-accent); border-color: transparent; }
   :where(button[data-tone=danger]) { background: var(--danger); color: var(--on-accent); border-color: transparent; }
   :where(button[data-tone=quiet])  { background: transparent; border-color: transparent; color: var(--ink); }

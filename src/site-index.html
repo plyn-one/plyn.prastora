@@ -3,24 +3,214 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prastora: demonstrations</title>
-<link rel="stylesheet" href="core.css">
+<meta name="description" content="Prastora: a web layout framework made first for AI agents. Every page keeps its composition on every screen and on paper.">
+<title>Prastora: websites that keep their composition</title>
+<link rel="stylesheet" href="core.min.css">
+<link rel="stylesheet" href="palette/cobalt.css">
+<script>try { const t = localStorage.getItem('prastora-theme'); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
 </head>
 <body>
 <div data-l="page">
-  <header data-l="cluster"><strong>Prastora</strong><small data-tone="quiet">Layout as a picture: each page holds its composition within a frame, on paper too</small></header>
+
+  <header data-l="cluster">
+    <div data-l="cluster" data-space="tight">
+      <svg viewBox="0 0 64 64" width="2.25em" height="2.25em" aria-hidden="true"><mask id="logo-p"><rect width="64" height="64" fill="white"/><path d="M23 47V17h12a10.5 10.5 0 0 1 0 21H23" fill="none" stroke="black" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></mask><rect x="4" y="4" width="56" height="56" rx="14" fill="currentColor" data-tone="accent" mask="url(#logo-p)"/></svg>
+      <strong>Prastora</strong>
+    </div>
+    <nav aria-label="Sections" data-hide="portrait">
+      <ul role="list" data-l="cluster">
+        <li><a href="#demos">Demonstrations</a></li>
+        <li><a href="#frames">How it works</a></li>
+        <li><a href="MANIFEST.md">Manifest</a></li>
+        <li><a href="CONNECT.md">Connect</a></li>
+      </ul>
+    </nav>
+    <div data-l="cluster" data-space="tight" data-push>
+      <button id="theme" data-tone="quiet" hidden aria-label="Switch to dark theme"><svg viewBox="0 0 24 24" width="1.25em" height="1.25em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"/></svg></button>
+      <button id="print" data-tone="quiet" hidden aria-label="Print this page"><svg viewBox="0 0 24 24" width="1.25em" height="1.25em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7Z"/></svg></button>
+    </div>
+    <nav aria-label="Sections" data-hide="landscape wide print">
+      <ul role="list" data-l="cluster" data-space="tight">
+        <li><a href="#demos">Demos</a></li>
+        <li><a href="#frames">How it works</a></li>
+        <li><a href="MANIFEST.md">Manifest</a></li>
+        <li><a href="CONNECT.md">Connect</a></li>
+      </ul>
+    </nav>
+  </header>
+
   <main data-l="stack" data-space="loose">
-    <section data-l="canvas" aria-labelledby="list">
-      <h1 id="list" data-x="1-12">Demonstrations</h1>
-      <article data-x="1-4" data-surface="raised" data-l="stack" data-space="tight"><h2><a href="demo/longread.html">Longread</a></h2><p>A cover with words on its picture, a headline set by hand, an initial letter, justified columns, text round a shape, a picture into the margin.</p></article>
-      <article data-x="5-8" data-surface="raised" data-l="stack" data-space="tight"><h2><a href="demo/document.html">Document</a></h2><p>Sheets the same on screen and on paper, numbered lines, notes at the lines they speak of.</p></article>
-      <article data-x="9-12" data-surface="raised" data-l="stack" data-space="tight"><h2><a href="demo/blank.html">Blank</a></h2><p>A paper form with a box for each letter, filled in on screen and printed as the form.</p></article>
-      <article data-x="1-4" data-surface="raised" data-l="stack" data-space="tight"><h2><a href="demo/pictures.html">Pictures</a></h2><p>Labels on the parts of a drawing, text round an image's outline, comic balloons of real text.</p></article>
-      <article data-x="5-8" data-surface="raised" data-l="stack" data-space="tight"><h2><a href="demo/type.html">Type</a></h2><p>Headline lines filling their column, a shared grid of lines, hanging quotes, text in a figure.</p></article>
-      <article data-x="9-12" data-surface="raised" data-l="stack" data-space="tight"><h2><a href="demo/journey.html">Across the page</a></h2><p>A road drawn through the page past its sections, a book spread, motion as you scroll.</p></article>
-      <article data-x="1-4" data-surface="raised" data-l="stack" data-space="tight"><h2><a href="demo/index.html">First</a></h2><p>The first demonstration: a picture bound to the heading and reaching into the next band.</p></article>
+
+    <section id="top" data-l="canvas" aria-labelledby="title">
+      <div data-x="1-6" data-l="stack">
+        <p data-tone="accent"><strong>A layout framework made first for AI agents</strong></p>
+        <h1 id="title">Websites that keep their composition on every screen.</h1>
+        <p>Most layouts stretch, squeeze and rearrange themselves until the design is somewhere else. Prastora scales the whole page like a picture, so what you composed is what people see, from a phone to a television and on paper.</p>
+        <div data-l="cluster" data-space="tight" data-hide="print">
+          <a href="#demos" data-button data-tone="accent">See it in action</a>
+          <a href="MANIFEST.md" data-button>Read the manifest</a>
+        </div>
+        <small data-tone="quiet">One core stylesheet, a palette if you like. No build step. One sloth.</small>
+      </div>
+      <figure data-x="8-12" data-xp="1-4" data-l="stack" data-space="tight">
+        <svg viewBox="-10 0 530 490" role="img" aria-label="The same composition in four frames: a wide screen, a phone, a laptop and a sheet of A4 paper"><rect x="4" y="4" width="372" height="192" rx="8" fill="none" stroke="currentColor" stroke-width="3"/><path d="M170 196v18M140 216h100" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><rect x="38" y="12" width="304" height="176" fill="currentColor" opacity=".05"/><rect x="56.2" y="24.3" width="54.7" height="7.0" rx="1" fill="currentColor" opacity=".35"/><rect x="56.2" y="47.2" width="127.7" height="11.4" rx="1.5" fill="currentColor"/><rect x="56.2" y="64.8" width="109.4" height="11.4" rx="1.5" fill="currentColor"/><rect x="56.2" y="82.4" width="85.1" height="11.4" rx="1.5" fill="currentColor"/><rect x="56.2" y="105.3" width="48.6" height="14.1" rx="2" fill="currentColor" data-tone="accent"/><path d="M224.2 142.2V85.9a38.7 38.7 0 0 1 77.4 0V142.2Z" fill="none" stroke="currentColor" stroke-width="2.5" data-tone="accent"/><circle cx="276.5" cy="80.1" r="7.0" fill="currentColor" data-tone="accent"/><rect x="38" y="152.8" width="304" height="35.2" fill="currentColor" data-tone="accent"/><text x="4" y="242" font-size="19" fill="currentColor" data-tone="quiet">Wide screen</text><rect x="414" y="4" width="98" height="196" rx="14" fill="none" stroke="currentColor" stroke-width="3"/><rect x="428.6" y="31.6" width="68.8" height="6.8" rx="1.5" fill="currentColor"/><rect x="428.6" y="41.8" width="60.2" height="6.8" rx="1.5" fill="currentColor"/><rect x="428.6" y="52.0" width="47.3" height="6.8" rx="1.5" fill="currentColor"/><rect x="428.6" y="67.3" width="34.4" height="8.5" rx="2" fill="currentColor" data-tone="accent"/><path d="M437.2 143.8V108.1a25.8 25.8 0 0 1 51.6 0V143.8Z" fill="none" stroke="currentColor" stroke-width="2.5" data-tone="accent"/><circle cx="472.0" cy="104.2" r="4.6" fill="currentColor" data-tone="accent"/><rect x="420" y="157.4" width="86" height="30.6" fill="currentColor" data-tone="accent"/><text x="414" y="242" font-size="19" fill="currentColor" data-tone="quiet">Phone</text><rect x="4" y="268" width="292" height="176" rx="8" fill="none" stroke="currentColor" stroke-width="3"/><path d="M-6 452h312" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="28.6" y="287.2" width="49.7" height="6.4" rx="1" fill="currentColor" opacity=".35"/><rect x="28.6" y="308.0" width="115.9" height="10.4" rx="1.5" fill="currentColor"/><rect x="28.6" y="324.0" width="99.4" height="10.4" rx="1.5" fill="currentColor"/><rect x="28.6" y="340.0" width="77.3" height="10.4" rx="1.5" fill="currentColor"/><rect x="28.6" y="360.8" width="44.2" height="12.8" rx="2" fill="currentColor" data-tone="accent"/><path d="M181.0 394.4V343.2a35.2 35.2 0 0 1 70.4 0V394.4Z" fill="none" stroke="currentColor" stroke-width="2.5" data-tone="accent"/><circle cx="228.6" cy="337.9" r="6.3" fill="currentColor" data-tone="accent"/><rect x="12" y="404.0" width="276" height="32.0" fill="currentColor" data-tone="accent"/><text x="4" y="480" font-size="19" fill="currentColor" data-tone="quiet">Laptop</text><path d="M340 268h120l26 26v156H340Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M460 268v26h26" fill="none" stroke="currentColor" stroke-width="2"/><rect x="359.4" y="306.4" width="22.3" height="3.7" rx="1" fill="currentColor" opacity=".35"/><rect x="359.4" y="318.4" width="52.1" height="6.0" rx="1.5" fill="currentColor"/><rect x="359.4" y="327.6" width="44.6" height="6.0" rx="1.5" fill="currentColor"/><rect x="359.4" y="336.8" width="34.7" height="6.0" rx="1.5" fill="currentColor"/><rect x="359.4" y="348.8" width="19.8" height="7.4" rx="2" fill="currentColor" data-tone="accent"/><path d="M423.5 368.1V338.6a20.2 20.2 0 0 1 40.5 0V368.1Z" fill="none" stroke="currentColor" stroke-width="2.5" data-tone="accent"/><circle cx="450.8" cy="335.6" r="3.6" fill="currentColor" data-tone="accent"/><rect x="352" y="373.6" width="124" height="18.4" fill="currentColor" data-tone="accent"/><rect x="352" y="404" width="124" height="3" rx="1" fill="currentColor" opacity=".35"/><rect x="352" y="413" width="118" height="3" rx="1" fill="currentColor" opacity=".35"/><rect x="352" y="422" width="124" height="3" rx="1" fill="currentColor" opacity=".35"/><rect x="352" y="431" width="80" height="3" rx="1" fill="currentColor" opacity=".35"/><text x="340" y="480" font-size="19" fill="currentColor" data-tone="quiet">A4 paper</text></svg>
+        <figcaption data-tone="quiet">One composition per frame. Inside a frame the page only scales, so nothing moves against anything else.</figcaption>
+      </figure>
     </section>
+
+    <section id="demos" data-l="stack" aria-labelledby="demos-title">
+      <div data-l="canvas">
+        <div data-x="1-7" data-l="stack" data-space="tight">
+          <h2 id="demos-title">Demonstrations</h2>
+          <p>Devices of print that fluid web layout could never hold: columns, initial letters, text round a shape, words on pictures, documents and forms the same on screen and on paper.</p>
+        </div>
+        <p data-x="1-12" data-hide="landscape wide print" data-tone="quiet">Swipe the cards sideways for more →</p>
+      </div>
+      <div data-l="canvas" data-reelp>
+        <article data-x="1-4" data-l="stack" data-space="tight" data-surface="raised">
+          <img src="demo/shots/longread-640.webp" srcset="demo/shots/longread-640.webp 640w, demo/shots/longread-1280.webp 1280w" sizes="(max-width: 50rem) 80vw, 37vw" width="1280" height="720" loading="lazy" decoding="async" alt="The longread demonstration: a headline set by hand over a drawn landscape">
+          <h3><a href="demo/longread.html">Longread</a></h3>
+          <p>A cover with words on its picture, an initial letter, justified columns, text round a shape.</p>
+        </article>
+        <article data-x="5-8" data-l="stack" data-space="tight" data-surface="raised">
+          <img src="demo/shots/document-640.webp" srcset="demo/shots/document-640.webp 640w, demo/shots/document-1280.webp 1280w" sizes="(max-width: 50rem) 80vw, 37vw" width="1280" height="720" loading="lazy" decoding="async" alt="The document demonstration: a sheet with numbered lines and notes in the margin">
+          <h3><a href="demo/document.html">Document</a></h3>
+          <p>Sheets the same on screen and on paper, numbered lines, notes at the lines they speak of.</p>
+        </article>
+        <article data-x="9-12" data-l="stack" data-space="tight" data-surface="raised">
+          <img src="demo/shots/blank-640.webp" srcset="demo/shots/blank-640.webp 640w, demo/shots/blank-1280.webp 1280w" sizes="(max-width: 50rem) 80vw, 37vw" width="1280" height="720" loading="lazy" decoding="async" alt="The blank demonstration: a paper form with a box for each letter">
+          <h3><a href="demo/blank.html">Blank</a></h3>
+          <p>A paper form with a box for each letter, filled in on screen and printed as the form.</p>
+        </article>
+        <article data-x="1-4" data-l="stack" data-space="tight" data-surface="raised">
+          <img src="demo/shots/pictures-640.webp" srcset="demo/shots/pictures-640.webp 640w, demo/shots/pictures-1280.webp 1280w" sizes="(max-width: 50rem) 80vw, 37vw" width="1280" height="720" loading="lazy" decoding="async" alt="The pictures demonstration: labels pointing at parts of a drawing">
+          <h3><a href="demo/pictures.html">Pictures</a></h3>
+          <p>Labels on the parts of a drawing, text round an image's outline, comic balloons of real text.</p>
+        </article>
+        <article data-x="5-8" data-l="stack" data-space="tight" data-surface="raised">
+          <img src="demo/shots/type-640.webp" srcset="demo/shots/type-640.webp 640w, demo/shots/type-1280.webp 1280w" sizes="(max-width: 50rem) 80vw, 37vw" width="1280" height="720" loading="lazy" decoding="async" alt="The type demonstration: headline lines filling their column exactly">
+          <h3><a href="demo/type.html">Type</a></h3>
+          <p>Headline lines filling their column, a shared grid of lines, hanging quotes, text in a figure.</p>
+        </article>
+        <article data-x="9-12" data-l="stack" data-space="tight" data-surface="raised">
+          <img src="demo/shots/journey-640.webp" srcset="demo/shots/journey-640.webp 640w, demo/shots/journey-1280.webp 1280w" sizes="(max-width: 50rem) 80vw, 37vw" width="1280" height="720" loading="lazy" decoding="async" alt="The journey demonstration: a road drawn through the page past its sections">
+          <h3><a href="demo/journey.html">Across the page</a></h3>
+          <p>A road drawn through the page past its sections, a book spread, motion as you scroll.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="frames" data-l="stack" aria-labelledby="frames-title">
+      <div data-l="canvas"><div data-x="1-7" data-l="stack" data-space="tight">
+        <h2 id="frames-title">Four frames, one picture each</h2>
+        <p>A page is composed once for each class of screen. Within a frame the canvas has a fixed number of units and columns and scales with the window, so every line breaks in the same place. Change the width of this window: nothing moves until the frame changes.</p>
+      </div></div>
+      <div data-l="canvas" data-reelp>
+      <article data-x="1-3" data-l="stack" data-space="tight" data-surface="outline">
+        <data value="4">4</data><h3>Phone</h3><small data-tone="quiet">columns on a canvas of 22 units, edge to edge</small>
+      </article>
+      <article data-x="4-6" data-l="stack" data-space="tight" data-surface="outline">
+        <data value="12">12</data><h3>Screen</h3><small data-tone="quiet">columns on 80 units, from a tablet to a laptop</small>
+      </article>
+      <article data-x="7-9" data-l="stack" data-space="tight" data-surface="outline">
+        <data value="85">85%</data><h3>Wide</h3><small data-tone="quiet">of the window is the canvas, the rest is margin</small>
+      </article>
+      <article data-x="10-12" data-l="stack" data-space="tight" data-surface="outline">
+        <data value="1">A4</data><h3>Paper</h3><small data-tone="quiet">a frame of its own: print this page and see</small>
+      </article>
+      </div>
+    </section>
+
+    <section data-l="canvas" aria-labelledby="written-title">
+      <div data-x="1-5" data-l="stack" data-space="tight">
+        <h2 id="written-title">Written in words an agent can't get wrong</h2>
+        <p>No classes, no inline styles, no stylesheet of your own. Semantic HTML and a closed set of attributes: which relation, which columns, which frame. An agent reads a short manifest and lays out the page.</p>
+        <p>Then a check renders the page in every frame, in light and dark and on paper, and answers with what to fix.</p>
+      </div>
+      <div data-x="6-12" data-l="stack" data-space="tight">
+        <pre><code>&lt;section data-l="canvas"&gt;
+  &lt;div data-x="1-6" data-l="stack"&gt;
+    &lt;h1&gt;Websites that keep…&lt;/h1&gt;
+    &lt;a data-button data-tone="accent"&gt;See it&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;figure data-x="8-12" data-xp="1-4"&gt;…&lt;/figure&gt;
+&lt;/section&gt;</code></pre>
+        <pre><code>$ node check.mjs --extended index.html
+{ "page": "index.html", "ok": true,
+  "frames": ["portrait", "landscape", "wide", "print A4"],
+  "printed_pages": 2, "problems": [] }</code></pre>
+      </div>
+    </section>
+
+    <section data-l="stack" aria-labelledby="inside-title">
+      <h2 id="inside-title">What you get</h2>
+      <div data-l="canvas" data-reelp>
+      <article data-x="1-6" data-l="stack" data-space="tight" data-surface="raised">
+        <h3>One stylesheet</h3><p>Link core.css, and a palette if you like. Nothing to install, compile or update next spring.</p>
+      </article>
+      <article data-x="7-12" data-l="stack" data-space="tight" data-surface="raised">
+        <h3>A closed vocabulary</h3><p>A dozen attributes say the whole composition. What is not in the manifest cannot be written.</p>
+      </article>
+      <article data-x="1-6" data-l="stack" data-space="tight" data-surface="raised">
+        <h3>Script only where it must</h3><p>Galleries, strips and forms are HTML and CSS. On this page a script only switches the theme and prints.</p>
+      </article>
+      <article data-x="7-12" data-l="stack" data-space="tight" data-surface="raised">
+        <h3>A check with answers</h3><p>Every problem it finds comes with what to do about it, so an agent fixes the page on its own.</p>
+      </article>
+      </div>
+    </section>
+
+    <section id="contact" data-l="canvas" data-surface="solid" data-hide="print" aria-labelledby="contact-title">
+      <figure data-xp="3-4" data-bleed="over" data-out="end" data-hide="landscape wide print"><svg viewBox="0 0 229.5 210" aria-hidden="true"><use href="#sloth" x="32" width="204" height="210"/></svg></figure>
+      <div data-x="1-7" data-l="stack">
+        <h2 id="contact-title">Still evolving.<br data-hide="landscape wide print"> Open to your ideas.</h2>
+        <p>This is a framework in development, not a finished promise. Explore the demonstrations and tell what could work better: feedback, use cases and suggestions are welcome.</p>
+        <dl>
+          <div><dt>Email</dt><dd><a href="mailto:andrey.rozum@gmail.com">andrey.rozum@gmail.com</a></dd></div>
+          <div><dt>Messengers</dt><dd data-l="cluster" data-space="tight"><a href="https://t.me/Keltorag">Telegram</a><a href="https://wa.me/48571062555">WhatsApp</a><a href="https://signal.me/#p/+48571062555">Signal</a></dd></div>
+        </dl>
+        <div data-l="cluster" data-space="tight"><a href="CONNECT.md" data-button data-tone="accent">Connect it to a project</a></div>
+      </div>
+      <svg viewBox="0 0 204 210" role="img" aria-label="A sloth hanging over the edge of the band" data-x="11-12" data-bleed="over" data-hide="portrait"><defs><g id="sloth-head" transform="translate(-100 -80)">
+ <path fill="#efe8da" d="M44 84C44 50 70 26 100 26S156 50 156 84C156 114 130 132 100 132S44 114 44 84Z"/><path fill="#57483c" d="M44 84C44 50 70 26 100 26S156 50 156 84C156 96 154 104 150 112C147 99 144 93 143 88C143 68 124 54 100 54S57 68 57 88C56 93 53 99 50 112C46 104 44 96 44 84Z"/><path d="M60 52Q100 22 140 52" fill="none" stroke="#7a6b5d" stroke-width="5" stroke-linecap="round" opacity=".7"/><path fill="none" stroke="#2b241f" stroke-width="4" d="M44 84C44 50 70 26 100 26S156 50 156 84C156 114 130 132 100 132S44 114 44 84Z"/>
+ <path d="M86 64l-2 6M100 61v7M114 64l2 6" stroke="#d9cfbd" stroke-width="2.2" stroke-linecap="round"/>
+ <path fill="#e5cd8c" d="M66 104C68 94 80 92 90 94Q100 100 110 94C120 92 132 94 134 104C134 117 118 126 100 126S66 117 66 104Z"/>
+ <path fill="#21180f" d="M93 86C90 79 82 76 75 78C67 81 63 90 64 99C65 107 67 113 71 117C71 108 72 101 76 97C82 94 88 93 93 86ZM107 86C110 79 118 76 125 78C133 81 137 90 136 99C135 107 133 113 129 117C129 108 128 101 124 97C118 94 112 93 107 86Z"/>
+ <path fill="#21180f" d="M87 97C87 90 113 90 113 97C113 104 106 108 100 108C94 108 87 104 87 97Z"/>
+ <path d="M94 94q3-2 5 0M101 94q2-2 5 0" stroke="#5a4a40" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+ <path d="M100 107v4M79 109Q100 121 121 109" fill="none" stroke="#21180f" stroke-width="3" stroke-linecap="round"/>
+</g><g id="sloth-eyes-open" transform="translate(-100 -80)"><circle cx="80" cy="87" r="6.2" fill="#b8722b"/><circle cx="120" cy="87" r="6.2" fill="#b8722b"/><circle cx="80.6" cy="87.4" r="3.2" fill="#120c08"/><circle cx="119.4" cy="87.4" r="3.2" fill="#120c08"/><circle cx="82.2" cy="85.6" r="1.3" fill="#fff"/><circle cx="121" cy="85.6" r="1.3" fill="#fff"/><path d="M72.5 83.6h15M112.5 83.6h15" stroke="#21180f" stroke-width="3.4"/></g><g id="sloth-eyes-lidded" transform="translate(-100 -80)"><use href="#sloth-eyes-open" transform="translate(100 80)"/><path d="M73 87.4a7 7 0 0 1 14 0zM113 87.4a7 7 0 0 1 14 0z" fill="#21180f"/></g></defs><symbol id="sloth" viewBox="24 42 204 210">
+<path d="M62 146q-18 20-16 58" fill="none" stroke="#2b241f" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 146q-18 20-16 58" fill="none" stroke="#8f7d69" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><g transform="translate(46 204) rotate(4)"><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(-7 0) rotate(10)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(0 0) rotate(2)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(7 0) rotate(-6)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/></g>
+<path d="M42 147q0-41 72-41t74 41z" fill="#8f7d69" stroke="#2b241f" stroke-width="4" stroke-linejoin="round"/>
+<path d="M70 118q6-5 12 0M96 112q6-5 12 0M122 113q6-5 12 0" fill="none" stroke="#6b5a4a" stroke-width="3" stroke-linecap="round"/>
+<path d="M150 146q4 30 0 64" fill="none" stroke="#2b241f" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/><path d="M150 146q4 30 0 64" fill="none" stroke="#8f7d69" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><g transform="translate(150 212) rotate(0)"><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(-7 0) rotate(10)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(0 0) rotate(2)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(7 0) rotate(-6)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/></g>
+<path d="M176 146q10 26 10 56" fill="none" stroke="#2b241f" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/><path d="M176 146q10 26 10 56" fill="none" stroke="#8f7d69" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><g transform="translate(186 204) rotate(-4)"><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(-7 0) rotate(10)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(0 0) rotate(2)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/><path d="M-2.8 0C-3.4 10-1.2 20 3.6 28C2.6 19 3 9 2.8 0Z" transform="translate(7 0) rotate(-6)" fill="#e7c676" stroke="#2b241f" stroke-width="2" stroke-linejoin="round"/></g>
+<g transform="translate(168 112) rotate(12) scale(0.8)"><use href="#sloth-head"/><use href="#sloth-eyes-lidded"/></g>
+</symbol><use href="#sloth" width="204" height="210"/></svg>
+    </section>
+
   </main>
+
+  <footer data-l="cluster">
+    <small data-tone="quiet">Prastora · MIT License · the system’s own font, nothing to load</small>
+    <small data-tone="quiet" data-push data-hide="portrait landscape wide">plyn-prastora.pages.dev · andrey.rozum@gmail.com</small>
+    <a href="#top" data-push data-hide="print">Back to top</a>
+  </footer>
 </div>
+<script>
+{
+  const root = document.documentElement, theme = document.getElementById('theme'), print = document.getElementById('print');
+  const dark = () => (root.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+  const label = () => theme.setAttribute('aria-label', dark() ? 'Switch to light theme' : 'Switch to dark theme');
+  theme.addEventListener('click', () => {
+    root.dataset.theme = dark() ? 'light' : 'dark';
+    try { localStorage.setItem('prastora-theme', root.dataset.theme); } catch {}
+    label();
+  });
+  print.addEventListener('click', () => window.print());
+  theme.hidden = print.hidden = false;
+  label();
+}
+</script>
 </body>
 </html>

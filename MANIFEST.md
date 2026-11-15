@@ -23,7 +23,16 @@ Prastora lays out web pages as a picture: a page has a few frames (portrait for 
 | wide | 2000 px and up | 85 units, 85% of the window, the rest margin | 12 |
 | print | A4 | 56 units at 10pt | 12, as landscape |
 
-A child of `data-l="canvas"` takes columns with `data-x="first-last"` in landscape, wide and print (`data-x="1-6"`). Without `data-xp` it takes the whole width on portrait; `data-xp="2-4"` places it there; `data-xw` overrides `data-x` on wide. `data-hide="portrait"` (or `landscape`, `wide`, `print`) leaves it out of a frame. Forms, buttons, navigation and video never print.
+A child of `data-l="canvas"` takes columns with `data-x="first-last"` in landscape, wide and print (`data-x="1-6"`). Without `data-xp` it takes the whole width on portrait; `data-xp="2-4"` places it there; `data-xw` overrides `data-x` on wide. `data-hide="portrait"` (or `landscape`, `wide`, `print`, several separated by spaces) leaves it out of those frames. A canvas marked `data-reelp` is a strip on portrait: its children side by side, the next one showing at the window's edge, swiped with a finger; use it for a row of cards that would be long as a column. Forms, buttons, navigation and video never print.
+
+## Palette
+
+The core has its own colours. To give a page others, link one palette after the core: `<link rel="stylesheet" href="palette/cobalt.css">`. A palette sets the paper, the ink and the accent for the light and the dark scheme, and nothing else.
+
+| palette | light | dark |
+|---|---|---|
+| `cobalt` | white, a cobalt accent | graphite, an orange accent |
+| `paper` | warm paper, a vermilion accent | ink, the same accent lighter |
 
 ## Relations: `data-l`
 
@@ -47,9 +56,10 @@ A child of `data-l="canvas"` takes columns with `data-x="first-last"` in landsca
 | `data-side` | | the side of a `split` |
 | `data-push` | | in `stack`, `cluster`, `cover`: this and what follows go to the end; a `stack` on the canvas with it fills its row, so text beside a picture can stand at the picture's foot |
 | `data-pad` | | padding without a panel |
-| `data-surface` | `raised` `outline` `accent` | a panel |
+| `data-surface` | `raised` `outline` `accent` `solid` | a panel; `solid` is filled with the accent and what is inside reads on it as on the page |
 | `data-tone` | `quiet` `strong` `accent` `danger` `ok` `warn` | emphasis; on `button`: `accent` main action, `danger` destructive, `quiet` minor |
-| `data-bleed` | `up` `down` | a canvas child reaching 4 units into the band above or below |
+| `data-button` | | on `a`: a link that looks like a button, for an action that goes somewhere; with `data-tone="accent"` the main one |
+| `data-bleed` | `up` `down` `over` | a canvas child reaching 4 units into the band above or below; `over`: lying on the top edge of its band, its middle on the edge (draw the picture so what rests on the edge is at its middle) |
 | `data-theme` | `light` `dark` | colour scheme of this part |
 
 ## Patterns
