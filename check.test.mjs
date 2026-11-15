@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, readdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -178,36 +178,32 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
   }
 });
 
-// The minified core is the same core: every demonstration, in every screen frame and both schemes, renders the same
-// pixels with core.min.css put in place of core.css. A page laid out with one needs no check against the other.
-test('core.min.css renders every demonstration exactly as core.css', async () => {
-  const min = await readFile(join(root, 'core.min.css'), 'utf8');
-  assert.match(min, /^\/\*![\s\S]*?frames[^:]*: \[/, 'the first comment, with the frames the check reads, stays');
-  const types = { html: 'text/html; charset=utf-8', css: 'text/css', svg: 'image/svg+xml', webp: 'image/webp', jpg: 'image/jpeg', png: 'image/png' };
-  const server = createServer(async (request, response) => {
-    const path = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
-    try { response.writeHead(200, { 'Content-Type': types[path.split('.').pop()] ?? 'application/octet-stream' }).end(await readFile(join(root, path))); }
-    catch { response.writeHead(404).end(); }
-  });
-  await new Promise(done => server.listen(0, '127.0.0.1', done));
+// A minified core holds the rules of its sources: the browser reads core.min.css as core.css, and core-<palette>.min.css
+// as core.css followed by its palette, rule for rule. A page laid out with one needs no check against the other.
+test('every minified core holds the rules of its sources', async () => {
+  const read = name => readFile(join(root, name), 'utf8');
+  const core = await read('core.css');
+  const pairs = [['core.min.css', core]];
+  for (const f of (await readdir(join(root, 'src', 'palette'))).filter(f => f.endsWith('.css')))
+    pairs.push([`core-${f.slice(0, -4)}.min.css`, core + '\n' + await read(join('src', 'palette', f))]);
   const browser = await chromium.launch();
   try {
-    const pages = ['index', 'longread', 'document', 'blank', 'pictures', 'type', 'journey'];
-    for (const width of [390, 1280, 2560]) for (const colorScheme of ['light', 'dark']) for (const name of pages) {
-      const shots = [];
-      for (const swap of [false, true]) {
-        const pg = await browser.newPage({ viewport: { width, height: 900 }, colorScheme });
-        if (swap) await pg.route(/\/core\.css$/, route => route.fulfill({ contentType: 'text/css', body: min }));
-        await pg.goto(`http://127.0.0.1:${server.address().port}/demo/${name}.html`);
-        await pg.evaluate(() => document.querySelectorAll('[data-reveal]').forEach(e => e.removeAttribute('data-reveal')));
-        await pg.evaluate(() => document.fonts.ready);
-        shots.push(await pg.screenshot({ fullPage: true, animations: 'disabled' }));
-        await pg.close();
-      }
-      assert.ok(shots[0].equals(shots[1]), `demo/${name}.html differs with core.min.css at ${width} px, ${colorScheme}`);
+    const page = await browser.newPage();
+    const rules = text => page.evaluate(css => {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(css);
+      // a group (layer, media, supports) by its head and its rules; a style rule by its whole text. A value holding var()
+      // is kept by the browser as written, so spaces in it are evened out on both sides
+      const text = r => r.cssText.replace(/\s+/g, ' ').replace(/ ?, ?/g, ',');
+      const flat = list => [...list].map(r => r instanceof CSSStyleRule || !r.cssRules ? text(r) : [text(r).slice(0, text(r).indexOf('{')), flat(r.cssRules)]);
+      return JSON.stringify(flat(sheet.cssRules));
+    }, text);
+    for (const [min, source] of pairs) {
+      const text = await read(min);
+      assert.match(text, /^\/\*![\s\S]*?frames[^:]*: \[/, `${min} keeps the first comment, with the frames the check reads`);
+      assert.equal(await rules(text), await rules(source), `${min} holds other rules than its sources`);
     }
   } finally {
     await browser.close();
-    await promisify(server.close.bind(server))();
   }
 });

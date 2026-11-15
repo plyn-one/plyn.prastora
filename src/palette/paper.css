@@ -1,5 +1,5 @@
 /* Prastora palette: paper. Light: warm paper, black ink, a vermilion accent. Dark: ink as the paper, the same accent lighter.
-   Link it after core.css. It sets colours only; everything else stays the core's. */
+   variants.mjs builds it into core-paper.min.css. It sets colours only; everything else stays the core's. */
 @layer tokens {
   :root {
     --paper:     light-dark(oklch(0.97 0.007 85),    oklch(0.21 0.006 70));

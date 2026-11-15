@@ -8,7 +8,7 @@ Prastora is a web page layout framework: a page is composed like a picture, once
 Any one of these.
 
 - **By the release tag, nothing copied:** `https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v{{VERSION}}/core.min.css` (minified by the CDN; `core.css` is the readable one)
-- **Copied file:** put `core.min.css` in the project's static files, taken from the repository at tag `v{{VERSION}}` (`core.css` is the same, with its comments and spacing, for reading). The two render a page to the same pixel: `check.test.mjs` proves it on every demonstration at each release, so a page is checked against either one, never both.
+- **Copied file:** put `core.min.css` in the project's static files, taken from the repository at tag `v{{VERSION}}` (`core.css` is the same, with its comments and spacing, for reading). The minified files hold the same rules as `core.css` (and its palette), which `check.test.mjs` compares rule by rule, so a page is checked against the file it links only.
 - **In a place of Plyń:** add the repository as the submodule `prastora/`, pinned at a commit on its main branch, and link `prastora/core.css`.
 
 ```html
@@ -23,7 +23,7 @@ Any one of these.
 <body><div data-l="page">…</div></body>
 </html>
 ```
-The first stylesheet linked must be the core: the check reads the frames from it. A palette, if the page takes one, is linked after it: `palette/<name>.css` from the same place as the core (see MANIFEST.md).
+The first stylesheet linked must be the core: the check reads the frames from it. A page with other colours links the core built with its palette, `core-<palette>.min.css`, instead (see MANIFEST.md).
 
 ## 2. Read the manifest
 

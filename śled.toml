@@ -120,3 +120,9 @@ faza = "ściah"
 "cełaść" = 12
 adras = [3, 1]
 vynik = "The site's publisher refuses a file that changes how the whole site is served (_headers) and a folder whose name starts with a dot (.well-known), so the landed tree could not be published. The headers are left out, and the ARD manifest is ard.json at the root, which robots.txt names with Agentmap and the front page with a link of rel ard, both ways the specification allows."
+
+[[zapis]]
+faza = "ściah"
+"cełaść" = 12
+adras = [3, 2]
+vynik = "On 16 November 2026 the owner asked for palettes to stay parts of their own in the framework but not files a page links, and for all that can be minified to be minified. Palettes moved to src/palette/, and variants.mjs builds the core with each of them into core-<palette>.min.css, so a page links one stylesheet; the separate palette files are gone. The test that compared screenshots of every demonstration with core.min.css gave way to one that compares the rules a browser reads from each minified core and from its sources: a fifth of a second instead of twenty, and it fails when a single declaration differs."

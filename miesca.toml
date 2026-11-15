@@ -67,12 +67,6 @@ kola = "usie"
 "dir:site/try/coffee/assets" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/try/coffee/assets/coffee-cover.webp" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/try/coffee/assets/coffee-cup.webp" = { faza = "dadzienaść", rola = "prajava" }
-"dir:palette" = { faza = "dadzienaść", rola = "prajava" }
-"file:palette/cobalt.css" = { faza = "dadzienaść", rola = "prajava" }
-"file:palette/paper.css" = { faza = "dadzienaść", rola = "prajava" }
-"dir:site/palette" = { faza = "asadak", rola = "prajava" }
-"file:site/palette/cobalt.css" = { faza = "asadak", rola = "prajava" }
-"file:site/palette/paper.css" = { faza = "asadak", rola = "prajava" }
 "file:src/robots.txt" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/llms.txt" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/404.html" = { faza = "dadzienaść", rola = "prajava" }
@@ -81,6 +75,13 @@ kola = "usie"
 "file:site/404.html" = { faza = "asadak", rola = "prajava" }
 "file:core.min.css" = { faza = "ściah", rola = "prajava" }
 "file:site/core.min.css" = { faza = "asadak", rola = "prajava" }
+"dir:src/palette" = { faza = "dadzienaść", rola = "prajava" }
+"file:src/palette/cobalt.css" = { faza = "dadzienaść", rola = "prajava" }
+"file:core-cobalt.min.css" = { faza = "ściah", rola = "prajava" }
+"file:site/core-cobalt.min.css" = { faza = "asadak", rola = "prajava" }
+"file:src/palette/paper.css" = { faza = "dadzienaść", rola = "prajava" }
+"file:core-paper.min.css" = { faza = "ściah", rola = "prajava" }
+"file:site/core-paper.min.css" = { faza = "asadak", rola = "prajava" }
 "file:src/SKILL.md" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/ard.json" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/ard.json" = { faza = "asadak", rola = "prajava" }

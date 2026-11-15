@@ -25,6 +25,8 @@ function minify(text) {
     .replace(/;}/g, '}').trim() + '\n';
 }
 
+const PALETTES = readdirSync('src/palette').filter(f => f.endsWith('.css')).map(f => f.slice(0, -4)).sort();
+
 const canvasExpr = f => {
   const g = f.grow;
   if (g === 'pure') return '100vw';
@@ -192,7 +194,13 @@ for (const v of variants) {
   mkdirSync(`lab/${v.id}`, { recursive: true });
   writeFileSync(`lab/${v.id}/core.css`, css(v));
   writeFileSync(`lab/${v.id}/index.html`, labPage(v));
-  if (v.core) { writeFileSync('core.css', css(v)); writeFileSync('core.min.css', minify(css(v))); }
+  if (v.core) {
+    writeFileSync('core.css', css(v));
+    writeFileSync('core.min.css', minify(css(v)));
+    // a palette is a part of its own in the sources and none in a page: each is built into a core of its own, so a page
+    // links one stylesheet with the colours it wants
+    for (const p of PALETTES) writeFileSync(`core-${p}.min.css`, minify(css(v) + '\n' + readFileSync(`src/palette/${p}.css`, 'utf8')));
+  }
 }
 writeFileSync('lab/index.html', labIndex());
 for (const f of ['CONNECT.md', 'README.md']) writeFileSync(f, readFileSync(`src/${f}`, 'utf8').replaceAll('{{VERSION}}', VERSION));
@@ -204,8 +212,8 @@ import { cpSync, rmSync, readdirSync } from 'node:fs';
 // site/try/ is not written here: work pages are made in it directly; everything else of site/ is written anew
 mkdirSync('site', { recursive: true });
 for (const f of readdirSync('site')) if (f !== 'try') rmSync(`site/${f}`, { recursive: true, force: true });
-for (const f of ['core.css', 'core.min.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs']) cpSync(f, `site/${f}`);
-for (const d of ['manifest', 'demo', 'palette']) cpSync(d, `site/${d}`, { recursive: true });
+for (const f of ['core.css', 'core.min.css', ...PALETTES.map(p => `core-${p}.min.css`), 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs']) cpSync(f, `site/${f}`);
+for (const d of ['manifest', 'demo']) cpSync(d, `site/${d}`, { recursive: true });
 cpSync('src/site-index.html', 'site/index.html');
 // what crawlers and agents look for at the root of a site, and the page for an address that leads nowhere
 for (const f of ['robots.txt', 'llms.txt', '404.html', 'ard.json']) cpSync(`src/${f}`, `site/${f}`);
@@ -215,7 +223,7 @@ mkdirSync('site/skills/prastora-layout', { recursive: true });
 writeFileSync('site/skills/prastora-layout/SKILL.md', readFileSync('src/SKILL.md', 'utf8').replaceAll('{{VERSION}}', VERSION));
 // site/v<tag>/: what each release tag holds of the core, as it was then, for addresses that name a release
 import { execFileSync } from 'node:child_process';
-const RELEASED = ['core.css', 'core.min.css', 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs', 'fonts', 'manifest', 'palette'];
+const RELEASED = ['core.css', 'core.min.css', ...PALETTES.map(p => `core-${p}.min.css`), 'MANIFEST.md', 'CONNECT.md', 'README.md', 'check.mjs', 'fonts', 'manifest'];
 for (const tag of execFileSync('git', ['tag', '-l', 'v*'], { encoding: 'utf8' }).split('\n').filter(Boolean)) {
   const held = execFileSync('git', ['ls-tree', '--name-only', tag], { encoding: 'utf8' }).split('\n');
   const files = RELEASED.filter(f => held.includes(f));

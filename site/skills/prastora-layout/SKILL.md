@@ -7,8 +7,7 @@ description: Lay out a web page with Prastora, a CSS framework made for agents, 
 
 Prastora composes a page like a picture: once for each frame (portrait under 800 px, landscape, wide from 2000 px, print on A4), and within a frame the page scales as a whole. A page is semantic HTML with a closed set of `data-` attributes: no `class`, no `style`, no stylesheet of its own.
 
-1. Link the core first, then a palette if the page wants other colours:
-   `https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v0.1.7/core.min.css`, and for example `.../palette/cobalt.css` from the same release.
+1. Link the core, one stylesheet: `https://cdn.jsdelivr.net/gh/plyn-one/plyn.prastora@v0.1.7/core.min.css`, or the core built with a palette, such as `core-cobalt.min.css` from the same release.
 2. Read the manifest: https://plyn-prastora.pages.dev/MANIFEST.md. Read a section of `manifest/` only when the page needs its devices.
 3. Write the page: bands of `data-l="canvas"`, children placed on columns with `data-x`, `data-xp` on phones.
 4. Run the check and repeat until it says `"ok": true`; every problem comes with a `fix`:

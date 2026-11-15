@@ -27,12 +27,12 @@ A child of `data-l="canvas"` takes columns with `data-x="first-last"` in landsca
 
 ## Palette
 
-The core has its own colours. To give a page others, link one palette after the core: `<link rel="stylesheet" href="palette/cobalt.css">`. A palette sets the paper, the ink and the accent for the light and the dark scheme, and nothing else.
+The core has its own colours. For others, link the core built with a palette instead of the core: `core-cobalt.min.css` in place of `core.min.css`, one stylesheet either way. A palette sets the paper, the ink and the accent for the light and the dark scheme, and nothing else.
 
-| palette | light | dark |
+| file | light | dark |
 |---|---|---|
-| `cobalt` | white, a cobalt accent | graphite, an orange accent |
-| `paper` | warm paper, a vermilion accent | ink, the same accent lighter |
+| `core-cobalt.min.css` | white, a cobalt accent | graphite, an orange accent |
+| `core-paper.min.css` | warm paper, a vermilion accent | ink, the same accent lighter |
 
 ## Relations: `data-l`
 
