@@ -54,6 +54,8 @@
 "file:site/manifest/pictures.md" = "the copy on the site of manifest/pictures.md"
 "file:site/manifest/type.md" = "the copy on the site of manifest/type.md"
 "dir:site/try/coffee" = "a page of a coffee house laid out by another agent from the manifest alone, first as a blind test and then reworked as a magazine"
+"dir:site/try/legacy-home" = "a temporary study remaking the original Prastora homepage with the current framework"
+"file:site/try/legacy-home/index.html" = "an experimental new-framework rendition of the old home page; original source is A-Rozum/prastora index.html"
 "file:site/try/coffee/index.html" = "the coffee house page"
 "dir:site/try/coffee/assets" = "the photographs of the coffee house page, kept with it"
 "file:site/try/coffee/assets/coffee-cover.webp" = "the cover photograph: coffee and a pastry by a window, by Katja Ano (Unsplash aA4ylcBwNmE, Unsplash License), cropped to 3:4"

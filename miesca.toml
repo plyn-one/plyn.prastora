@@ -37,6 +37,8 @@ kola = "usie"
 "file:site/manifest/pictures.md" = { faza = "asadak", rola = "prajava" }
 "file:site/manifest/type.md" = { faza = "asadak", rola = "prajava" }
 "dir:site/try/coffee" = { faza = "dadzienaść", rola = "prajava" }
+"dir:site/try/legacy-home" = { faza = "dadzienaść", rola = "prajava" }
+"file:site/try/legacy-home/index.html" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/try/coffee/index.html" = { faza = "dadzienaść", rola = "prajava" }
 "dir:site/try/coffee/assets" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/try/coffee/assets/coffee-cover.webp" = { faza = "dadzienaść", rola = "prajava" }
