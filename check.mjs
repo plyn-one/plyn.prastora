@@ -100,7 +100,7 @@ const VOCAB = {
   'data-comb': Array.from({ length: 24 }, (_, i) => String(i + 1)),
   'data-numbered': [''], 'data-line': Array.from({ length: 46 }, (_, i) => String(i + 1)),
   'data-space': ['none', 'tight', 'loose'],
-  'data-surface': ['raised', 'outline', 'accent', 'solid'],
+  'data-surface': ['raised', 'outline', 'accent', 'solid', 'inverse'],
   'data-tone': ['quiet', 'strong', 'accent', 'danger', 'ok', 'warn'],
   'data-theme': ['light', 'dark'],
   'data-side': [''], 'data-push': [''], 'data-pad': [''], 'data-fold': [''], 'data-fold-label': [''], 'data-theme-switch': [''],

@@ -56,7 +56,7 @@ The core has its own colours. For others, link the core built with a palette ins
 | `data-side` | | the side of a `split` |
 | `data-push` | | in `stack`, `cluster`, `cover`: this and what follows go to the end; a `stack` on the canvas with it fills its row, so text beside a picture can stand at the picture's foot |
 | `data-pad` | | padding without a panel |
-| `data-surface` | `raised` `outline` `accent` `solid` | a panel; `solid` is filled with the accent and what is inside reads on it as on the page |
+| `data-surface` | `raised` `outline` `accent` `solid` `inverse` | a panel; `solid` is filled with the accent and what is inside reads on it as on the page; `inverse` is a dark band (palettes may set `--inverse-paper` and `--inverse-ink`) |
 | `data-tone` | `quiet` `strong` `accent` `danger` `ok` `warn` | emphasis; on `button`: `accent` main action, `danger` destructive, `quiet` minor |
 | `data-button` | | on `a`: a link that looks like a button, for an action that goes somewhere; with `data-tone="accent"` the main one |
 | `data-bleed` | `up` `down` `over` | a canvas child reaching 4 units into the band above or below; `over`: lying on the top edge of its band, its middle on the edge (draw the picture so what rests on the edge is at its middle) |
