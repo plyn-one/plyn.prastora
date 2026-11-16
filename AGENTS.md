@@ -1,7 +1,10 @@
-# plyn.prastora
+# Plyń
 
-- Before changing this place, read plyn-one/plyn.mova `docs/praca.toml` (and `docs/razmova.toml` for talk with a person) once per session through the frame's github_read; reuse it while current and in context.
-- Find this place's purpose, entry points, checks and file descriptions in the relevant sections of `pračytańnie/en.toml` (apisańnie, kirunak, samaadrasavańnie).
-- Read `miesca.toml` for local structure or norms; read plyn.mova `rejestr.toml` and its readings for a norm change or when a check's explanation is insufficient.
-- For unresolved work, find the relevant whole with journal_search, then journal_view with that opening zapis number in roots. GitHub issue numbers are not journal whole numbers.
-- Unresolved system questions: plyn-one/plyn.laba.
+This file only points: nothing in it is a rule, and each thing is kept in one place.
+
+- How an agent works in every place: plyn-one/plyn.mova docs/praca.toml, and docs/razmova.toml for talk with a person; read them once per session. The own rules of a frame: praca.toml of its cabinet.
+- What this place is, how to run and check it, and what each file is: its pračytańnie/en.toml (apisańnie, kirunak, samaadrasavańnie).
+- Its parts and its own norms: its miesca.toml. The laws of the system and the checks that hold them: plyn-one/plyn.mova rejestr.toml.
+- Its work and open questions: its śled.toml and plyn-one/plyn.laba, read with journal_search, then journal_view with the whole in roots; a whole is the number of the zapis that opened it, never an issue number.
+
+"The rules" a person names may be any of these, or a decision kept in a journal: look there before asking.
