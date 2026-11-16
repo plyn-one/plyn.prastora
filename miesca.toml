@@ -82,6 +82,14 @@ kola = "usie"
 "file:src/palette/paper.css" = { faza = "dadzienaść", rola = "prajava" }
 "file:core-paper.min.css" = { faza = "ściah", rola = "prajava" }
 "file:site/core-paper.min.css" = { faza = "asadak", rola = "prajava" }
+"file:src/palette/crimson.css" = { faza = "dadzienaść", rola = "prajava" }
+"file:core-crimson.min.css" = { faza = "ściah", rola = "prajava" }
+"file:site/core-crimson.min.css" = { faza = "asadak", rola = "prajava" }
+"file:src/palette/crimson-deep.css" = { faza = "dadzienaść", rola = "prajava" }
+"file:core-crimson-deep.min.css" = { faza = "ściah", rola = "prajava" }
+"file:site/core-crimson-deep.min.css" = { faza = "asadak", rola = "prajava" }
+"file:theme.js" = { faza = "dadzienaść", rola = "sens" }
+"file:site/theme.js" = { faza = "asadak", rola = "sens" }
 "file:src/SKILL.md" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/ard.json" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/ard.json" = { faza = "asadak", rola = "prajava" }
