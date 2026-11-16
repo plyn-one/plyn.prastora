@@ -1,0 +1,11 @@
+/* Prastora palette: michalevic. The red of the logo mark (#e71c2a) is the accent, the same red as the chair in the hero
+   picture; every accent element of a page is that one red. White paper, charcoal ink. Dark: graphite paper, the red lighter.
+   The white on the red passes 4.5:1 (4.57). variants.mjs builds it into core-michalevic.min.css. Colours only. */
+@layer tokens {
+  :root {
+    --paper:     light-dark(oklch(1 0 0),            oklch(0.204 0.009 264));
+    --ink:       light-dark(oklch(0.269 0.012 271),  oklch(0.948 0.005 258));
+    --accent:    light-dark(oklch(0.592 0.229 26),   oklch(0.691 0.199 21));
+    --on-accent: light-dark(oklch(1 0 0),            oklch(0.204 0.009 264));
+  }
+}
