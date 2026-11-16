@@ -1,0 +1,10 @@
+/* Prastora palette: crimson. The colours of the Michalevic Law Office site: white paper, charcoal ink, crimson accent.
+   Dark: graphite paper, the same crimson lighter. variants.mjs builds it into core-crimson.min.css. Colours only. */
+@layer tokens {
+  :root {
+    --paper:     light-dark(oklch(1 0 0),            oklch(0.19 0.004 270));
+    --ink:       light-dark(oklch(0.24 0.012 270),   oklch(0.94 0.004 270));
+    --accent:    light-dark(oklch(0.52 0.22 17),     oklch(0.66 0.21 17));
+    --on-accent: light-dark(oklch(1 0 0),            oklch(0.19 0.004 270));
+  }
+}

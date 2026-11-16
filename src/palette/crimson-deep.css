@@ -1,0 +1,10 @@
+/* Prastora palette: crimson, deeper. The crimson of the site with a darker accent for text on paper (about 6.8:1 against white).
+   Dark: graphite paper, the crimson lighter. variants.mjs builds it into core-crimson-deep.min.css. Colours only. */
+@layer tokens {
+  :root {
+    --paper:     light-dark(oklch(1 0 0),            oklch(0.19 0.004 270));
+    --ink:       light-dark(oklch(0.24 0.012 270),   oklch(0.94 0.004 270));
+    --accent:    light-dark(oklch(0.46 0.21 17),     oklch(0.66 0.21 17));
+    --on-accent: light-dark(oklch(1 0 0),            oklch(0.19 0.004 270));
+  }
+}
