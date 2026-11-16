@@ -84,7 +84,7 @@ const FIX = {
 };
 
 const VOCAB = {
-  'data-l': ['page', 'canvas', 'columns', 'layer', 'spread', 'sheet', 'margin', 'book', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover', 'menu'],
+  'data-l': ['page', 'canvas', 'columns', 'layer', 'spread', 'sheet', 'margin', 'book', 'stack', 'cluster', 'split', 'switch', 'grid', 'reel', 'cover', 'menu', 'fold'],
   'data-bleed': ['up', 'down', 'over'],
   'data-pull': [''], 'data-initial': [''],
   'data-float': ['start', 'end'], 'data-w': ['quarter', 'third', 'half'], 'data-wp': ['full'], 'data-shape': ['arch', 'circle', 'alpha'],
@@ -103,7 +103,7 @@ const VOCAB = {
   'data-surface': ['raised', 'outline', 'accent', 'solid'],
   'data-tone': ['quiet', 'strong', 'accent', 'danger', 'ok', 'warn'],
   'data-theme': ['light', 'dark'],
-  'data-side': [''], 'data-push': [''], 'data-pad': [''],
+  'data-side': [''], 'data-push': [''], 'data-pad': [''], 'data-fold': [''], 'data-fold-label': [''], 'data-theme-switch': [''],
 };
 
 // runs in the page: what breaks at this width, and the geometry of every element in rem from the canvas edge
