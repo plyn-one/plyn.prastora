@@ -117,6 +117,17 @@
   :where([aria-invalid=true], :user-invalid) { border-color: var(--danger); }
   :where(details) { box-shadow: inset 0 -.0625rem var(--line); }
   :where(summary) { min-block-size: var(--target); display: flex; align-items: center; gap: var(--s-1); cursor: pointer; font-weight: 550; }
+  /* a menu (data-l="menu"): a disclosure whose summary shows the current item and whose list opens over the page,
+     for choosing among four or more items (the languages of a site); the list is a ul or ol of links. */
+  :where(details[data-l=menu]) { position: relative; box-shadow: none; }
+  :where(details[data-l=menu]) > :where(summary) { list-style: none; }
+  :where(details[data-l=menu]) > :where(summary)::-webkit-details-marker { display: none; }
+  :where(details[data-l=menu]) > :where(summary)::after { content: ""; inline-size: .5rem; block-size: .5rem; margin-inline-start: var(--s-2); border-inline-end: .125rem solid currentColor; border-block-end: .125rem solid currentColor; transform: rotate(45deg) translate(-.1rem, -.1rem); }
+  :where(details[data-l=menu][open]) > :where(summary)::after { transform: rotate(225deg) translate(-.1rem, -.1rem); }
+  :where(details[data-l=menu]) > :where(ul, ol) { position: absolute; inset-block-start: 100%; inset-inline-start: 0; z-index: 20; display: grid; gap: var(--s-2); min-inline-size: max-content; margin: var(--s-2) 0 0; padding: var(--s-2); list-style: none; background: var(--paper); box-shadow: inset 0 0 0 .0625rem var(--line); border-radius: var(--radius); }
+  :where(details[data-l=menu]) > :where(ul, ol) > :where(li) > :where(a) { display: flex; align-items: center; min-block-size: var(--target); padding-inline: var(--s-1); border-radius: var(--radius); color: inherit; text-decoration: none; }
+  :where(details[data-l=menu]) > :where(ul, ol) > :where(li) > :where(a:hover) { background: var(--veil); }
+  :where(details[data-l=menu]) > :where(ul, ol) > :where(li) > :where([aria-current=page]) { font-weight: 650; }
 
   :where(table) { inline-size: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
   :where(th, td) { padding: var(--s-1) var(--s0); text-align: start; vertical-align: top; box-shadow: inset 0 -.0625rem var(--line); }
