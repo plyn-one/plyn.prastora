@@ -78,6 +78,12 @@ The core has its own colours. For others, link the core built with a palette ins
 </div></body>
 ```
 
+Menus and switches, all without script:
+- **Menu** (a choice among four or more, e.g. languages): `<details data-l="menu"><summary>EN</summary><ul><li><a href="…" aria-current="page">EN</a></li>…</ul></details>`. Opens over the page; the summary shows the current item.
+- **Choice among a few** (two or three): a `cluster` of links, each `data-button` or plain; the current one `aria-current="page"`.
+- **One open at a time** (questions, FAQ): `<details name="faq">` on each item with the same `name`; the browser closes the others.
+- **Colour scheme**: `data-theme="light"` or `"dark"` on `html` (or on a part); without it the system decides. A choice kept across pages needs a small script that sets it from storage; the core has none (the site keeps it).
+
 Cards `<ul data-l="grid"><li data-surface="raised" data-l="stack" data-space="tight"><h3>…</h3><p>…</p></li></ul>` · figures `<div data-l="stack" data-space="tight"><span data-tone="quiet">Label</span><data value="9">9</data></div>` · facts `<dl><div><dt>…</dt><dd>…</dd></div></dl>` · status `<mark data-tone="ok">…</mark>` · wide table `<div data-l="reel"><table>…</table></div>` · form `<form data-l="stack">`, a field `<label data-l="split"><span data-side>Label</span><input name="x"></label>`, actions in a `cluster`.
 
 ## Sections: read only when the page needs them
