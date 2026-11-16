@@ -130,6 +130,17 @@
   :where(details[data-l=menu]) > :where(ul, ol) > :where(li) > :where(a) { display: flex; align-items: center; min-block-size: var(--target); padding-inline: var(--s-1); border-radius: var(--radius); color: inherit; text-decoration: none; }
   :where(details[data-l=menu]) > :where(ul, ol) > :where(li) > :where(a:hover) { background: var(--veil); }
   :where(details[data-l=menu]) > :where(ul, ol) > :where(li) > :where([aria-current=page]) { font-weight: 650; }
+  /* a fold (data-l="fold"): a list that shows in full where there is room and waits behind a label where there is not
+     (up to 50em). No script: a checkbox with data-fold, placed before the fold, keeps the state; a label with
+     data-fold-label for it shows only on the narrow screen. */
+  :where(input[data-fold]) { position: absolute; inline-size: 2.5rem; block-size: 2.5rem; opacity: 0; pointer-events: none; }
+  :where([data-fold-label]) { display: none; }
+  @media (width <= 50em) {
+    :where([data-fold-label]) { display: inline-flex; align-items: center; min-block-size: var(--target); cursor: pointer; font-weight: 550; }
+    :where([data-l=fold]) { display: none; }
+    :where(input[data-fold]:checked) ~ :where([data-l=fold]) { display: block; }
+    :where(input[data-fold]:focus-visible) ~ :where([data-fold-label]) { outline: .25rem solid var(--accent); outline-offset: .35rem; }
+  }
 
   :where(table) { inline-size: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
   :where(th, td) { padding: var(--s-1) var(--s0); text-align: start; vertical-align: top; box-shadow: inset 0 -.0625rem var(--line); }
