@@ -84,7 +84,11 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const strict = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html')], { cwd: root, timeout: 60000 }).catch(e => e);
       assert.equal(strict.code, 1);
       assert.ok(JSON.parse(strict.stdout).problems.some(p => p.rule === 'vocabulary'));
-      const result = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html'), '--site'], { cwd: root, timeout: 60000 });
+      const result = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html'), '--site'], { cwd: root, timeout: 60000 }).catch(error => {
+        let report;
+        try { report = JSON.parse(error.stdout); } catch {}
+        throw new Error('site mode returned ' + error.code + ': ' + JSON.stringify(report?.problems ?? error.stdout).slice(0, 2300));
+      });
       assert.equal(JSON.parse(result.stdout).ok, true, result.stdout);
       const invalid = branded.replace('<link rel="canonical" href="https://example.test/regression">', '');
       await writeFile(join(pageDir, 'branded-bad-seo.html'), invalid);
