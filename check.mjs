@@ -27,6 +27,9 @@ const pages = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--sh
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
 const extended = args.includes('--extended');
 const siteMode = args.includes('--site');
+// A site inherits frame geometry from its pinned core. Exhaustive movement sampling
+// is a core regression check, not a per-site requirement.
+const geometryAudit = extended && !siteMode;
 const useHtml = args.includes('--html');
 const vnuJar = process.env.VNU_JAR;
 const useAxe = args.includes('--axe');
@@ -82,7 +85,7 @@ const FIX = {
   'resource-load': 'repair the resource address or its server/CORS permissions; an inline --shape URL is relative to the document, like the image src',
   'shape-outline': 'give the alpha image --shape: url(...) and use a browser with CSS @property support',
   'composition-moves': 'a line lies on the edge of its column, or something is sized outside the vocabulary: move the column by one, or change the words',
-  'page-scroll-x': 'something is wider than the window: see escapes-parent for which',
+  'page-scroll-x': 'in core mode, unexpected overflow suggests an element outside the intended canvas; site mode permits author-designed scrolling',
   'escapes-parent': 'give it more columns, let it wrap, or set it in a reel',
   'narrow-measure': 'prose in a column under 12 em: give it more columns, or hide it in that frame',
   'text-too-small': 'use a size from the vocabulary; in a narrow frame, one step larger',
@@ -219,7 +222,9 @@ function inspect({ VOCAB, siteMode }) {
   }
 
   const de = document.documentElement;
-  if (document.body.scrollWidth > innerWidth + 1) add('page-scroll-x', document.body, `${document.body.scrollWidth} px wide in a ${innerWidth} px window`);
+  // The site author may intentionally enable horizontal motion. Core mode still
+  // diagnoses unexpected document overflow; site mode does not veto that choice.
+  if (!siteMode && document.body.scrollWidth > innerWidth + 1) add('page-scroll-x', document.body, `${document.body.scrollWidth} px wide in a ${innerWidth} px window`);
 
   const body = parseFloat(getComputedStyle(document.body).fontSize);
   const x0 = document.body.getBoundingClientRect().left;
@@ -426,8 +431,8 @@ try {
       for (const { u, lo, hi } of FRAMES) {
         const seen = {};
         // Normal mode samples each distinct composition; extended mode also checks scaling within frames.
-        const inner = extended && scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
-        const widths = extended ? [...new Set([lo, ...inner, hi])] : [lo];
+        const inner = geometryAudit && scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
+        const widths = geometryAudit ? [...new Set([lo, ...inner, hi])] : extended ? [lo, hi] : [lo];
         for (const w of widths) {
           const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
           const pg = await ctx.newPage();
@@ -450,7 +455,7 @@ try {
           await ctx.close();
         }
         // the promise: within a frame every element stands at the same place of the canvas, in rem
-        if (extended && scheme === 'light') {
+        if (geometryAudit && scheme === 'light') {
           const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
           for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
             const o = a.get(b[0]);
