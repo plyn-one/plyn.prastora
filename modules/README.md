@@ -25,4 +25,6 @@ The form action above is illustrative: Ramonak sites use `/_ramonak/form/<name>`
 
 Two deliberately different sample site templates: [service](example-service.html) and [editorial](example-editorial.html). They require browser verification; they are not evidence of passed checks.
 
+Browser regression source: `node --test modules/modules.test.mjs` with Playwright and Chromium installed. It is not proof of execution until results are recorded.
+
 Required before release: automated regression for the components, two visually distinct sample sites, keyboard/mobile checks and independently verified no-load behavior for unused modules. Video and MapLibre are optional click-to-load modules described in [video.md](video.md) and [map.md](map.md); their browser checks are still pending.

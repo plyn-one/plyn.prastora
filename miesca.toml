@@ -168,6 +168,7 @@ kola = "usie"
 "file:modules/map.md" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/example-service.html" = { faza = "ściah", rola = "prajava" }
 "file:modules/example-editorial.html" = { faza = "ściah", rola = "prajava" }
+"file:modules/modules.test.mjs" = { faza = "ściah", rola = "sens" }
 "file:modules/README.md" = { faza = "dadzienaść", rola = "sens" }
 "file:src/CONNECT.md" = { faza = "dadzienaść", rola = "prajava" }
 "dir:docs" = { faza = "dadzienaść", rola = "sens" }
