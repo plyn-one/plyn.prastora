@@ -15,7 +15,7 @@ A site selects Prastora and optionally Ramonak. **Prastora cannot depend on Ramo
 
 ## Contract for agents
 
-The site describes its pinned Prastora version, checker mode (`strict` or future `site`), selected module assets, own CSS, and optional backend. No current parser for this description is implied.
+The site describes its pinned Prastora version, checker mode (`strict` or future `site`), selected module assets, own CSS, and optional backend. No current parser for this description is implied. Browser execution for a site is not an agent choice: the site's owner frame runs browser checks exclusively via its own Klučnik `browser_test` (Cloudflare Browser Run on that frame's account), using a published HTTPS fixture. Unavailable access is an explicit blocker, not a reason to run local Chromium, another frame's browser or a third-party browser. The current `check.mjs` CLI remains a core development and diagnostic tool; its full browser-based site audit has not yet been ported into the bounded `browser_test` contract.
 
 The output is semantic HTML, with exactly one primary `main` landmark and correct document language/title. Header, footer, navigation and link collections are optional; a one-page site without them is valid. `data-l`, `data-x`, `data-xp` and other documented attributes form Prastora's layout API.
 
@@ -39,7 +39,7 @@ Ramonak's existing video rewrite changes YouTube iframes into lazy covers/links.
 
 ## Acceptance and versioning
 
-1. Existing strict-mode demos remain valid.
+1. Existing strict-mode demos remain valid. Site acceptance's browser evidence must be from the owner-frame Klučnik Browser Run executor; source/CI tests are separate evidence.
 2. Two visually distinct sites and a headerless one-page site pass the browser-based `site` checker. Invalid frame coordinates, keyboard traps, missing resources and wrong SEO fail with fixes; intentional author-specified horizontal scrolling is permitted. Core regressions independently verify that the layout grid itself does not drift.
 3. Unselected map/video assets produce no network requests.
 4. Accessible modules work with keyboard and appropriate script-free fallback.
