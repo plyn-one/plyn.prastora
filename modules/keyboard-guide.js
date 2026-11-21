@@ -4,8 +4,15 @@ const action=document.getElementById('focus-start');
 const first=document.getElementById('focus-first');
 if(action&&first&&output){
   action.addEventListener('click',()=>{
+    document.documentElement.setAttribute('data-keyboard-test','on');
     first.focus();
     output.textContent='Старт: фокус на «'+(first.textContent||'ссылке').trim()+'». Нажмите Tab для следующего элемента; Shift + Tab — назад; Enter — открыть.';
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape' && document.documentElement.hasAttribute('data-keyboard-test')){
+      document.documentElement.removeAttribute('data-keyboard-test');
+      output.textContent='Проверка завершена. Для повторной проверки нажмите стартовую кнопку.';
+    }
   });
   document.addEventListener('focusin',event=>{
     if(!event.target.matches('a, button, input, textarea, select, summary'))return;

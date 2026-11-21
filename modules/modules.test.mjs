@@ -42,10 +42,13 @@ test('site module selection, native fallback and on-demand third-party resources
     assert.equal(await page.locator('[data-pr-header]').count(), 1);
     assert.equal(await page.locator('[data-pr-header]').evaluate(el => getComputedStyle(el).position), 'sticky');
     await page.locator('#focus-start').click();
+    assert.equal(await page.locator('html').getAttribute('data-keyboard-test'), 'on');
     assert.equal(await page.evaluate(() => document.activeElement?.id), 'focus-first');
     await page.keyboard.press('Tab');
     assert.notEqual(await page.evaluate(() => document.activeElement?.id), 'focus-first');
     assert.match(await page.locator('#focus-feedback').textContent(), /Сейчас выделен/);
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('html').getAttribute('data-keyboard-test'), null);
     assert.equal(await page.locator('[data-pr-news] .pr-news__item').count(), 3);
     assert.equal(await page.locator('[data-pr-news] time').count(), 3);
     assert.equal(await page.locator('[data-pr-news] .pr-news__image').count(), 2);
