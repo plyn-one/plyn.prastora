@@ -63,6 +63,8 @@ async function framesOf(page) {
 
 // what to do about each problem, for the agent that reads the report
 const FIX = {
+  'site-main': 'provide exactly one semantic main landmark; header and footer are optional',
+  'site-seo': 'correct the unique title, description, canonical, alternate URLs and robots metadata in the rendered head',
   'keyboard-trap': 'check focus management and keydown handlers; allow Tab to leave every component',
   'tab-order': 'remove positive tabindex and follow the DOM reading order',
   'keyboard-unavailable': 'test nested frames separately; this pass inspects only the top document',
@@ -173,6 +175,31 @@ function inspect({ VOCAB, siteMode }) {
   // what every page needs: its language, its title, and words for its pictures
   if (!document.documentElement.lang) add('basics', document.documentElement, '<html> has no lang');
   if (!document.title.trim()) add('basics', document.documentElement, 'no <title>');
+  if (siteMode) {
+    const head = document.head;
+    if (document.querySelectorAll('main').length !== 1) add('site-main', document.body, 'exactly one main landmark is required');
+    if (head.querySelectorAll('title').length !== 1) add('site-seo', document.documentElement, 'exactly one title required');
+    const descriptions = head.querySelectorAll('meta[name="description"]');
+    if (descriptions.length !== 1 || !descriptions[0]?.content.trim())
+      add('site-seo', document.documentElement, 'one nonempty meta description required');
+    const canonicals = head.querySelectorAll('link[rel~="canonical"]');
+    if (canonicals.length !== 1) add('site-seo', document.documentElement, 'exactly one canonical required');
+    for (const node of canonicals) {
+      const raw = node.getAttribute('href') ?? '';
+      if (!/^https?:\/\//.test(raw) || raw.includes('#')) add('site-seo', node, 'canonical must be an absolute HTTP(S) URL without fragment');
+    }
+    const seen = new Set();
+    const links = [...head.querySelectorAll('link[rel~="alternate"][hreflang]')];
+    for (const node of links) {
+      const lang = node.getAttribute('hreflang');
+      if (!lang || seen.has(lang)) add('site-seo', node, 'duplicate or empty hreflang');
+      seen.add(lang);
+      const raw = node.getAttribute('href') ?? '';
+      if (!/^https?:\/\//.test(raw) || raw.includes('#')) add('site-seo', node, 'hreflang needs an absolute HTTP(S) URL');
+    }
+    if (links.length > 1 && !seen.has('x-default')) add('site-seo', document.documentElement, 'multilingual pages need x-default');
+    if (head.querySelectorAll('meta[name="robots"]').length > 1) add('site-seo', document.documentElement, 'duplicate robots meta');
+  }
   for (const im of document.querySelectorAll('img:not([alt])')) add('basics', im, 'img without alt (alt="" for a picture that only decorates)');
   for (const sv of document.querySelectorAll('svg')) {
     if (sv.closest('[aria-hidden=true]') || sv.matches('svg svg') || sv.querySelector('text')) continue;
