@@ -53,9 +53,20 @@ function stylesheetOf(page) {
 }
 
 async function framesOf(page) {
-  const href = stylesheetOf(page);
-  // the core may be a file beside the page or a pinned release at an address
-  const css = /^https?:/.test(href) ? await (await fetch(href)).text() : readFileSync(resolve(dirname(page), href), 'utf8');
+  const remote = /^https?:\/\//.test(page);
+  const html = remote ? await (async () => {
+    const response = await fetch(page);
+    if (!response.ok) throw new Error(`${page}: HTTP ${response.status}`);
+    return response.text();
+  })() : null;
+  const href = remote ? [...html.matchAll(/<link[^>]+>/g)]
+    .map(m => m[0]).filter(l => /rel="stylesheet"/.test(l))
+    .map(l => l.match(/href="([^"]+)"/)?.[1]).find(Boolean) : stylesheetOf(page);
+  if (!href) throw new Error(`${page}: no stylesheet linked; link core.css`);
+  const cssUrl = remote ? new URL(href, page).href : /^https?:/.test(href) ? href : null;
+  const response = cssUrl ? await fetch(cssUrl) : null;
+  if (response && !response.ok) throw new Error(`${page}: core stylesheet HTTP ${response.status}: ${cssUrl}`);
+  const css = response ? await response.text() : readFileSync(resolve(dirname(page), href), 'utf8');
   const m = css.match(/frames[^:]*: (\[.*\])/);
   if (!m) throw new Error(`${page}: ${href} is not the prastora core (no list of frames in its first comment)`);
   return JSON.parse(m[1]).map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
