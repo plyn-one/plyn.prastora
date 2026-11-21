@@ -52,12 +52,15 @@ test('site module selection, native fallback and on-demand third-party resources
     assert.equal(await page.locator('[data-pr-news] .pr-news__item').count(), 3);
     assert.equal(await page.locator('[data-pr-news] time').count(), 3);
     assert.equal(await page.locator('[data-pr-news] .pr-news__image').count(), 2);
+    const widthBefore = await page.locator('[data-pr-languages]').evaluate(e=>e.getBoundingClientRect().width);
     await page.locator('[data-pr-languages] summary').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), '');
     assert.equal(await page.locator('[data-pr-languages] ul').evaluate(el => getComputedStyle(el).position), 'absolute');
     await page.locator('[data-pr-languages] a[hreflang=fr]').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
-    assert.equal(await page.locator('[data-pr-languages] summary').textContent(), 'Français');
+    assert.equal(await page.locator('[data-pr-languages] .pr-language__current').textContent(), 'Français');
+    const widthAfter = await page.locator('[data-pr-languages]').evaluate(e=>e.getBoundingClientRect().width);
+    assert.ok(Math.abs(widthBefore-widthAfter)<0.2,'language control width must stay stable after selection');
     await page.locator('[data-pr-languages] summary').click();
     await page.locator('#news-title').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
@@ -65,7 +68,7 @@ test('site module selection, native fallback and on-demand third-party resources
     assert.equal(await page.locator('[data-pr-map-enable]').count(), 1);
     assert.equal(await page.locator('[data-pr-map-enable]').evaluate(e=>e.tagName), 'BUTTON');
     assert.equal(await page.locator('[data-pr-map]').getAttribute('data-pr-map-style'), 'map-style.json');
-    assert.ok((await page.locator('[data-pr-languages] summary').textContent()).trim() === 'Français');
+    assert.equal(await page.locator('[data-pr-languages] .pr-language__current').textContent(), 'Français');
     assert.equal(await page.locator('[data-pr-map-enable]').getAttribute('data-pr-map-preview'), '');
     assert.equal(await page.locator('[data-pr-video-link] img').count(), 1);
     for(const width of [900,2100]){
@@ -131,6 +134,14 @@ test('site module selection, native fallback and on-demand third-party resources
     await page.waitForFunction(() => document.querySelector('[data-pr-map-status]')?.textContent.includes('Interactive map unavailable'));
     assert.match(await page.locator('[data-pr-map-status]').textContent(), /Interactive map unavailable/);
     assert.equal(await page.locator('[data-pr-map-preview]').isVisible(), true);
+    const previewBox=await page.locator('[data-pr-map-preview]').boundingBox();
+    const stageBox=await page.locator('.pr-map__stage').boundingBox();
+    assert.ok(Math.abs(previewBox.x-stageBox.x)<1 && Math.abs(previewBox.y-stageBox.y)<1,
+      'preview must share the same stage position as the interactive map');
+    const canvasBox=await page.locator('[data-pr-map-canvas]').evaluate(el=>{
+      const css=getComputedStyle(el);return {position:css.position};
+    });
+    assert.equal(canvasBox.position,'absolute');
     assert.equal(await page.locator('[data-pr-map] a[href^="https://www.openstreetmap.org/"]').count(), 1);
 
     await page.goto(origin + '/modules/example-service.html');
