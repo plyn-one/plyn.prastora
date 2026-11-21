@@ -11,14 +11,13 @@ as a module script. It never contacts YouTube before a visitor's click.
      data-pr-embed="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"
      aria-label="Watch a video">
     <img src="/assets/video-poster.webp" alt="">
-    <span class="pr-video__play">Play video</span>
   </a>
   <figcaption>A caption for the video.</figcaption>
 </figure>
 ```
 
 The video ID above is an example. Replace it with the actual video's ID.
-The poster must be served by the site itself, not a third party.
+The entire optimized poster is the link; no separate text Play button is needed. Serve the image from the site, not a third party. When the backend is Ramonak, its existing `video.cover` job fetches the video's title and cover from YouTube, saves the cover through `media.add`, and provides a local image URL. Reuse this image-processing pipeline rather than adding another downloader to Prastora. The SVG used in the test is only an illustration, not a real YouTube thumbnail.
 
 With no JavaScript, the link opens YouTube. With the optional script,
 clicking replaces the link with a youtube-nocookie.com iframe.

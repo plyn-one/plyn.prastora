@@ -4,7 +4,7 @@ Work: Plyń Laba #1134. These files are **not a release** until browser tests ar
 
 | Module | CSS | JS | Data source |
 |---|---|---|---|
-| Sticky header | `header.css` | optional `header.js` (shrink after scroll) | Site supplies brand and nav links |
+| Sticky header | `header.css` | optional `header.js` (scroll decoration; stable height) | Site supplies brand and nav links |
 | Forms | `forms.css` | none (native validation) | The site backend owns field checks, CSRF, storage and mail |
 | News cards | `news.css` | none | The backend owns items, dates, URLs, pagination |
 | Languages | `languages.css` | none (native details) | The backend owns language URLs/current page |
@@ -21,7 +21,7 @@ Minimal markup:
 <form data-pr-form method="post" action="/your-backend/submit"><div class="pr-form__field"><label for="email">Email</label><input id="email" type="email" name="email" required></div><button>Send</button></form>
 ```
 
-The form action above is illustrative: Ramonak sites use `/_ramonak/form/<name>` with the configured fields and anti-spam protocol, other backends use their own. Do not duplicate Ramonak's routing, form processing, SEO metadata or translation. Site templates own the markup; these CSS modules only provide conventional accessible presentation. Header remains sticky without JS, and the native language menu works without JS. Header shrink is progressive and respects reduced motion.
+The form action above is illustrative: Ramonak sites use `/_ramonak/form/<name>` with the configured fields and anti-spam protocol, other backends use their own. Do not duplicate Ramonak's routing, form processing, SEO metadata or translation. Site templates own the markup; these CSS modules only provide conventional accessible presentation. Header remains sticky without JS, and the native language menu works without JS. Header height remains constant while scrolling; the optional script only changes its decoration.
 
 Two deliberately different sample site templates: [service](example-service.html) and [editorial](example-editorial.html). They require browser verification; they are not evidence of passed checks.
 
@@ -29,4 +29,4 @@ News cards use a frame-composed `data-l=canvas` container, and each article sele
 
 Browser regression source: `node --test modules/modules.test.mjs` with Playwright and Chromium installed. It is not proof of execution until results are recorded.
 
-Required before release: automated regression for the components, two visually distinct sample sites, keyboard/mobile checks and independently verified no-load behavior for unused modules. Video and MapLibre are optional click-to-load modules described in [video.md](video.md) and [map.md](map.md); their browser checks are still pending.
+Required before release: automated regression for the components, two visually distinct sample sites, keyboard/mobile checks and independently verified no-load behavior for unused modules. Video and MapLibre are optional click-to-load modules described in [video.md](video.md) and [map.md](map.md); their browser checks are still pending. The optional `languages.js` closes a native language dropdown after selection, outside click or Escape. Real language links navigate normally; `data-pr-language-demo` is test-only.
