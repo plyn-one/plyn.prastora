@@ -63,6 +63,8 @@
 "file:README.md" = "the front page of the repository for agents and developers outside Plyń: what the framework is and where to start"
 "file:LICENSE" = "the MIT License the framework is given under"
 "file:src/CONNECT.md" = "the text of CONNECT.md, which variants.mjs writes with the version of the release"
+"dir:docs" = "the public contracts for composing independently styled sites"
+"file:docs/site-contract.md" = "target v1 boundary between Prastora, optional modules, optional Ramonak adapter and site-owned design"
 "file:src/README.md" = "the text of README.md, which variants.mjs writes with the version of the release"
 "dir:site" = "the whole tree of the published site, written by variants.mjs from the sources except try/; Klučnik publishes it from main, and work pages under try/ from any commit"
 "file:src/site-index.html" = "the source of the front page of the site: the framework at work, the same composition in four frames, the demonstrations, how a page is written and checked, with the cobalt palette"

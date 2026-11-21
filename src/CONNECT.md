@@ -57,6 +57,10 @@ The check serves the input pages and their linked local core on a temporary loop
 
 If Chromium cannot be installed where you work, say so in your report and hand over the page unchecked; do not call it checked.
 
+## Site composition contract
+
+For independently styled sites and optional content engines, read [the target site composition contract](docs/site-contract.md). Its `site` checker mode is not available in the currently released checker; the strict manifest still applies until #1129 lands.
+
 ## Colours and type of a project
 
 They are values in `:root` of the core (`--paper`, `--ink`, `--accent`, `--font` and the others of its tokens layer). A project may set them in its own small stylesheet linked after the core, with no rules other than these values. Composition always comes from the core's attributes.

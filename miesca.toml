@@ -155,6 +155,8 @@ kola = "usie"
 "dir:src" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/base.css" = { faza = "dadzienaść", rola = "prajava" }
 "file:src/CONNECT.md" = { faza = "dadzienaść", rola = "prajava" }
+"dir:docs" = { faza = "dadzienaść", rola = "sens" }
+"file:docs/site-contract.md" = { faza = "dadzienaść", rola = "sens" }
 "file:src/README.md" = { faza = "dadzienaść", rola = "prajava" }
 "file:variants.mjs" = { faza = "ściah", rola = "ruch" }
 "dir:lab" = { faza = "ściah", rola = "sens" }
