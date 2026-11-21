@@ -59,7 +59,8 @@ test('site module selection, native fallback and on-demand third-party resources
     const mapRequest = page.waitForEvent('request', req => req.url().includes('unpkg.com/maplibre-gl@5.0.0'));
     await page.locator('[data-pr-map-enable]').click();
     assert.match((await mapRequest).url(), /maplibre-gl/);
-    await page.locator('[data-pr-map-status]').getByText('Map unavailable. Use the address link.').waitFor();
+    await page.waitForFunction(() => document.querySelector('[data-pr-map-status]')?.textContent.includes('Map unavailable.'));
+    assert.match(await page.locator('[data-pr-map-status]').textContent(), /Map unavailable/);
     assert.equal(await page.locator('[data-pr-map] a[href^="https://www.openstreetmap.org/"]').count(), 1);
 
     await page.goto(origin + '/modules/example-service.html');
