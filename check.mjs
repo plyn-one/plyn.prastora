@@ -26,6 +26,7 @@ const args = process.argv.slice(2);
 const pages = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--shots');
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
 const extended = args.includes('--extended');
+const siteMode = args.includes('--site');
 const useHtml = args.includes('--html');
 const vnuJar = process.env.VNU_JAR;
 const useAxe = args.includes('--axe');
@@ -37,7 +38,7 @@ const axeSource = useAxe ? (() => {
   console.error('check.mjs --axe needs a local axe-core package. Install with: npm i -D axe-core');
   process.exit(2);
 })() : null;
-if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--axe] [--html] [--extended] [--shots <dir>]'); process.exit(2); }
+if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--axe] [--html] [--extended] [--site] [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
 
 if (useHtml && !vnuJar) { console.error('check.mjs --html requires VNU_JAR pointing to a local vnu.jar'); process.exit(2); }
@@ -107,7 +108,7 @@ const VOCAB = {
 };
 
 // runs in the page: what breaks at this width, and the geometry of every element in rem from the canvas edge
-function inspect(VOCAB) {
+function inspect({ VOCAB, siteMode }) {
   const issues = [], boxes = [];
   // the core scales the canvas by what rounding the root size left: a rem on screen is that much larger
   const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) * (parseFloat(getComputedStyle(document.body).scale) || 1);
@@ -139,7 +140,7 @@ function inspect(VOCAB) {
         else if (el.parentElement?.dataset.l !== 'canvas') add('vocabulary', el, `${a} outside a canvas`);
         continue;
       }
-      if (!(a in VOCAB)) add('vocabulary', el, `unknown attribute ${a}`);
+      if (!(a in VOCAB)) { if (!siteMode) add('vocabulary', el, `unknown attribute ${a}`); }
       // data-hide takes several frames at once, separated by spaces
       else if (!(a === 'data-hide' ? el.getAttribute(a).trim().split(/\s+/) : [el.getAttribute(a)]).every(v => VOCAB[a].includes(v))) add('vocabulary', el, `${a}="${el.getAttribute(a)}" is not one of ${VOCAB[a].join(' ')}`);
     }
@@ -148,7 +149,7 @@ function inspect(VOCAB) {
     // the one style allowed names the image whose outline text runs round: --shape: url(…), with data-shape="alpha"
     const st = el.getAttribute('style');
     const shapeOnly = st && /^\s*--shape:\s*url\([^)]+\)\s*;?\s*$/.test(st) && el.getAttribute('data-shape') === 'alpha';
-    if ((st && !shapeOnly) || el.hasAttribute('class')) add('vocabulary', el, 'style and class are not used: say it with the vocabulary');
+    if (!siteMode && ((st && !shapeOnly) || el.hasAttribute('class'))) add('vocabulary', el, 'style and class are not used: say it with the vocabulary');
     if (el.matches('[data-shape=alpha]') && getComputedStyle(el).shapeOutside === 'none') add('shape-outline', el, 'the alpha image has no computed outline');
   }
 
@@ -389,7 +390,7 @@ try {
           const pg = await ctx.newPage();
           await openPage(pg, url, note, `${u} ${w}px ${scheme}`);
           await renderedLayout(pg);
-          const r = await pg.evaluate(inspect, VOCAB);
+          const r = await pg.evaluate(inspect, { VOCAB, siteMode });
           seen[w] = r;
           const edge = !extended || w === lo || w === hi;
           if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
@@ -406,7 +407,7 @@ try {
           await ctx.close();
         }
         // the promise: within a frame every element stands at the same place of the canvas, in rem
-        if (extended && scheme === 'light') {
+        if (extended && scheme === 'light' && !siteMode) {
           const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
           for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
             const o = a.get(b[0]);
@@ -427,7 +428,7 @@ try {
     await openPage(pg, url, note, 'print');
     await pg.emulateMedia({ media: 'print' });
     await renderedLayout(pg);
-    const r = await pg.evaluate(inspect, VOCAB);
+    const r = await pg.evaluate(inspect, { VOCAB, siteMode });
     for (const i of r.issues) if (!['vocabulary', 'target-too-small', 'contrast'].includes(i.rule)) note(i, 'print');
     const pdf = await pg.pdf({ preferCSSPageSize: true, printBackground: true });
     const sheets = await pg.evaluate(() => document.querySelectorAll('[data-l=sheet]').length);
