@@ -52,6 +52,13 @@ test('site module selection, native fallback and on-demand third-party resources
     assert.equal(await page.locator('[data-pr-news] .pr-news__item').count(), 3);
     assert.equal(await page.locator('[data-pr-news] time').count(), 3);
     assert.equal(await page.locator('[data-pr-news] .pr-news__image').count(), 2);
+    const headlineStyle = await page.locator('[data-pr-news] h3').first().evaluate(el => {
+      const css = getComputedStyle(el), body = getComputedStyle(document.body);
+      return { ratio: parseFloat(css.fontSize) / parseFloat(body.fontSize), weight: Number(css.fontWeight), underlined: getComputedStyle(el.querySelector('a')).textDecorationLine };
+    });
+    assert.ok(Math.abs(headlineStyle.ratio - 1.05) < 0.01, 'news title is 5 percent above body text');
+    assert.ok(headlineStyle.weight >= 700, 'news title is bold');
+    assert.equal(headlineStyle.underlined, 'none');
     const widthBefore = await page.locator('[data-pr-languages]').evaluate(e=>e.getBoundingClientRect().width);
     await page.locator('[data-pr-languages] summary').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), '');
@@ -59,6 +66,10 @@ test('site module selection, native fallback and on-demand third-party resources
     await page.locator('[data-pr-languages] a[hreflang=fr]').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
     assert.equal(await page.locator('[data-pr-languages] .pr-language__current').textContent(), 'Français');
+    await page.locator('[data-pr-languages] summary').focus();
+    const focusStatus = await page.locator('#focus-feedback').textContent();
+    assert.match(focusStatus, /Сейчас выделен: Français\./);
+    assert.doesNotMatch(focusStatus, /FrançaisFrançais|EnglishFrançais/);
     const widthAfter = await page.locator('[data-pr-languages]').evaluate(e=>e.getBoundingClientRect().width);
     assert.ok(Math.abs(widthBefore-widthAfter)<0.2,'language control width must stay stable after selection');
     await page.locator('[data-pr-languages] summary').click();
