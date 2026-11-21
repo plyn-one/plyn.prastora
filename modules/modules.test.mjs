@@ -40,6 +40,15 @@ test('site module selection, native fallback and on-demand third-party resources
     await page.waitForLoadState('networkidle');
     assert.deepEqual(remote, [], 'an idle service page must load no third-party assets');
     assert.equal(await page.locator('[data-pr-header]').count(), 1);
+    assert.equal(await page.locator('[data-pr-header]').evaluate(el => getComputedStyle(el).position), 'sticky');
+    await page.locator('#focus-start').click();
+    assert.equal(await page.evaluate(() => document.activeElement?.id), 'focus-first');
+    await page.keyboard.press('Tab');
+    assert.notEqual(await page.evaluate(() => document.activeElement?.id), 'focus-first');
+    assert.match(await page.locator('#focus-feedback').textContent(), /Сейчас выделен/);
+    assert.equal(await page.locator('[data-pr-news] .pr-news__item').count(), 3);
+    assert.equal(await page.locator('[data-pr-news] time').count(), 3);
+    assert.equal(await page.locator('[data-pr-news] .pr-news__image').count(), 2);
     await page.locator('[data-pr-languages] summary').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), '');
 
@@ -47,11 +56,34 @@ test('site module selection, native fallback and on-demand third-party resources
     await page.waitForLoadState('networkidle');
     assert.deepEqual(remote, [], 'a news-only site must not load video/map assets');
     assert.equal(await page.locator('script').count(), 0);
-    assert.equal(await page.locator('[data-pr-news] .pr-news__item').count(), 2);
-    for (const width of [320, 390, 768, 1280]) {
+    assert.equal(await page.locator('[data-pr-news] .pr-news__item').count(), 3);
+    for (const width of [320, 390, 768, 900, 1280, 2100, 2700]) {
       await page.setViewportSize({ width, height: 900 });
       const dims = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, width: innerWidth }));
       assert.ok(dims.scroll <= dims.width + 1, 'horizontal overflow at ' + width + ': ' + JSON.stringify(dims));
+    }
+
+    // Within each Prastora frame, normalized locations and widths must not drift.
+    const geometry = async width => {
+      await page.setViewportSize({ width, height: 900 });
+      return page.evaluate(() => {
+        const root = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const scale = parseFloat(getComputedStyle(document.body).scale) || 1;
+        const rem = root * scale, left = document.body.getBoundingClientRect().left;
+        return [...document.querySelectorAll('[data-x]')].map(el => {
+          const rect = el.getBoundingClientRect();
+          return { x: (rect.left - left) / rem, width: rect.width / rem };
+        });
+      });
+    };
+    for (const [small, large] of [[320, 600], [900, 1500], [2100, 2700]]) {
+      const first = await geometry(small), last = await geometry(large);
+      assert.equal(first.length, last.length);
+      for (let i = 0; i < first.length; i++) {
+        assert.ok(Math.abs(first[i].x - last[i].x) < 0.6
+          && Math.abs(first[i].width - last[i].width) < 0.6,
+          'frame composition drift for canvas child ' + i + ': ' + small + '/' + large);
+      }
     }
 
     await page.goto(origin + '/modules/example-service.html');
