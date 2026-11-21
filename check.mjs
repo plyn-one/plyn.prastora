@@ -450,7 +450,7 @@ try {
           await ctx.close();
         }
         // the promise: within a frame every element stands at the same place of the canvas, in rem
-        if (extended && scheme === 'light' && !siteMode) {
+        if (extended && scheme === 'light') {
           const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
           for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
             const o = a.get(b[0]);
