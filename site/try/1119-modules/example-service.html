@@ -2,77 +2,107 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sample service · Prastora modules</title>
-<meta name="description" content="A separately styled service-site example using optional Prastora modules.">
-<link rel="canonical" href="https://example.test/servicedemo">
+<title>Prastora · Service and real modules</title>
+<meta name="description" content="Frame-composed sample service with header, language chooser, news cards, form, video and map.">
+<link rel="canonical" href="https://plyn-prastora.pages.dev/try/1119-modules/example-service.html">
 <link rel="stylesheet" href="https://plyn-prastora.pages.dev/core.css">
 <link rel="stylesheet" href="header.css"><link rel="stylesheet" href="forms.css">
 <link rel="stylesheet" href="news.css"><link rel="stylesheet" href="languages.css">
 <link rel="stylesheet" href="video.css"><link rel="stylesheet" href="map.css">
 <style>
-:root{--pr-header-bg:#133a42;--pr-header-ink:#fff;--pr-focus:#faab4a}
-body{margin:0;background:#eef5f4;color:#17373b;font-family:system-ui}
-main{padding-block:3rem}.hero{background:#cfebde;padding:clamp(2rem,6vw,6rem);border-radius:1.5rem}
-.hero h1{font-size:clamp(2.4rem,5vw,5rem);line-height:1.05;max-width:13ch}
-.hero p{max-width:50ch}.shell{width:min(94%,70rem);margin:auto}.band{margin-block:3rem}
-h2{font-size:clamp(1.6rem,3vw,2.4rem)}.fake-art{min-height:15rem;background:linear-gradient(135deg,#347f8a,#a8d4bd);border-radius:1.3rem}
-[data-pr-video]{max-width:36rem}[data-pr-video] .pr-video__link{background:linear-gradient(135deg,#203a41,#6b9da6)}
-footer{padding:2rem;background:#123a42;color:#fff}
+:root{--pr-header-bg:#173f45;--pr-header-ink:#fff;--pr-focus:#e88729;--pr-news-border:#7b9b9a;--pr-news-bg:#fff}
+body{background:#e8f2ee;color:#17383c}
+[data-l=page]{gap:0}
+[data-pr-header]{align-self:stretch}
+.pr-header__inner{gap:.75rem}
+.pr-header__brand{white-space:nowrap}
+main{display:flex;flex-direction:column;gap:3rem;padding-block:2rem}
+.hero{background:#cfebe1;border-radius:.9rem;padding-block:2rem}
+.hero h1{font-size:var(--t4);max-inline-size:15ch}
+.hero p{max-inline-size:43ch}
+.fake-art{inline-size:100%;block-size:15rem;background:linear-gradient(135deg,#145f6e,#7cc0a2);border-radius:.6rem}
+.guide{border:2px dashed #527a74;background:#fff;padding:1rem;border-radius:.5rem}
+.guide button{background:#173f45;color:#fff}
+#focus-feedback{font-weight:700;min-block-size:3rem}
+.band{display:flex;flex-direction:column;gap:1rem}
+.band>h2{margin-block-end:.5rem}
+[data-pr-video]{max-inline-size:36rem}
+[data-pr-video] .pr-video__link{background:linear-gradient(135deg,#173f45,#759fab)}
+footer{padding:2rem;background:#173f45;color:#fff}
 </style>
 <script type="module" src="header.js"></script>
 <script type="module" src="video.js"></script>
 <script type="module" src="map.js"></script>
+<script type="module" src="keyboard-guide.js"></script>
 </head>
 <body><div data-l="page">
 <header data-pr-header><div class="pr-header__inner">
-<a class="pr-header__brand" href="#home">SAMPLE / ONE</a>
-<nav class="pr-header__nav" aria-label="Primary">
-<ul><li><a href="#services">Services</a></li><li><a href="#news">News</a></li><li><a href="#contact">Contact</a></li></ul>
-</nav>
-<details data-pr-languages><summary>English</summary><ul>
-<li><a href="#home" aria-current="page">English</a></li>
-<li><a href="#home" hreflang="fr">Français (placeholder)</a></li>
-</ul></details>
-</div></header>
-<main id="home" class="shell">
-<section class="hero" data-l="canvas">
-<div data-x="1-7"><p>OPTIONAL MODULES / SERVICE DEMO</p>
-<h1>Design owned by the site.</h1>
-<p>Header, language chooser, form, news and media are independent choices, not a CMS theme.</p>
-<a href="#services">See how it works</a></div>
-<div data-x="8-12"><div class="fake-art" role="img" aria-label="Abstract teal artwork"></div></div>
+<a class="pr-header__brand" href="#start" id="focus-first">SAMPLE / ONE</a>
+<nav class="pr-header__nav" aria-label="Primary"><ul>
+<li><a href="#news">News cards</a></li>
+<li><a href="#media">Video</a></li>
+<li><a href="#map">Map</a></li>
+<li><a href="#contact">Form</a></li>
+</ul></nav>
+<details data-pr-languages><summary>EN · Languages</summary><ul>
+<li><a href="#start" aria-current="page">English (sample)</a></li>
+<li><a href="#start" hreflang="fr">Français (sample)</a></li>
+</ul></details></div></header>
+<main id="start">
+<section class="hero" data-l="canvas" aria-labelledby="hero-title">
+<div data-x="1-7" data-xp="1-4" data-xw="1-7" data-l="stack">
+<p><strong>FRAME COMPOSITION · PORTRAIT / LANDSCAPE / WIDE</strong></p>
+<h1 id="hero-title">A site keeps its composition.</h1>
+<p>Actual Prastora canvas and frame-specific columns, not an auto-fitting CSS grid.</p>
+<a href="#news">See the news cards</a>
+</div>
+<div data-x="8-12" data-xp="1-4" data-xw="8-12"><div class="fake-art" role="img" aria-label="Abstract teal visual panel"></div></div>
 </section>
-<section id="services" class="band" data-l="stack"><h2>What the site controls</h2>
-<p>This is static demo content. A backend, such as Ramonak, supplies real localized URLs, form operations and news records.</p></section>
-<section id="news" class="band"><h2>Latest notices</h2>
-<div data-pr-news><article class="pr-news__item">
-<time datetime="2026-11-21">21 November 2026</time>
-<h3><a href="#news">Example announcement</a></h3>
-<p>An example of reusable layout rather than a generated content feed.</p></article>
-<article class="pr-news__item"><time datetime="2026-11-20">20 November 2026</time>
-<h3><a href="#news">Another announcement</a></h3><p>Items are given by the site's content engine.</p></article></div>
+<section class="band guide" aria-labelledby="guide-title">
+<h2 id="guide-title">Keyboard focus test · Проверка клавиатуры</h2>
+<p>Нажмите кнопку ниже. Она поставит выделение на первую ссылку страницы. Затем нажимайте Tab для перехода вперёд, Shift + Tab для перехода назад. Enter открывает ссылку; Space открывает выбор языка.</p>
+<button type="button" id="focus-start">Начать проверку клавиатуры</button>
+<p id="focus-feedback" role="status" aria-live="polite">Здесь появится название выделенного элемента.</p>
 </section>
-<section id="media" class="band"><h2>Optional video</h2>
-<figure data-pr-video><a class="pr-video__link" data-pr-video-link
-href="https://www.youtube.com/watch?v=M7lc1UVf-VE" data-pr-embed="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE"
-aria-label="Watch a YouTube embedded-player demonstration"><span class="pr-video__play">Play example</span></a>
-<figcaption>Video loads only after the visitor chooses to play.</figcaption></figure></section>
-<section id="map" class="band"><h2>Optional interactive map</h2>
-<section data-pr-map data-pr-map-lat="50.08" data-pr-map-lng="14.42" data-pr-map-zoom="12"
-data-pr-map-js="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"
-data-pr-map-css="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css"
-data-pr-map-style="https://demotiles.maplibre.org/style.json">
+<section id="news" class="band" aria-labelledby="news-title">
+<h2 id="news-title">News cards · Карточки новостей</h2>
+<p>Обязательная основа: заголовок, дата, аннотация. Изображение, автор, рубрика и время чтения — варианты, не обязательные поля.</p>
+<div data-pr-news data-l="canvas" data-space="tight">
+<article class="pr-news__item" data-x="1-4" data-xp="1-4" data-xw="1-4">
+<img class="pr-news__image" src="news-illustration.svg" alt="Abstract teal and sand geometric landscape">
+<div class="pr-news__meta"><span class="pr-news__category">Research</span><time datetime="2026-11-21">21 Nov 2026</time></div>
+<h3><a href="#news">A major example development</a></h3><p class="pr-news__summary">A clear summary, with image, category and publication date.</p>
+<p class="pr-news__byline">By Example Editor · 4 min read</p>
+</article>
+<article class="pr-news__item" data-x="5-8" data-xp="1-4" data-xw="5-8">
+<div class="pr-news__meta"><time datetime="2026-11-20">20 Nov 2026</time></div>
+<h3><a href="#news">A concise daily announcement</a></h3><p class="pr-news__summary">Minimal variant: no image, author, category or unnecessary buttons.</p>
+</article>
+<article class="pr-news__item" data-x="9-12" data-xp="1-4" data-xw="9-12">
+<img class="pr-news__image" src="news-illustration.svg" alt="">
+<div class="pr-news__meta"><span class="pr-news__category">Blog</span><time datetime="2026-11-19">19 Nov 2026</time></div>
+<h3><a href="#news">How to structure longer articles</a></h3>
+<p class="pr-news__summary">The same component can include reading time.</p>
+<p class="pr-news__byline">7 min read</p>
+</article>
+</div>
+</section>
+<section id="media" class="band"><h2>Video · YouTube</h2>
+<p>Play example activates a third-party video; opening the page alone must not.</p>
+<figure data-pr-video><a class="pr-video__link" data-pr-video-link href="https://www.youtube.com/watch?v=M7lc1UVf-VE" data-pr-embed="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE" aria-label="Play YouTube embedded-player demonstration"><span class="pr-video__play">Play example</span></a>
+<figcaption>Video loads only after your action.</figcaption></figure></section>
+<section id="map" class="band"><h2>Map · MapLibre</h2><p>Click Load map. If external resources are blocked, the address link below must remain usable.</p>
+<section data-pr-map data-pr-map-lat="50.08" data-pr-map-lng="14.42" data-pr-map-zoom="12" data-pr-map-js="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js" data-pr-map-css="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css" data-pr-map-style="https://demotiles.maplibre.org/style.json">
 <button type="button" class="pr-map__enable" data-pr-map-enable>Load map</button>
 <div class="pr-map__canvas" data-pr-map-canvas hidden></div>
 <p class="pr-map__status" data-pr-map-status role="status"></p>
-<a href="https://www.openstreetmap.org/?mlat=50.08&amp;mlon=14.42">View sample location without loading the map</a>
+<a href="https://www.openstreetmap.org/?mlat=50.08&amp;mlon=14.42">View example location without interactive map</a>
 </section></section>
-<section id="contact" class="band"><h2>Form UI only</h2>
-<form data-pr-form action="#contact" method="get"><div class="pr-form__field">
-<label for="sample-email">Email address</label><input type="email" name="email" id="sample-email" autocomplete="email" required>
-</div><div class="pr-form__field"><label for="sample-message">Message</label>
-<textarea id="sample-message" name="message" required></textarea></div>
-<button type="submit">Try native validation</button>
-<p>Example uses no backend. Real sites must supply their own form action and processing.</p></form></section>
-</main><footer><p>Static demonstration; no content or form storage.</p></footer>
+<section id="contact" class="band"><h2>Form · Форма</h2>
+<form data-pr-form action="#contact" method="get"><div class="pr-form__field"><label for="sample-email">Email</label><input id="sample-email" type="email" name="email" autocomplete="email" required></div>
+<div class="pr-form__field"><label for="sample-message">Message</label><textarea name="message" id="sample-message" required></textarea></div>
+<button type="submit">Check native validation</button>
+<p>Demonstration only. This is not a real contact form; the browser validates required fields, but no data is sent to a server.</p>
+</form></section>
+</main><footer><small>Experimental site modules · work preview, not a released website.</small></footer>
 </div></body></html>
