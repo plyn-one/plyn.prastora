@@ -1,0 +1,56 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prastora · Editorial frame composition</title>
+<meta name="description" content="An individual editorial design composed in Prastora frame-specific columns.">
+<link rel="canonical" href="https://plyn-prastora.pages.dev/try/1119-modules/example-editorial.html">
+<link rel="stylesheet" href="../core.css"><link rel="stylesheet" href="news.css">
+<style>
+body{background:#f8eee0;color:#382c23;font-family:Georgia,serif;--pr-news-border:#a48568;--pr-news-bg:#fffbf3}
+[data-l=page]{gap:0}
+.editorial-hero{background:#e6cbb0;padding:3rem var(--s1)}
+.editorial-hero h1{font-size:var(--t3);font-weight:400;line-height:1.08;max-inline-size:none}
+.ink{block-size:12rem;inline-size:100%;background:linear-gradient(125deg,#254950 0 45%,#ac6842 46% 70%,#e5cba8 71%);border-radius:.5rem}
+.editorial-band{padding-block:3rem}
+.aside{font-size:1.6rem;line-height:1.28;border-top:.15rem solid currentColor;padding-block-start:.7rem}
+[data-pr-news] .pr-news__image{border-radius:.2rem}
+</style></head>
+<body><div data-l="page">
+<main>
+<section data-l="canvas" class="editorial-hero">
+<div data-x="1-12" data-xp="1-4" data-xw="1-12" data-l="stack">
+<p>EDITORIAL · NO NAVIGATION / NO JAVASCRIPT</p>
+<h1>A different visual identity.</h1>
+<p>Same Prastora frame canvas, different colors, typography and composition.</p>
+</div>
+<div data-x="1-12" data-xp="1-4" data-xw="1-12"><div class="ink" role="img" aria-label="Decorative teal, sand and amber geometric arrangement"></div></div>
+</section>
+<section data-l="canvas" class="editorial-band">
+<article data-x="1-12" data-xp="1-4" data-xw="1-12" data-l="stack">
+<h2>What the editorial page tests</h2>
+<p>Without headers, menus, map controls or JavaScript, a site can use the same layout vocabulary and reuse a news-card module. The composition is explicitly set for each frame, not by a fluid CSS grid.</p>
+<p>Check the reading width on a very wide screen. It should not collapse to a narrow sliver or unexpectedly rearrange its prose.</p>
+</article>
+<aside class="aside" data-x="1-12" data-xp="1-4" data-xw="1-12">One framework, more than one visual language.</aside>
+</section>
+<section class="editorial-band" aria-labelledby="editorial-news-title">
+<h2 id="editorial-news-title">Latest articles</h2>
+<div data-pr-news data-l="canvas" data-space="tight">
+<article class="pr-news__item" data-x="1-4" data-xp="1-4" data-xw="1-4">
+<img class="pr-news__image" src="news-illustration.svg" alt="">
+<div class="pr-news__meta"><span class="pr-news__category">Culture</span><time datetime="2026-11-21">21 Nov 2026</time></div>
+<h3><a href="#editorial-news-title">A story with a photograph</a></h3>
+<p class="pr-news__summary">Editorial variation: image, category, date and summary.</p>
+</article>
+<article class="pr-news__item" data-x="5-8" data-xp="1-4" data-xw="5-8">
+<div class="pr-news__meta"><time datetime="2026-11-20">20 Nov 2026</time></div>
+<h3><a href="#editorial-news-title">A small article with no image</a></h3>
+<p class="pr-news__summary">Headline, date and description remain the recognizable core.</p>
+</article>
+<article class="pr-news__item" data-x="9-12" data-xp="1-4" data-xw="9-12">
+<div class="pr-news__meta"><span class="pr-news__category">Essay</span><time datetime="2026-11-19">19 Nov 2026</time></div>
+<h3><a href="#editorial-news-title">A longer reflective essay</a></h3>
+<p class="pr-news__summary">Author and reading time are site-selected options.</p>
+<p class="pr-news__byline">Example author · 8 min read</p>
+</article>
+</div></section>
+</main></div></body></html>

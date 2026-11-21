@@ -1,0 +1,13 @@
+[data-pr-form]{display:grid;gap:1.1rem;max-width:var(--pr-form-width,44rem)}
+[data-pr-form] .pr-form__field{display:grid;gap:.35rem;min-width:0}
+[data-pr-form] label{font-weight:650}
+[data-pr-form] :is(input:not([type=checkbox]):not([type=radio]),select,textarea){width:100%;min-height:2.8rem;max-width:100%;padding:.65rem .8rem;border:1px solid var(--pr-form-border,#687879);border-radius:.35rem;background:var(--pr-form-bg,#fff);color:var(--pr-form-ink,#172326);font:inherit}
+[data-pr-form] textarea{min-height:8rem;resize:vertical}
+[data-pr-form] .pr-form__choice{display:flex;align-items:flex-start;gap:.7rem}
+[data-pr-form] .pr-form__choice input{width:1.15rem;height:1.15rem;flex:none}
+[data-pr-form] :is(input,select,textarea,button):focus-visible{outline:3px solid var(--pr-focus,#bd6419);outline-offset:2px}
+[data-pr-form] [aria-invalid=true]{border-color:#a31321!important}
+[data-pr-form] .pr-form__error{color:#8f1020}
+[data-pr-form] button{min-height:2.8rem;padding:.6rem 1.2rem;justify-self:start;cursor:pointer}
+
+[data-pr-form] button[type=submit]{background:var(--pr-form-submit-bg,#15545c);color:var(--pr-form-submit-ink,#fff);border:1px solid transparent;border-radius:.4rem;font-weight:750}

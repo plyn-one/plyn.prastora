@@ -11,6 +11,14 @@ kola = "usie"
 "file:check.mjs" = { faza = "ściah", rola = "sens" }
 "file:check.test.mjs" = { faza = "ściah", rola = "sens" }
 "file:docs/browser-testing.md" = { faza = "ściah", rola = "sens" }
+"dir:modules" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/header.css" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/header.js" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/forms.css" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/example-service.html" = { faza = "ściah", rola = "prajava" }
+"file:modules/example-editorial.html" = { faza = "ściah", rola = "prajava" }
+"file:modules/keyboard-guide.js" = { faza = "ściah", rola = "sens" }
+"file:modules/README.md" = { faza = "dadzienaść", rola = "sens" }
 "dir:demo" = { faza = "ściah", rola = "prajava" }
 "file:demo/index.html" = { faza = "ściah", rola = "prajava" }
 "file:demo/longread.html" = { faza = "ściah", rola = "prajava" }
