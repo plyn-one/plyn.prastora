@@ -11,6 +11,13 @@ kola = "usie"
 "file:check.mjs" = { faza = "ściah", rola = "sens" }
 "file:check.test.mjs" = { faza = "ściah", rola = "sens" }
 "file:docs/browser-testing.md" = { faza = "ściah", rola = "sens" }
+"file:modules/languages.css" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/languages.js" = { faza = "ściah", rola = "prajava" }
+"file:modules/map-preview.svg" = { faza = "ściah", rola = "prajava" }
+"file:modules/map.css" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/map.js" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/map.md" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/map-style.json" = { faza = "ściah", rola = "prajava" }
 "dir:modules" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/header.css" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/header.js" = { faza = "dadzienaść", rola = "sens" }
