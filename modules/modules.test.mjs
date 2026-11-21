@@ -156,6 +156,24 @@ test('site module selection, native fallback and on-demand third-party resources
     assert.equal(canvasBox.position,'absolute');
     assert.equal(await page.locator('[data-pr-map] a[href^="https://www.openstreetmap.org/"]').count(), 1);
 
+    // Success path without a live tile provider: a controllable MapLibre stub
+    // confirms that activation replaces the poster inside one stable stage.
+    await page.unroute('https://unpkg.com/**');
+    await page.route('https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js', route =>
+      route.fulfill({ status: 200, contentType: 'text/javascript', body:
+        'window.maplibregl={Map:class{constructor(o){this.container=o.container} once(e,cb){if(e==="load")setTimeout(cb,0)}addControl(){}resize(){}},NavigationControl:class{}};' }));
+    await page.route('https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css', route =>
+      route.fulfill({ status: 200, contentType: 'text/css', body: '' }));
+    await page.goto(origin + '/modules/example-service.html');
+    const stageBefore=await page.locator('.pr-map__stage').boundingBox();
+    await page.locator('[data-pr-map-preview]').click();
+    await page.waitForFunction(() => document.querySelector('[data-pr-map-status]')?.textContent === 'Interactive map loaded.');
+    assert.equal(await page.locator('[data-pr-map-preview]').isVisible(), false);
+    assert.equal(await page.locator('[data-pr-map-canvas]').isVisible(), true);
+    const stageAfter=await page.locator('.pr-map__stage').boundingBox();
+    assert.ok(Math.abs(stageBefore.height-stageAfter.height)<0.5 &&
+      Math.abs(stageBefore.width-stageAfter.width)<0.5,'loaded map must not enlarge the stage');
+
     await page.goto(origin + '/modules/example-service.html');
     await page.route('https://www.youtube-nocookie.com/**', route => route.abort());
     const videoRequest = page.waitForEvent('request', req => req.url().startsWith('https://www.youtube-nocookie.com/embed/'));

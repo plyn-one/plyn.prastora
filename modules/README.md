@@ -1,13 +1,15 @@
 # Optional Prastora site modules (draft 0.1)
 
-Work: Plyń Laba #1134. These files are **not a release** until browser tests are run and landed. Load only selected CSS and optional JS files; no unselected module is fetched. Site-owned CSS may follow and override module tokens. All public selectors are prefixed `data-pr-*` or `pr-*`; use a pinned Prastora core for layout and semantic HTML. The module does not own content or a CMS.
+Work: Plyń Laba #1134. These files are **not a release** until browser tests are run and landed. They are independent of the existing strict `demo/` examples and are never imported by `core.css`. The default framework requires no JavaScript or build step. The `site/try/1119-modules/` pages are browser fixtures, not default project templates. Load only selected CSS and optional JS files; no unselected module is fetched. Site-owned CSS may follow and override module tokens. All public selectors are prefixed `data-pr-*` or `pr-*`; use a pinned Prastora core for layout and semantic HTML. The module does not own content or a CMS.
 
 | Module | CSS | JS | Data source |
 |---|---|---|---|
 | Sticky header | `header.css` | optional `header.js` (scroll decoration; stable height) | Site supplies brand and nav links |
 | Forms | `forms.css` | none (native validation) | The site backend owns field checks, CSRF, storage and mail |
 | News cards | `news.css` | none | The backend owns items, dates, URLs, pagination |
-| Languages | `languages.css` | none (native details) | The backend owns language URLs/current page |
+| Languages | `languages.css` | optional `languages.js` (stable option width, close on choice/escape/outside click) | The backend owns language URLs/current page |
+| Video | `video.css` | optional `video.js` (click-to-embed) | The site supplies an optimized local cover and a trusted video URL |
+| Map | `map.css` | optional `map.js` (click-to-load) | The site supplies a static preview, verified coordinates and a licensed tile service |
 
 Minimal markup:
 
@@ -25,7 +27,7 @@ The form action above is illustrative: Ramonak sites use `/_ramonak/form/<name>`
 
 Two deliberately different sample site templates: [service](example-service.html) and [editorial](example-editorial.html). They require browser verification; they are not evidence of passed checks.
 
-News cards use a frame-composed `data-l=canvas` container, and each article selects `data-x`, `data-xp` and `data-xw` explicitly. Minimal content is title, date and summary. Image, category, author, reading time or additional actions are optional fields supplied by the site. The CSS module does not choose a CSS auto-fit grid. The service demo contains a test-only keyboard focus guide. Two compositions deliberately use different styling but both use Prastora frame coordinates.
+News cards use a frame-composed `data-l=canvas` container, and each article selects `data-x`, `data-xp` and `data-xw` explicitly. Minimal content is title, date and summary. Image, category, author, reading time or additional actions are optional fields supplied by the site. The CSS module does not choose a CSS auto-fit grid. The Prastora core guarantees column geometry; component checks focus on behavior, conditional loading and fallback rather than re-measuring every position. The service demo contains a test-only keyboard focus guide. Two compositions deliberately use different styling but both use Prastora frame coordinates.
 
 Browser regression source: `node --test modules/modules.test.mjs` with Playwright and Chromium installed. It is not proof of execution until results are recorded.
 
