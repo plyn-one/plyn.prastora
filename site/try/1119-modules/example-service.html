@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prastora · Service and real modules</title>
+<meta name="description" content="Frame-composed sample service with header, language chooser, news cards, form, video and map.">
+<link rel="canonical" href="https://plyn-prastora.pages.dev/try/1119-modules/example-service.html">
+<link rel="stylesheet" href="https://plyn-prastora.pages.dev/core.css">
+<link rel="stylesheet" href="header.css"><link rel="stylesheet" href="forms.css">
+<link rel="stylesheet" href="news.css"><link rel="stylesheet" href="languages.css">
+<link rel="stylesheet" href="video.css"><link rel="stylesheet" href="map.css">
+<style>
+:root{--pr-header-bg:#173f45;--pr-header-ink:#fff;--pr-focus:#e88729;--pr-news-border:#7b9b9a;--pr-news-bg:#fff}
+body{background:#e8f2ee;color:#17383c}
+[data-l=page]{gap:0}
+[data-pr-header]{align-self:stretch}
+.pr-header__inner{gap:.75rem}
+.pr-header__brand{white-space:nowrap}
+main{display:flex;flex-direction:column;gap:3rem;padding-block:2rem}
+.hero{background:#cfebe1;border-radius:.9rem;padding:2rem var(--s1)}
+.hero h1{font-size:var(--t3);max-inline-size:none}
+.hero p{max-inline-size:none}.hero-kicker{font-size:var(--t-1)}
+.fake-art{inline-size:100%;block-size:15rem;background:linear-gradient(135deg,#145f6e,#7cc0a2);border-radius:.6rem}
+.guide{border:2px dashed #527a74;background:#fff;padding:1rem;border-radius:.5rem}
+.guide button{background:#173f45;color:#fff}
+#focus-feedback{font-weight:700;min-block-size:3rem}
+html[data-keyboard-test=on] #focus-feedback{position:fixed;inset-inline:1rem;bottom:1rem;z-index:1000;max-inline-size:43rem;margin-inline:auto;padding:1rem;background:#fffde9;color:#18393a;border:.15rem solid #b96c1b;box-shadow:0 .5rem 2rem #18282b4d;border-radius:.5rem}
+.band{display:flex;flex-direction:column;gap:1rem}
+.band>h2{margin-block-end:.5rem}[data-pr-form] .pr-form__submit{background:#15545c;color:white;border:0;border-radius:.4rem;font-weight:750}
+[data-pr-video]{max-inline-size:36rem}
+[data-pr-video] .pr-video__link{background:linear-gradient(135deg,#173f45,#759fab)}
+footer{padding:2rem;background:#173f45;color:#fff}
+</style>
+<script type="module" src="header.js"></script><script type="module" src="languages.js"></script>
+<script type="module" src="video.js"></script>
+<script type="module" src="map.js"></script>
+<script type="module" src="keyboard-guide.js"></script>
+</head>
+<body><div data-l="page">
+<header data-pr-header><div class="pr-header__inner">
+<a class="pr-header__brand" href="#start" id="focus-first">SAMPLE / ONE</a>
+<nav class="pr-header__nav" aria-label="Primary"><ul>
+<li><a href="#news">News cards</a></li>
+<li><a href="#media">Video</a></li>
+<li><a href="#map">Map</a></li>
+<li><a href="#contact">Form</a></li>
+</ul></nav>
+<details data-pr-languages data-pr-language-demo><summary>English</summary><ul>
+<li><a href="#start" aria-current="page">English</a></li>
+<li><a href="#start" hreflang="fr">Français</a></li>
+</ul></details></div></header>
+<main id="start">
+<section class="hero" data-l="canvas" aria-labelledby="hero-title">
+<div data-x="1-7" data-xp="1-4" data-xw="1-7" data-l="stack">
+<p class="hero-kicker"><strong>FRAME COMPOSITION · PORTRAIT / LANDSCAPE / WIDE</strong></p>
+<h1 id="hero-title">A site keeps its composition.</h1>
+<p>Actual Prastora canvas and frame-specific columns, not an auto-fitting CSS grid.</p>
+<a href="#news">See the news cards</a>
+</div>
+<div data-x="8-12" data-xp="1-4" data-xw="8-12"><div class="fake-art" role="img" aria-label="Abstract teal visual panel"></div></div>
+</section>
+<section class="band guide" aria-labelledby="guide-title">
+<h2 id="guide-title">Keyboard focus test · Проверка клавиатуры</h2>
+<p>Нажмите кнопку ниже. Она поставит выделение на первую ссылку страницы. Затем нажимайте Tab для перехода вперёд, Shift + Tab для перехода назад. Enter открывает ссылку; Space открывает выбор языка. Текст с названием элемента будет постоянно виден снизу. Нажмите Escape, чтобы завершить проверку.</p>
+<button type="button" id="focus-start">Начать проверку клавиатуры</button>
+<p id="focus-feedback" role="status" aria-live="polite">Здесь появится название выделенного элемента.</p>
+</section>
+<section id="news" class="band" aria-labelledby="news-title">
+<h2 id="news-title">News cards · Карточки новостей</h2>
+<p>Обязательная основа: заголовок, дата, аннотация. Изображение, автор, рубрика и время чтения — варианты, не обязательные поля.</p>
+<div data-pr-news data-l="canvas" data-space="tight">
+<article class="pr-news__item" data-x="1-4" data-xp="1-4" data-xw="1-4">
+<img class="pr-news__image" src="news-illustration.svg" alt="Abstract teal and sand geometric landscape">
+<div class="pr-news__meta"><span class="pr-news__category">Research</span><time datetime="2026-11-21">21 Nov 2026</time></div>
+<h3><a href="#news">A major example development</a></h3><p class="pr-news__summary">A clear summary, with image, category and publication date.</p>
+<p class="pr-news__byline">By Example Editor · 4 min read</p>
+</article>
+<article class="pr-news__item" data-x="5-8" data-xp="1-4" data-xw="5-8">
+<div class="pr-news__meta"><time datetime="2026-11-20">20 Nov 2026</time></div>
+<h3><a href="#news">A concise daily announcement</a></h3><p class="pr-news__summary">Minimal variant: no image, author, category or unnecessary buttons.</p>
+</article>
+<article class="pr-news__item" data-x="9-12" data-xp="1-4" data-xw="9-12">
+<img class="pr-news__image" src="news-illustration.svg" alt="">
+<div class="pr-news__meta"><span class="pr-news__category">Blog</span><time datetime="2026-11-19">19 Nov 2026</time></div>
+<h3><a href="#news">How to structure longer articles</a></h3>
+<p class="pr-news__summary">The same component can include reading time.</p>
+<p class="pr-news__byline">7 min read</p>
+</article>
+</div>
+</section>
+<section id="media" class="band"><h2>Video · YouTube</h2>
+<p>Play example activates a third-party video; opening the page alone must not.</p>
+<figure data-pr-video><a class="pr-video__link" data-pr-video-link href="https://www.youtube.com/watch?v=M7lc1UVf-VE" data-pr-embed="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE" aria-label="Play YouTube embedded-player demonstration"><img src="video-poster.svg" alt="Illustrated video preview with a play symbol"></a>
+<figcaption>Video loads only after your action.</figcaption></figure></section>
+<section id="map" class="band"><h2>Map · MapLibre</h2><p>Click the map preview to activate the interactive map. If external map tiles are blocked, the static preview and address link remain available.</p>
+<section data-pr-map data-pr-map-lat="50.08" data-pr-map-lng="14.42" data-pr-map-zoom="12" data-pr-map-js="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js" data-pr-map-css="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css" data-pr-map-style="map-style.json">
+<div class="pr-map__stage"><button type="button" class="pr-map__preview pr-map__enable" data-pr-map-enable data-pr-map-preview aria-label="Activate interactive map of Prague"><img src="map-preview.svg" alt=""><span class="pr-map__hint">Click the map to explore</span></button>
+<div class="pr-map__canvas" data-pr-map-canvas hidden></div></div>
+<p class="pr-map__status" data-pr-map-status role="status"></p>
+<a href="https://www.openstreetmap.org/?mlat=50.08&amp;mlon=14.42">View example location without interactive map</a>
+</section></section>
+<section id="contact" class="band"><h2>Form · Форма</h2>
+<form data-pr-form action="#contact" method="get"><div class="pr-form__field"><label for="sample-email">Email</label><input id="sample-email" type="email" name="email" autocomplete="email" required></div>
+<div class="pr-form__field"><label for="sample-message">Message</label><textarea name="message" id="sample-message" required></textarea></div>
+<button type="submit" class="pr-form__submit">Check native validation</button>
+<p>Demonstration only. This is not a real contact form; the browser validates required fields, but no data is sent to a server.</p>
+</form></section>
+</main><footer><small>Experimental site modules · work preview, not a released website.</small></footer>
+</div></body></html>
