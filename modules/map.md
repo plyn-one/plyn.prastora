@@ -9,15 +9,14 @@ visitor chooses to activate the interactive map.
          data-pr-map-zoom="12" data-pr-map-js="/assets/maplibre-gl.js"
          data-pr-map-css="/assets/maplibre-gl.css"
          data-pr-map-style="/assets/map-style.json">
-  <button type="button" class="pr-map__preview pr-map__enable"
-          data-pr-map-enable data-pr-map-preview
-          aria-label="Activate interactive map">
-    <img src="/assets/map-preview.webp" alt="">
-    <span class="pr-map__hint">Click map to explore</span>
-  </button>
-    Load interactive map
-  </button>
-  <div class="pr-map__canvas" data-pr-map-canvas hidden></div>
+  <div class="pr-map__stage">
+    <button type="button" class="pr-map__preview pr-map__enable"
+            data-pr-map-enable data-pr-map-preview aria-label="Activate interactive map">
+      <img src="/assets/map-preview.webp" alt="">
+      <span class="pr-map__hint">Click map to explore</span>
+    </button>
+    <div class="pr-map__canvas" data-pr-map-canvas hidden></div>
+  </div>
   <p class="pr-map__status" data-pr-map-status role="status"></p>
   <a href="https://www.openstreetmap.org/?mlat=50.08&mlon=14.42">
     View address without the map

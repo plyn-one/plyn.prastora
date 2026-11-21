@@ -4,6 +4,12 @@ export function enhanceLanguages(root=document){
   for(const menu of root.querySelectorAll('[data-pr-languages]:not([data-pr-language-ready])')){
     menu.setAttribute('data-pr-language-ready','');
     const summary=menu.querySelector('summary');
+    const list=menu.querySelector('ul');
+    if(summary && list && !menu.querySelector('.pr-language__measure')){
+      const measure=document.createElement('div');measure.className='pr-language__measure';measure.setAttribute('aria-hidden','true');
+      for(const link of list.querySelectorAll('a')){const item=document.createElement('span');item.textContent=link.textContent.trim();measure.append(item)}
+      menu.insertBefore(measure,list);
+    }
     menu.addEventListener('click',event=>{
       const link=event.target.closest('a[href]');
       if(!link||!menu.contains(link))return;

@@ -1,10 +1,13 @@
 /* Overlay the available languages without changing header or content geometry. */
-[data-pr-languages]{position:relative;max-width:100%;width:max-content;flex:none;z-index:50}
-[data-pr-languages] summary{cursor:pointer;padding:.5rem .75rem;border:1px solid currentColor;border-radius:.35rem;list-style:none;white-space:nowrap}
+[data-pr-languages]{position:relative;display:grid;grid-template-columns:max-content;max-width:100%;flex:none;z-index:50}
+[data-pr-languages] summary,[data-pr-languages] .pr-language__measure{grid-area:1/1;box-sizing:border-box}
+[data-pr-languages] .pr-language__measure{display:grid;visibility:hidden;pointer-events:none}
+[data-pr-languages] .pr-language__measure span{display:block;inline-size:max-content;white-space:nowrap;padding:.5rem 2rem .5rem .75rem;border:1px solid transparent}
+[data-pr-languages] summary{position:relative;z-index:1;inline-size:100%;cursor:pointer;padding:.5rem .75rem;border:1px solid currentColor;border-radius:.35rem;list-style:none;white-space:nowrap}
 [data-pr-languages] summary::-webkit-details-marker{display:none}
 [data-pr-languages] summary::after{content:" ▾";font-size:.8em}
 [data-pr-languages][open] summary::after{content:" ▴"}
 [data-pr-languages] summary:focus-visible,[data-pr-languages] a:focus-visible{outline:3px solid var(--pr-focus,#bd6419);outline-offset:3px}
-[data-pr-languages] ul{position:absolute;inset-block-start:100%;inset-inline-end:0;z-index:60;margin:.3rem 0 0;padding:.35rem;list-style:none;min-width:max-content;max-width:min(90vw,24rem);background:var(--pr-language-bg,#fff);color:var(--pr-language-ink,#20272b);border:1px solid #879b9e;border-radius:.35rem;box-shadow:0 .45rem 1.5rem #0003}
+[data-pr-languages] ul{position:absolute;inset-block-start:100%;inset-inline-end:0;z-index:60;margin:.3rem 0 0;padding:.35rem;list-style:none;min-width:100%;width:max-content;max-width:min(90vw,24rem);background:var(--pr-language-bg,#fff);color:var(--pr-language-ink,#20272b);border:1px solid #879b9e;border-radius:.35rem;box-shadow:0 .45rem 1.5rem #0003}
 [data-pr-languages] li a{display:block;padding:.4rem .65rem;white-space:nowrap;min-height:2.6rem}
 [data-pr-languages] [aria-current=page]{font-weight:750;text-decoration:underline}
