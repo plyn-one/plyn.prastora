@@ -91,6 +91,12 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const badSeo = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-bad-seo.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
       assert.equal(badSeo.code, 1);
       assert.ok(JSON.parse(badSeo.stdout).problems.some(p => p.rule === 'site-seo'));
+      assert.doesNotMatch(branded, /<(?:header|footer)\b/i, 'site mode must permit a headerless page');
+      const overflow = branded.replace('<main>', '<main style="min-width:2400px">');
+      await writeFile(join(pageDir, 'branded-overflow.html'), overflow);
+      const badGeometry = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-overflow.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.equal(badGeometry.code, 1);
+      assert.ok(JSON.parse(badGeometry.stdout).problems.some(p => p.rule === 'page-scroll-x'));
     });
     await t.test('a missing CSS-only outline fails with a repair instruction', async () => {
       let result;
