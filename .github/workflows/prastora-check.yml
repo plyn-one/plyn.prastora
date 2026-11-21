@@ -35,6 +35,17 @@ jobs:
           if [[ -f modules/modules.test.mjs ]]; then
             node --test modules/modules.test.mjs 2>&1 | tee prastora-reports/modules.tap
           fi
+      - name: Build checked release candidate
+        run: |
+          node release/package.mjs
+          tar -czf prastora-release-v0.2.0-rc1.tar.gz prastora-release-v0.2.0-rc1/
+      - name: Upload release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: prastora-v0.2.0-rc1-${{ github.sha }}
+          path: prastora-release-v0.2.0-rc1.tar.gz
+          retention-days: 14
+          if-no-files-found: error
       - name: Upload regression report
         if: always()
         uses: actions/upload-artifact@v4
