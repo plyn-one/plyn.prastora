@@ -91,6 +91,16 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
         throw new Error('site mode returned ' + error.code + ': ' + JSON.stringify(report?.problems ?? error.stdout).slice(0, 2300));
       });
       assert.equal(JSON.parse(result.stdout).ok, true, result.stdout);
+      await writeFile(join(pageDir, 'editorial.css'), 'body { color: #342012; background: #fff1da } header { color: #fff1da; background: #342012; padding: 24px }');
+      const editorial = branded
+        .replace('href="brand.css"', 'href="editorial.css"')
+        .replace('<body class="brand" data-backend="ramonak"><main>', '<body class="editorial"><header><h1>Editorial example</h1></header><main>');
+      await writeFile(join(pageDir, 'editorial.html'), editorial);
+      const second = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'editorial.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => {
+        let report; try { report = JSON.parse(e.stdout); } catch {}
+        throw new Error('second site mode failed: ' + JSON.stringify(report?.problems ?? e.stdout).slice(0, 2200));
+      });
+      assert.equal(JSON.parse(second.stdout).ok, true, 'a differently styled site with header passes site mode');
       const badContrast = branded.replace('href="brand.css"', 'href="brand-bad-contrast.css"');
       await writeFile(join(pageDir, 'branded-bad-contrast.html'), badContrast);
       const contrastCheck = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-bad-contrast.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
@@ -101,6 +111,16 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const badSeo = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-bad-seo.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
       assert.equal(badSeo.code, 1);
       assert.ok(JSON.parse(badSeo.stdout).problems.some(p => p.rule === 'site-seo'));
+      const missingResource = branded.replace('src="art/vase%20shape.svg"', 'src="art/not-found.svg"');
+      await writeFile(join(pageDir, 'branded-missing-resource.html'), missingResource);
+      const resourceCheck = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-missing-resource.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.equal(resourceCheck.code, 1);
+      assert.ok(JSON.parse(resourceCheck.stdout).problems.some(p => p.rule === 'resource-load' && p.fix));
+      const trapped = branded.replace('</main>', '<button id="trap">Focus trap</button><script>document.addEventListener("keydown", e => { if (e.key === "Tab") { e.preventDefault(); document.getElementById("trap").focus(); } });</script></main>');
+      await writeFile(join(pageDir, 'branded-trap.html'), trapped);
+      const trapCheck = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-trap.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.equal(trapCheck.code, 1);
+      assert.ok(JSON.parse(trapCheck.stdout).problems.some(p => p.rule === 'keyboard-trap' && p.fix));
       assert.doesNotMatch(branded, /<(?:header|footer)\b/i, 'site mode must permit a headerless page');
       const overflow = branded.replace('<main>', '<main style="min-width:2400px">');
       await writeFile(join(pageDir, 'branded-overflow.html'), overflow);
