@@ -19,7 +19,7 @@ The site describes its pinned Prastora version, checker mode (`strict` or future
 
 The output is semantic HTML, with exactly one primary `main` landmark and correct document language/title. Header, footer, navigation and link collections are optional; a one-page site without them is valid. `data-l`, `data-x`, `data-xp` and other documented attributes form Prastora's layout API.
 
-`strict` preserves the existing closed-manifest demo behavior (including no `class`, `style` or site CSS). The new `site` mode must allow `class` and individual stylesheets, unusual composition and omitted header/footer, but still check *rendered* geometry, keyboard access, accessibility, resources and technical SEO. It may not treat a site-specific class as a layout failure by itself. This mode is NOT yet implemented.
+`strict` preserves the existing closed-manifest demo behavior (including no `class`, `style` or site CSS). The proposed `site` mode allows `class`, individual stylesheets, unusual composition and omitted header/footer. It validates Prastora frame attributes and their placement, keyboard access, readable text and targets, resources and technical SEO. Frame-column geometry is guaranteed by the pinned core and verified by core regressions, not remeasured for every site element. Intentional site-level horizontal scrolling is an author choice, not an automatic site-mode failure. `--extended --site` samples frame edges rather than running the core's full coordinate-drift sweep. This mode is implemented on #1129's development branch but remains unreleased until its browser regressions pass.
 
 Each module ships an explicit name/version, semantic markup example, CSS and optional JS entry points, configuration, dependency list, keyboard semantics, non-JS fallback, positive/negative tests and no runtime side effects when not selected. Integration is through standard elements and published data attributes, not private CMS internals.
 
@@ -40,7 +40,7 @@ Ramonak's existing video rewrite changes YouTube iframes into lazy covers/links.
 ## Acceptance and versioning
 
 1. Existing strict-mode demos remain valid.
-2. Two visually distinct sites and a headerless one-page site pass the browser-based `site` checker, while overflow, keyboard traps, missing resources and wrong SEO fail with fixes.
+2. Two visually distinct sites and a headerless one-page site pass the browser-based `site` checker. Invalid frame coordinates, keyboard traps, missing resources and wrong SEO fail with fixes; intentional author-specified horizontal scrolling is permitted. Core regressions independently verify that the layout grid itself does not drift.
 3. Unselected map/video assets produce no network requests.
 4. Accessible modules work with keyboard and appropriate script-free fallback.
 5. A real Ramonak integration validates one SEO head, languages, a submitted form, news pagination, footer-year rollover and staging noindex.

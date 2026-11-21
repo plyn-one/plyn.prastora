@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // The check of pages laid out with prastora. Each page is rendered in every frame of the core it links,
 // once in each distinct screen composition (portrait, landscape), in light and dark, plus A4 print.
-// --extended checks every screen frame at both edges and seven interior widths, to verify scaling invariants.
+// --extended checks core composition at frame edges and seven interior widths.
+// --site allows independent visual styling; with --extended it samples frame edges only,
+// trusting the pinned core to keep canvas positions stable.
 // --html validates source HTML with the locally installed Nu Html Checker (VNU_JAR path).
 // --axe runs the local axe-core engine on portrait and landscape in both colour schemes.
 // Reports each problem with a fix. Exit 0 when nothing broke.

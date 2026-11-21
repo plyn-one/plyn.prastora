@@ -98,6 +98,11 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const siteOverflow = JSON.parse(badGeometry.stdout);
       assert.equal(badGeometry.code, undefined, 'intentional horizontal scrolling is a site composition choice');
       assert.ok(!siteOverflow.problems.some(p => p.rule === 'page-scroll-x' || p.rule === 'escapes-parent'));
+      const extendedSite = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html'), '--site', '--extended'], { cwd: root, timeout: 60000 });
+      const extendedReport = JSON.parse(extendedSite.stdout);
+      assert.equal(extendedReport.ok, true, extendedSite.stdout);
+      assert.ok(!extendedReport.problems.some(p => p.rule === 'composition-moves'));
+      assert.equal(extendedReport.frames.some(f => f.startsWith('wide ')), true, 'extended site audit still covers wide frame');
       // Core mode still detects page-level overflow outside the Prastora canvas.
       const coreOverflow = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-overflow.html')], { cwd: root, timeout: 60000 }).catch(e => e);
       assert.ok(JSON.parse(coreOverflow.stdout).problems.some(p => p.rule === 'page-scroll-x'));
