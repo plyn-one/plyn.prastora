@@ -59,7 +59,7 @@ If Chromium cannot be installed where you work, say so in your report and hand o
 
 ## Site composition contract
 
-For independently styled sites and optional content engines, read [the target site composition contract](docs/site-contract.md). Its `site` checker mode is not available in the currently released checker; the strict manifest still applies until #1129 lands.
+For independently styled sites and optional content engines, read [the target site composition contract](https://github.com/plyn-one/plyn.prastora/blob/main/docs/site-contract.md). Its `site` checker mode is not available in the currently released checker; the strict manifest still applies until #1129 lands.
 
 ## Colours and type of a project
 
