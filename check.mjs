@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // The check of pages laid out with prastora. Each page is rendered in every frame of the core it links,
 // once in each distinct screen composition (portrait, landscape), in light and dark, plus A4 print.
-// --extended checks every screen frame at both edges and seven interior widths, to verify scaling invariants.
+// --extended checks core composition at frame edges and seven interior widths.
+// --site allows independent visual styling; with --extended it samples frame edges only,
+// trusting the pinned core to keep canvas positions stable.
 // --html validates source HTML with the locally installed Nu Html Checker (VNU_JAR path).
 // --axe runs the local axe-core engine on portrait and landscape in both colour schemes.
 // Reports each problem with a fix. Exit 0 when nothing broke.
@@ -26,6 +28,10 @@ const args = process.argv.slice(2);
 const pages = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--shots');
 const shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : null;
 const extended = args.includes('--extended');
+const siteMode = args.includes('--site');
+// A site inherits frame geometry from its pinned core. Exhaustive movement sampling
+// is a core regression check, not a per-site requirement.
+const geometryAudit = extended && !siteMode;
 const useHtml = args.includes('--html');
 const vnuJar = process.env.VNU_JAR;
 const useAxe = args.includes('--axe');
@@ -37,7 +43,7 @@ const axeSource = useAxe ? (() => {
   console.error('check.mjs --axe needs a local axe-core package. Install with: npm i -D axe-core');
   process.exit(2);
 })() : null;
-if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--axe] [--html] [--extended] [--shots <dir>]'); process.exit(2); }
+if (!pages.length) { console.error('usage: node check.mjs <page.html> [more pages…] [--axe] [--html] [--extended] [--site] [--shots <dir>]'); process.exit(2); }
 if (shots) mkdirSync(shots, { recursive: true });
 
 if (useHtml && !vnuJar) { console.error('check.mjs --html requires VNU_JAR pointing to a local vnu.jar'); process.exit(2); }
@@ -52,9 +58,20 @@ function stylesheetOf(page) {
 }
 
 async function framesOf(page) {
-  const href = stylesheetOf(page);
-  // the core may be a file beside the page or a pinned release at an address
-  const css = /^https?:/.test(href) ? await (await fetch(href)).text() : readFileSync(resolve(dirname(page), href), 'utf8');
+  const remote = /^https?:\/\//.test(page);
+  const html = remote ? await (async () => {
+    const response = await fetch(page);
+    if (!response.ok) throw new Error(`${page}: HTTP ${response.status}`);
+    return response.text();
+  })() : null;
+  const href = remote ? [...html.matchAll(/<link[^>]+>/g)]
+    .map(m => m[0]).filter(l => /rel="stylesheet"/.test(l))
+    .map(l => l.match(/href="([^"]+)"/)?.[1]).find(Boolean) : stylesheetOf(page);
+  if (!href) throw new Error(`${page}: no stylesheet linked; link core.css`);
+  const cssUrl = remote ? new URL(href, page).href : /^https?:/.test(href) ? href : null;
+  const response = cssUrl ? await fetch(cssUrl) : null;
+  if (response && !response.ok) throw new Error(`${page}: core stylesheet HTTP ${response.status}: ${cssUrl}`);
+  const css = response ? await response.text() : readFileSync(resolve(dirname(page), href), 'utf8');
   const m = css.match(/frames[^:]*: (\[.*\])/);
   if (!m) throw new Error(`${page}: ${href} is not the prastora core (no list of frames in its first comment)`);
   return JSON.parse(m[1]).map(f => ({ u: f.name, lo: Math.max(f.from * 16, 320), hi: Math.round((f.to ?? 240) * 16) - 1 }));
@@ -62,13 +79,15 @@ async function framesOf(page) {
 
 // what to do about each problem, for the agent that reads the report
 const FIX = {
+  'site-main': 'provide exactly one semantic main landmark; header and footer are optional',
+  'site-seo': 'correct the unique title, description, canonical, alternate URLs and robots metadata in the rendered head',
   'keyboard-trap': 'check focus management and keydown handlers; allow Tab to leave every component',
   'tab-order': 'remove positive tabindex and follow the DOM reading order',
   'keyboard-unavailable': 'test nested frames separately; this pass inspects only the top document',
   'resource-load': 'repair the resource address or its server/CORS permissions; an inline --shape URL is relative to the document, like the image src',
   'shape-outline': 'give the alpha image --shape: url(...) and use a browser with CSS @property support',
   'composition-moves': 'a line lies on the edge of its column, or something is sized outside the vocabulary: move the column by one, or change the words',
-  'page-scroll-x': 'something is wider than the window: see escapes-parent for which',
+  'page-scroll-x': 'in core mode, unexpected overflow suggests an element outside the intended canvas; site mode permits author-designed scrolling',
   'escapes-parent': 'give it more columns, let it wrap, or set it in a reel',
   'narrow-measure': 'prose in a column under 12 em: give it more columns, or hide it in that frame',
   'text-too-small': 'use a size from the vocabulary; in a narrow frame, one step larger',
@@ -107,7 +126,7 @@ const VOCAB = {
 };
 
 // runs in the page: what breaks at this width, and the geometry of every element in rem from the canvas edge
-function inspect(VOCAB) {
+function inspect({ VOCAB, siteMode }) {
   const issues = [], boxes = [];
   // the core scales the canvas by what rounding the root size left: a rem on screen is that much larger
   const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) * (parseFloat(getComputedStyle(document.body).scale) || 1);
@@ -139,7 +158,7 @@ function inspect(VOCAB) {
         else if (el.parentElement?.dataset.l !== 'canvas') add('vocabulary', el, `${a} outside a canvas`);
         continue;
       }
-      if (!(a in VOCAB)) add('vocabulary', el, `unknown attribute ${a}`);
+      if (!(a in VOCAB)) { if (!siteMode) add('vocabulary', el, `unknown attribute ${a}`); }
       // data-hide takes several frames at once, separated by spaces
       else if (!(a === 'data-hide' ? el.getAttribute(a).trim().split(/\s+/) : [el.getAttribute(a)]).every(v => VOCAB[a].includes(v))) add('vocabulary', el, `${a}="${el.getAttribute(a)}" is not one of ${VOCAB[a].join(' ')}`);
     }
@@ -148,7 +167,7 @@ function inspect(VOCAB) {
     // the one style allowed names the image whose outline text runs round: --shape: url(…), with data-shape="alpha"
     const st = el.getAttribute('style');
     const shapeOnly = st && /^\s*--shape:\s*url\([^)]+\)\s*;?\s*$/.test(st) && el.getAttribute('data-shape') === 'alpha';
-    if ((st && !shapeOnly) || el.hasAttribute('class')) add('vocabulary', el, 'style and class are not used: say it with the vocabulary');
+    if (!siteMode && ((st && !shapeOnly) || el.hasAttribute('class'))) add('vocabulary', el, 'style and class are not used: say it with the vocabulary');
     if (el.matches('[data-shape=alpha]') && getComputedStyle(el).shapeOutside === 'none') add('shape-outline', el, 'the alpha image has no computed outline');
   }
 
@@ -172,6 +191,31 @@ function inspect(VOCAB) {
   // what every page needs: its language, its title, and words for its pictures
   if (!document.documentElement.lang) add('basics', document.documentElement, '<html> has no lang');
   if (!document.title.trim()) add('basics', document.documentElement, 'no <title>');
+  if (siteMode) {
+    const head = document.head;
+    if (document.querySelectorAll('main').length !== 1) add('site-main', document.body, 'exactly one main landmark is required');
+    if (head.querySelectorAll('title').length !== 1) add('site-seo', document.documentElement, 'exactly one title required');
+    const descriptions = head.querySelectorAll('meta[name="description"]');
+    if (descriptions.length !== 1 || !descriptions[0]?.content.trim())
+      add('site-seo', document.documentElement, 'one nonempty meta description required');
+    const canonicals = head.querySelectorAll('link[rel~="canonical"]');
+    if (canonicals.length !== 1) add('site-seo', document.documentElement, 'exactly one canonical required');
+    for (const node of canonicals) {
+      const raw = node.getAttribute('href') ?? '';
+      if (!/^https?:\/\//.test(raw) || raw.includes('#')) add('site-seo', node, 'canonical must be an absolute HTTP(S) URL without fragment');
+    }
+    const seen = new Set();
+    const links = [...head.querySelectorAll('link[rel~="alternate"][hreflang]')];
+    for (const node of links) {
+      const lang = node.getAttribute('hreflang');
+      if (!lang || seen.has(lang)) add('site-seo', node, 'duplicate or empty hreflang');
+      seen.add(lang);
+      const raw = node.getAttribute('href') ?? '';
+      if (!/^https?:\/\//.test(raw) || raw.includes('#')) add('site-seo', node, 'hreflang needs an absolute HTTP(S) URL');
+    }
+    if (links.length > 1 && !seen.has('x-default')) add('site-seo', document.documentElement, 'multilingual pages need x-default');
+    if (head.querySelectorAll('meta[name="robots"]').length > 1) add('site-seo', document.documentElement, 'duplicate robots meta');
+  }
   for (const im of document.querySelectorAll('img:not([alt])')) add('basics', im, 'img without alt (alt="" for a picture that only decorates)');
   for (const sv of document.querySelectorAll('svg')) {
     if (sv.closest('[aria-hidden=true]') || sv.matches('svg svg') || sv.querySelector('text')) continue;
@@ -180,7 +224,9 @@ function inspect(VOCAB) {
   }
 
   const de = document.documentElement;
-  if (document.body.scrollWidth > innerWidth + 1) add('page-scroll-x', document.body, `${document.body.scrollWidth} px wide in a ${innerWidth} px window`);
+  // The site author may intentionally enable horizontal motion. Core mode still
+  // diagnoses unexpected document overflow; site mode does not veto that choice.
+  if (!siteMode && document.body.scrollWidth > innerWidth + 1) add('page-scroll-x', document.body, `${document.body.scrollWidth} px wide in a ${innerWidth} px window`);
 
   const body = parseFloat(getComputedStyle(document.body).fontSize);
   const x0 = document.body.getBoundingClientRect().left;
@@ -188,9 +234,9 @@ function inspect(VOCAB) {
     if (!shown(el)) continue;
     const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
     // what lies inside a block sent out to the window edge belongs partly to the margin, not to the canvas
-    if (!el.parentElement?.closest('[data-out]')) boxes.push([path(el), (r.left - x0) / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
+    if (!siteMode && !el.parentElement?.closest('[data-out]')) boxes.push([path(el), (r.left - x0) / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
     const p = el.parentElement;
-    if (p && p !== document.body && cs.position === 'static' && !scrolls(p) && !el.closest('[data-out], [data-bleed], [data-reelp]')) {
+    if (!siteMode && p && p !== document.body && cs.position === 'static' && !scrolls(p) && !el.closest('[data-out], [data-bleed], [data-reelp]')) {
       const q = p.getBoundingClientRect();
       if (r.right > q.right + 1.5 || r.left < q.left - 1.5) add('escapes-parent', el, `${Math.round(r.left)}–${Math.round(r.right)} outside ${Math.round(q.left)}–${Math.round(q.right)}`);
     }
@@ -333,6 +379,7 @@ async function renderedLayout(pg) {
 // CSS shape images use CORS: file URLs are not a same-origin web site, even when the image exists.
 // Serve the page and its linked local core from one temporary loopback origin, without changing either.
 async function servePages(pages) {
+  if (!pages.length) return { url: page => page, close: async () => {} };
   const files = pages.flatMap(page => {
     const href = stylesheetOf(page);
     return [resolve(page), ...(/^https?:/.test(href) ? [] : [resolve(dirname(page), href)])];
@@ -365,14 +412,18 @@ async function servePages(pages) {
   };
 }
 
-const local = await servePages(pages);
+if (useHtml && pages.some(p => /^https?:\/\//.test(p))) {
+  console.error('--html requires a local source file, not a deployed URL');
+  process.exit(2);
+}
+const local = await servePages(pages.filter(p => !/^https?:\/\//.test(p)));
 const browser = await chromium.launch().catch(async error => { await local.close(); throw error; });
 const reports = [];
 try {
   for (const page of pages) {
     const EDGES = await framesOf(page);
     const FRAMES = extended ? EDGES : EDGES.filter(f => f.u === 'portrait' || f.u === 'landscape');
-    const url = local.url(page);
+    const url = /^https?:\/\//.test(page) ? page : local.url(page);
     const found = new Map();
     const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
 
@@ -382,19 +433,19 @@ try {
       for (const { u, lo, hi } of FRAMES) {
         const seen = {};
         // Normal mode samples each distinct composition; extended mode also checks scaling within frames.
-        const inner = extended && scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
-        const widths = extended ? [...new Set([lo, ...inner, hi])] : [lo];
+        const inner = geometryAudit && scheme === 'light' ? [1, 2, 3, 4, 5, 6, 7].map(k => Math.round(lo + (hi - lo) * k / 8)) : [];
+        const widths = geometryAudit ? [...new Set([lo, ...inner, hi])] : extended ? [lo, hi] : [lo];
         for (const w of widths) {
           const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: scheme, reducedMotion: 'reduce' });
           const pg = await ctx.newPage();
           await openPage(pg, url, note, `${u} ${w}px ${scheme}`);
           await renderedLayout(pg);
-          const r = await pg.evaluate(inspect, VOCAB);
+          const r = await pg.evaluate(inspect, { VOCAB, siteMode });
           seen[w] = r;
           const edge = !extended || w === lo || w === hi;
           if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
           if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
-          if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
+          if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${/^https?:\/\//.test(page) ? new URL(page).hostname + '-remote' : basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
           if (useAxe && w === lo && (u === 'portrait' || u === 'landscape')) {
             for (const issue of await axeAudit(pg)) note(issue, `${u} ${w}px ${scheme} axe`);
           }
@@ -406,7 +457,7 @@ try {
           await ctx.close();
         }
         // the promise: within a frame every element stands at the same place of the canvas, in rem
-        if (extended && scheme === 'light') {
+        if (geometryAudit && scheme === 'light') {
           const a = new Map(seen[lo].boxes.map(b => [b[0], b])), moved = new Map();
           for (const w of [...inner, hi]) for (const b of seen[w].boxes) {
             const o = a.get(b[0]);
@@ -427,13 +478,13 @@ try {
     await openPage(pg, url, note, 'print');
     await pg.emulateMedia({ media: 'print' });
     await renderedLayout(pg);
-    const r = await pg.evaluate(inspect, VOCAB);
+    const r = await pg.evaluate(inspect, { VOCAB, siteMode });
     for (const i of r.issues) if (!['vocabulary', 'target-too-small', 'contrast'].includes(i.rule)) note(i, 'print');
     const pdf = await pg.pdf({ preferCSSPageSize: true, printBackground: true });
     const sheets = await pg.evaluate(() => document.querySelectorAll('[data-l=sheet]').length);
     const printed = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
     if (sheets && printed !== sheets) note({ rule: 'print-pages', at: 'body', detail: `${sheets} sheets print on ${printed} pages` }, 'print');
-    if (shots) await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-print.png`, fullPage: true });
+    if (shots) await pg.screenshot({ path: `${shots}/${/^https?:\/\//.test(page) ? new URL(page).hostname + '-remote' : basename(page, '.html')}-print.png`, fullPage: true });
     await ctx.close();
 
     const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: p.fix ?? FIX[p.rule] }));

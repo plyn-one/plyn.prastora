@@ -73,6 +73,40 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const { stdout } = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'good.html')], { cwd: root, timeout: 60000 });
       assert.equal(JSON.parse(stdout).ok, true);
     });
+    await t.test('site mode permits branded HTML without changing strict checks', async () => {
+      await writeFile(join(pageDir, 'brand.css'), 'body { color: #123456 }');
+      const branded = page('art/vase%20shape.svg')
+        .replace('</head>', '<meta name="description" content="Site checker regression"><link rel="canonical" href="https://example.test/regression"><link rel="stylesheet" href="brand.css"></head>')
+        .replace('<body>', '<body class="brand" data-backend="ramonak"><main>')
+        .replace('</body>', '</main></body>')
+        .replace('<p>', '<p style="color:#123456">');
+      await writeFile(join(pageDir, 'branded.html'), branded);
+      const strict = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html')], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.equal(strict.code, 1);
+      assert.ok(JSON.parse(strict.stdout).problems.some(p => p.rule === 'vocabulary'));
+      const result = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html'), '--site'], { cwd: root, timeout: 60000 });
+      assert.equal(JSON.parse(result.stdout).ok, true, result.stdout);
+      const invalid = branded.replace('<link rel="canonical" href="https://example.test/regression">', '');
+      await writeFile(join(pageDir, 'branded-bad-seo.html'), invalid);
+      const badSeo = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-bad-seo.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.equal(badSeo.code, 1);
+      assert.ok(JSON.parse(badSeo.stdout).problems.some(p => p.rule === 'site-seo'));
+      assert.doesNotMatch(branded, /<(?:header|footer)\b/i, 'site mode must permit a headerless page');
+      const overflow = branded.replace('<main>', '<main style="min-width:2400px">');
+      await writeFile(join(pageDir, 'branded-overflow.html'), overflow);
+      const badGeometry = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-overflow.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
+      const siteOverflow = JSON.parse(badGeometry.stdout);
+      assert.equal(badGeometry.code, undefined, 'intentional horizontal scrolling is a site composition choice');
+      assert.ok(!siteOverflow.problems.some(p => p.rule === 'page-scroll-x' || p.rule === 'escapes-parent'));
+      const extendedSite = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html'), '--site', '--extended'], { cwd: root, timeout: 60000 });
+      const extendedReport = JSON.parse(extendedSite.stdout);
+      assert.equal(extendedReport.ok, true, extendedSite.stdout);
+      assert.ok(!extendedReport.problems.some(p => p.rule === 'composition-moves'));
+      assert.equal(extendedReport.frames.some(f => f.startsWith('landscape ')), true, 'extended site audit still samples the frame declared by the fixture core');
+      // Core mode still detects page-level overflow outside the Prastora canvas.
+      const coreOverflow = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-overflow.html')], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.ok(JSON.parse(coreOverflow.stdout).problems.some(p => p.rule === 'page-scroll-x'));
+    });
     await t.test('a missing CSS-only outline fails with a repair instruction', async () => {
       let result;
       try { await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'bad.html')], { cwd: root, timeout: 60000 }); }
@@ -89,6 +123,13 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       catch (error) { result = error; }
       assert.equal(result?.code, 1);
       assert.ok(JSON.parse(result.stdout).problems.some(p => p.rule === 'shape-outline'));
+    });
+    await t.test('an HTTP URL is checked using its own deployed core', async () => {
+      const url = `http://127.0.0.1:${server.address().port}/pages/nested/good.html`;
+      const { stdout } = await execute(process.execPath, [join(root, 'check.mjs'), url], { cwd: root, timeout: 60000 });
+      const report = JSON.parse(stdout);
+      assert.equal(report.page, url);
+      assert.equal(report.ok, true, JSON.stringify(report.problems));
     });
     await t.test('a remote core keeps sibling assets under the caller project root', async () => {
       const { stdout } = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'remote-core.html')], { cwd: dir, timeout: 60000 });
