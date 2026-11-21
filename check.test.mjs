@@ -102,7 +102,7 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const extendedReport = JSON.parse(extendedSite.stdout);
       assert.equal(extendedReport.ok, true, extendedSite.stdout);
       assert.ok(!extendedReport.problems.some(p => p.rule === 'composition-moves'));
-      assert.equal(extendedReport.frames.some(f => f.startsWith('wide ')), true, 'extended site audit still covers wide frame');
+      assert.equal(extendedReport.frames.some(f => f.startsWith('landscape ')), true, 'extended site audit still samples the frame declared by the fixture core');
       // Core mode still detects page-level overflow outside the Prastora canvas.
       const coreOverflow = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-overflow.html')], { cwd: root, timeout: 60000 }).catch(e => e);
       assert.ok(JSON.parse(coreOverflow.stdout).problems.some(p => p.rule === 'page-scroll-x'));
