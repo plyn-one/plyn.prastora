@@ -109,6 +109,13 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       assert.equal(result?.code, 1);
       assert.ok(JSON.parse(result.stdout).problems.some(p => p.rule === 'shape-outline'));
     });
+    await t.test('an HTTP URL is checked using its own deployed core', async () => {
+      const url = `http://127.0.0.1:${server.address().port}/pages/nested/good.html`;
+      const { stdout } = await execute(process.execPath, [join(root, 'check.mjs'), url], { cwd: root, timeout: 60000 });
+      const report = JSON.parse(stdout);
+      assert.equal(report.page, url);
+      assert.equal(report.ok, true, JSON.stringify(report.problems));
+    });
     await t.test('a remote core keeps sibling assets under the caller project root', async () => {
       const { stdout } = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'remote-core.html')], { cwd: dir, timeout: 60000 });
       assert.equal(JSON.parse(stdout).ok, true);
