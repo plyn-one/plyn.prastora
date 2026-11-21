@@ -132,3 +132,32 @@ jobs:
           npx playwright install --with-deps chromium
       - run: |
           node --test --test-name-pattern="keyboard: ${{ matrix.case }}," check.test.mjs
+
+  report-core-failure:
+    name: report-core-failure
+    if: ${{ always() && github.event_name == 'pull_request' && needs.chromium.result == 'failure' }}
+    needs: chromium
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: prastora-browser-check
+          path: prastora-reports
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('prastora-reports/core.tap', 'utf8');
+            const at = report.indexOf('not ok ');
+            const excerpt = at < 0 ? report.slice(-3000) : report.slice(Math.max(0, at - 300), at + 3600);
+            const body = 'Temporary Chromium regression diagnosis on ' + context.sha.slice(0, 8)
+              + '\\n\\n' + '```text' + '\\n' + excerpt.replaceAll('```', '---') + '\\n' + '```';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
