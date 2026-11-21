@@ -189,6 +189,7 @@ kola = "usie"
 "file:site/try/1119-modules/video.css" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/video.js" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/map.css" = { faza = "asadak", rola = "prajava" }
+"file:site/try/1119-modules/map-style.json" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/map.js" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/example-service.html" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/example-editorial.html" = { faza = "asadak", rola = "prajava" }

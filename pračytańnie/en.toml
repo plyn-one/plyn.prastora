@@ -51,6 +51,7 @@
 "file:site/try/1119-modules/video.css" = "generated public preview from module source for browser review"
 "file:site/try/1119-modules/video.js" = "generated public preview from module source for browser review"
 "file:site/try/1119-modules/map.css" = "generated public preview from module source for browser review"
+"file:site/try/1119-modules/map-style.json" = "locally served public demo MapLibre raster style with OSM attribution"
 "file:site/try/1119-modules/map.js" = "generated public preview from module source for browser review"
 "file:site/try/1119-modules/example-service.html" = "generated public preview from module source for browser review"
 "file:site/try/1119-modules/example-editorial.html" = "generated public preview from module source for browser review"
