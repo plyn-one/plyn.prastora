@@ -1,0 +1,5 @@
+[data-pr-map]{padding:1rem;border:1px solid var(--pr-map-border,#819397);border-radius:.65rem}
+[data-pr-map] .pr-map__canvas{width:100%;height:var(--pr-map-height,22rem);min-height:12rem}
+[data-pr-map] .pr-map__enable{cursor:pointer;min-height:2.75rem;padding:.6rem 1rem}
+[data-pr-map] .pr-map__status{min-height:1.4em}
+[data-pr-map] :is(button,a):focus-visible{outline:3px solid var(--pr-focus,#bd6419);outline-offset:3px}
