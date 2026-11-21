@@ -74,7 +74,8 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       assert.equal(JSON.parse(stdout).ok, true);
     });
     await t.test('site mode permits branded HTML without changing strict checks', async () => {
-      await writeFile(join(pageDir, 'brand.css'), 'body { color: #123456 }');
+      await writeFile(join(pageDir, 'brand.css'), 'body { color: #123456; background-color: #ffffff }');
+      await writeFile(join(pageDir, 'brand-bad-contrast.css'), 'body { color: #123456 }');
       const branded = page('art/vase%20shape.svg')
         .replace('</head>', '<meta name="description" content="Site checker regression"><link rel="canonical" href="https://example.test/regression"><link rel="stylesheet" href="brand.css"></head>')
         .replace('<body>', '<body class="brand" data-backend="ramonak"><main>')
@@ -90,6 +91,11 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
         throw new Error('site mode returned ' + error.code + ': ' + JSON.stringify(report?.problems ?? error.stdout).slice(0, 2300));
       });
       assert.equal(JSON.parse(result.stdout).ok, true, result.stdout);
+      const badContrast = branded.replace('href="brand.css"', 'href="brand-bad-contrast.css"');
+      await writeFile(join(pageDir, 'branded-bad-contrast.html'), badContrast);
+      const contrastCheck = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-bad-contrast.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.equal(contrastCheck.code, 1, 'inadequate contrast in dark mode must fail');
+      assert.ok(JSON.parse(contrastCheck.stdout).problems.some(p => p.rule === 'contrast' && p.where.some(w => w.includes('dark'))), 'dark-mode contrast has a repair instruction');
       const invalid = branded.replace('<link rel="canonical" href="https://example.test/regression">', '');
       await writeFile(join(pageDir, 'branded-bad-seo.html'), invalid);
       const badSeo = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-bad-seo.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);

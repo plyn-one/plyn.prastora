@@ -19,7 +19,7 @@ The site describes its pinned Prastora version, checker mode (`strict` or future
 
 The output is semantic HTML, with exactly one primary `main` landmark and correct document language/title. Header, footer, navigation and link collections are optional; a one-page site without them is valid. `data-l`, `data-x`, `data-xp` and other documented attributes form Prastora's layout API.
 
-`strict` preserves the existing closed-manifest demo behavior (including no `class`, `style` or site CSS). The new `site` mode must allow `class` and individual stylesheets, unusual composition and omitted header/footer, but still check *rendered* geometry, keyboard access, accessibility, resources and technical SEO. It may not treat a site-specific class as a layout failure by itself. This mode is NOT yet implemented.
+`strict` preserves the existing closed-manifest demo behavior (including no `class`, `style` or site CSS). The implemented source `--site` mode accepts site-owned classes, styles, unusual composition and omitted header/footer, while inspecting rendered accessibility, resources, keyboard behavior and technical SEO. It samples frame edges with `--extended` rather than proving invariance for all authored elements. Horizontal overflow can be intentional in a site's composition and is not automatically an error under `--site`; deployed visual acceptance remains a separate owner-frame browser check (see `docs/site-mode.md`).
 
 Each module ships an explicit name/version, semantic markup example, CSS and optional JS entry points, configuration, dependency list, keyboard semantics, non-JS fallback, positive/negative tests and no runtime side effects when not selected. Integration is through standard elements and published data attributes, not private CMS internals.
 
@@ -44,7 +44,7 @@ For this public Prastora repository the executor for source/module browser regre
 ## Acceptance and versioning
 
 1. Existing strict-mode demos remain valid.
-2. Two visually distinct sites and a headerless one-page site pass the browser-based `site` checker, while overflow, keyboard traps, missing resources and wrong SEO fail with fixes.
+2. Two visually distinct sites and a headerless one-page site must validate in the browser-based `site` checker; keyboard traps, missing resources and wrong SEO fail with fixes. In strict mode accidental overflow still fails, while in site mode intentional horizontal scrolling requires independent visual acceptance.
 3. Unselected map/video assets produce no network requests.
 4. Accessible modules work with keyboard and appropriate script-free fallback.
 5. A real Ramonak integration validates one SEO head, languages, a submitted form, news pagination, footer-year rollover and staging noindex.
