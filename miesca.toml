@@ -160,6 +160,10 @@ kola = "usie"
 "file:modules/forms.css" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/news.css" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/languages.css" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/video.css" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/video.js" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/map.css" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/map.js" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/README.md" = { faza = "dadzienaść", rola = "sens" }
 "file:src/CONNECT.md" = { faza = "dadzienaść", rola = "prajava" }
 "dir:docs" = { faza = "dadzienaść", rola = "sens" }
