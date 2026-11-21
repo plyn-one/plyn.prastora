@@ -17,7 +17,7 @@ if(action&&first&&output){
   document.addEventListener('focusin',event=>{
     if(!event.target.matches('a, button, input, textarea, select, summary'))return;
     const item=event.target;
-    const name=item.getAttribute('aria-label')||item.labels?.[0]?.textContent||item.textContent||item.getAttribute('placeholder')||item.getAttribute('id')||item.tagName;
+    const name=item.getAttribute('aria-label')||item.closest('[data-pr-languages]')?.querySelector('.pr-language__current')?.textContent||item.labels?.[0]?.textContent||item.textContent||item.getAttribute('placeholder')||item.getAttribute('id')||item.tagName;
     output.textContent='Сейчас выделен: '+name.trim().replace(/\s+/g,' ').slice(0,110)+'. Нажмите Tab или Shift + Tab.';
   });
 }
