@@ -9,3 +9,5 @@
 [data-pr-form] [aria-invalid=true]{border-color:#a31321!important}
 [data-pr-form] .pr-form__error{color:#8f1020}
 [data-pr-form] button{min-height:2.8rem;padding:.6rem 1.2rem;justify-self:start;cursor:pointer}
+
+[data-pr-form] button[type=submit]{background:var(--pr-form-submit-bg,#15545c);color:var(--pr-form-submit-ink,#fff);border:1px solid transparent;border-radius:.4rem;font-weight:750}
