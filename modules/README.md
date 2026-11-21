@@ -23,4 +23,4 @@ Minimal markup:
 
 The form action above is illustrative: Ramonak sites use `/_ramonak/form/<name>` with the configured fields and anti-spam protocol, other backends use their own. Do not duplicate Ramonak's routing, form processing, SEO metadata or translation. Site templates own the markup; these CSS modules only provide conventional accessible presentation. Header remains sticky without JS, and the native language menu works without JS. Header shrink is progressive and respects reduced motion.
 
-Required before release: automated regression for the components, two visually distinct sample sites, keyboard/mobile checks and independently verified no-load behavior for unused modules. Video and MapLibre are deferred to subsequent #1134 increments.
+Required before release: automated regression for the components, two visually distinct sample sites, keyboard/mobile checks and independently verified no-load behavior for unused modules. Video and MapLibre are optional click-to-load modules described in [video.md](video.md) and [map.md](map.md); their browser checks are still pending.
