@@ -1,8 +1,12 @@
 name: Prastora browser check
 
-# A spare check for an agent that cannot run Chromium where it works: started by hand (Actions, Run workflow);
-# landing and publishing do not wait for it.
+# Fixed browser executor for the public Plyń repository: GitHub Actions + Playwright.
 on:
+  push:
+    branches:
+      - main
+      - 'agent/**'
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -10,8 +14,9 @@ permissions:
 
 jobs:
   chromium:
+    name: chromium
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,27 +26,20 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - name: Check all work pages, all frames and A4
+      - name: Browser regressions (core and optional modules when present)
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p prastora-reports prastora-shots
-          mapfile -d '' pages < <(find site/try -type f -name '*.html' -print0 | sort -z)
-          if (("${#pages[@]}" == 0)); then
-            echo "No work pages to verify" >&2
-            exit 1
+          mkdir -p prastora-reports
+          node --test check.test.mjs 2>&1 | tee prastora-reports/core.tap
+          if [[ -f modules/modules.test.mjs ]]; then
+            node --test modules/modules.test.mjs 2>&1 | tee prastora-reports/modules.tap
           fi
-          for file in "${pages[@]}"; do
-            name="${file//\//_}"
-            node check.mjs "$file" --extended --shots "prastora-shots/$name" > "prastora-reports/$name.json"
-          done
-      - name: Upload verdict and screenshots
+      - name: Upload regression report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: prastora-browser-check
-          path: |
-            prastora-reports/
-            prastora-shots/
-          retention-days: 1
+          path: prastora-reports/
+          retention-days: 7
           if-no-files-found: warn

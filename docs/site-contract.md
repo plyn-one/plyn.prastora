@@ -37,6 +37,10 @@ Ramonak's existing video rewrite changes YouTube iframes into lazy covers/links.
 
 **Ramonak site:** Twig `head` includes `@ramonak/head.twig`, then a pinned Prastora core and site's stylesheet; `body` contains `data-l="page"`, an optional navigation built from `languages`, a single `main` block for content, and optional form action `/_ramonak/form/contact`. The site supplies branded CSS and chooses only required modules. Other backends supply equivalent final HTML and metadata.
 
+## Fixed browser test execution
+
+For this public Prastora repository the executor for source/module browser regression is GitHub Actions + Playwright Chromium, fixed in `.github/workflows/prastora-check.yml` (see `docs/browser-testing.md`). A website's deployed browser acceptance runs on the executor selected by its *owner frame*: Legal Status sites run on its own Cloudflare Browser Run via Klucnik. Agents neither choose nor silently switch execution providers. A passing public-source job is not evidence of a separate site's browser acceptance.
+
 ## Acceptance and versioning
 
 1. Existing strict-mode demos remain valid.
