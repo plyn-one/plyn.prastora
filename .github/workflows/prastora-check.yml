@@ -112,3 +112,22 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium
       - run: node --test --test-name-pattern="${{ matrix.group.pattern }}" check.test.mjs
+
+  keyboard-cases-diagnostic:
+    name: keyboard-${{ matrix.case }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        case: [radio, positive, trap, frame, combo]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node --test --test-name-pattern="keyboard: ${{ matrix.case }}," check.test.mjs
