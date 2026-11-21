@@ -31,6 +31,7 @@
 "file:modules/map.js" = "optional site module modules/map.js"
 "file:modules/video.md" = "how to use the optional module in modules/video.md"
 "file:modules/map.md" = "how to use the optional module in modules/map.md"
+"file:modules/map-style.json" = "public low-volume test style using OSM raster tiles with attribution; site owners must provide their own tile service for production"
 "file:modules/example-service.html" = "independently styled sample site for checking the optional modules"
 "file:modules/example-editorial.html" = "independently styled sample site for checking the optional modules"
 "file:modules/news-illustration.svg" = "browser preview supporting illustration or keyboard guidance"

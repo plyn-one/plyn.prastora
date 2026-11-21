@@ -57,11 +57,12 @@ test('site module selection, native fallback and on-demand third-party resources
     assert.equal(await page.locator('[data-pr-languages] ul').evaluate(el => getComputedStyle(el).position), 'absolute');
     await page.locator('[data-pr-languages] a[hreflang=fr]').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
-    assert.equal(await page.locator('[data-pr-languages] summary').textContent(), 'Français (sample) · Languages');
+    assert.equal(await page.locator('[data-pr-languages] summary').textContent(), 'Français');
     await page.locator('[data-pr-languages] summary').click();
     await page.locator('#news-title').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
     assert.equal(await page.locator('[data-pr-map-preview] img').count(), 1);
+    assert.equal(await page.locator('[data-pr-map-enable]').getAttribute('data-pr-map-preview'), '');
     assert.equal(await page.locator('[data-pr-video-link] img').count(), 1);
     const headerBefore = await page.locator('[data-pr-header]').evaluate(e=>e.getBoundingClientRect().height);
     await page.evaluate(()=>window.scrollTo(0,1500));

@@ -45,19 +45,19 @@ footer{padding:2rem;background:#173f45;color:#fff}
 <li><a href="#map">Map</a></li>
 <li><a href="#contact">Form</a></li>
 </ul></nav>
-<details data-pr-languages data-pr-language-demo><summary>EN · Languages</summary><ul>
-<li><a href="#start" aria-current="page">English (sample)</a></li>
-<li><a href="#start" hreflang="fr">Français (sample)</a></li>
+<details data-pr-languages data-pr-language-demo><summary>English</summary><ul>
+<li><a href="#start" aria-current="page">English</a></li>
+<li><a href="#start" hreflang="fr">Français</a></li>
 </ul></details></div></header>
 <main id="start">
 <section class="hero" data-l="canvas" aria-labelledby="hero-title">
-<div data-x="1-12" data-xp="1-4" data-xw="1-12" data-l="stack">
+<div data-x="1-7" data-xp="1-4" data-xw="1-7" data-l="stack">
 <p class="hero-kicker"><strong>FRAME COMPOSITION · PORTRAIT / LANDSCAPE / WIDE</strong></p>
 <h1 id="hero-title">A site keeps its composition.</h1>
 <p>Actual Prastora canvas and frame-specific columns, not an auto-fitting CSS grid.</p>
 <a href="#news">See the news cards</a>
 </div>
-<div data-x="1-12" data-xp="1-4" data-xw="1-12"><div class="fake-art" role="img" aria-label="Abstract teal visual panel"></div></div>
+<div data-x="8-12" data-xp="1-4" data-xw="8-12"><div class="fake-art" role="img" aria-label="Abstract teal visual panel"></div></div>
 </section>
 <section class="band guide" aria-labelledby="guide-title">
 <h2 id="guide-title">Keyboard focus test · Проверка клавиатуры</h2>
@@ -92,9 +92,9 @@ footer{padding:2rem;background:#173f45;color:#fff}
 <p>Play example activates a third-party video; opening the page alone must not.</p>
 <figure data-pr-video><a class="pr-video__link" data-pr-video-link href="https://www.youtube.com/watch?v=M7lc1UVf-VE" data-pr-embed="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE" aria-label="Play YouTube embedded-player demonstration"><img src="video-poster.svg" alt="Illustrated video preview with a play symbol"></a>
 <figcaption>Video loads only after your action.</figcaption></figure></section>
-<section id="map" class="band"><h2>Map · MapLibre</h2><p>Click Load map. If external resources are blocked, the address link below must remain usable.</p>
-<section data-pr-map data-pr-map-lat="50.08" data-pr-map-lng="14.42" data-pr-map-zoom="12" data-pr-map-js="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js" data-pr-map-css="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css" data-pr-map-style="https://demotiles.maplibre.org/style.json">
-<figure class="pr-map__preview" data-pr-map-preview><img src="map-preview.svg" alt="Static illustrative map of Prague with a location marker"><figcaption>Static preview; activate for an interactive map.</figcaption></figure><button type="button" class="pr-map__enable" data-pr-map-enable>Load map</button>
+<section id="map" class="band"><h2>Map · MapLibre</h2><p>Click the map preview to activate the interactive map. If external map tiles are blocked, the static preview and address link remain available.</p>
+<section data-pr-map data-pr-map-lat="50.08" data-pr-map-lng="14.42" data-pr-map-zoom="12" data-pr-map-js="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js" data-pr-map-css="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css" data-pr-map-style="map-style.json">
+<button type="button" class="pr-map__preview pr-map__enable" data-pr-map-enable data-pr-map-preview aria-label="Activate interactive map of Prague"><img src="map-preview.svg" alt=""><span class="pr-map__hint">Click the map to explore</span></button>
 <div class="pr-map__canvas" data-pr-map-canvas hidden></div>
 <p class="pr-map__status" data-pr-map-status role="status"></p>
 <a href="https://www.openstreetmap.org/?mlat=50.08&amp;mlon=14.42">View example location without interactive map</a>

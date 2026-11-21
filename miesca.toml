@@ -169,6 +169,7 @@ kola = "usie"
 "file:modules/map.js" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/video.md" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/map.md" = { faza = "dadzienaść", rola = "sens" }
+"file:modules/map-style.json" = { faza = "ściah", rola = "prajava" }
 "file:modules/example-service.html" = { faza = "ściah", rola = "prajava" }
 "file:modules/example-editorial.html" = { faza = "ściah", rola = "prajava" }
 "file:modules/news-illustration.svg" = { faza = "ściah", rola = "sens" }

@@ -11,7 +11,7 @@ export function enhanceLanguages(root=document){
         event.preventDefault();
         menu.querySelectorAll('a[aria-current]').forEach(a=>a.removeAttribute('aria-current'));
         link.setAttribute('aria-current','page');
-        if(summary)summary.textContent=link.textContent.trim()+' · Languages';
+        if(summary)summary.textContent=link.textContent.trim();
       }
       menu.open=false;
       summary?.focus();
