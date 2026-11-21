@@ -1,0 +1,6 @@
+[data-pr-languages]{position:relative;max-width:100%;width:max-content}
+[data-pr-languages] summary{cursor:pointer;padding:.5rem .75rem;border:1px solid currentColor;border-radius:.35rem}
+[data-pr-languages] summary:focus-visible,[data-pr-languages] a:focus-visible{outline:3px solid var(--pr-focus,#bd6419);outline-offset:3px}
+[data-pr-languages] ul{margin:.35rem 0 0;padding:.4rem;list-style:none;background:var(--pr-language-bg,var(--paper,#fff));color:var(--pr-language-ink,var(--ink,#222));border:1px solid currentColor;border-radius:.35rem;min-width:100%}
+[data-pr-languages] li a{display:block;padding:.4rem .65rem;white-space:nowrap}
+[data-pr-languages] [aria-current=page]{font-weight:750;text-decoration:underline}
