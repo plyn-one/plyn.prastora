@@ -56,7 +56,7 @@ test('site module selection, native fallback and on-demand third-party resources
       const css = getComputedStyle(el), body = getComputedStyle(document.body);
       return { ratio: parseFloat(css.fontSize) / parseFloat(body.fontSize), weight: Number(css.fontWeight), underlined: getComputedStyle(el.querySelector('a')).textDecorationLine };
     });
-    assert.ok(Math.abs(headlineStyle.ratio - 1.05) < 0.01, 'news title is 5 percent above body text');
+    assert.ok(Math.abs(headlineStyle.ratio - 1.1) < 0.01, 'news title is 10 percent above body text');
     assert.ok(headlineStyle.weight >= 700, 'news title is bold');
     assert.equal(headlineStyle.underlined, 'none');
     const widthBefore = await page.locator('[data-pr-languages]').evaluate(e=>e.getBoundingClientRect().width);
