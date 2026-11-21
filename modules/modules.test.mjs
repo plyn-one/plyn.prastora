@@ -62,8 +62,27 @@ test('site module selection, native fallback and on-demand third-party resources
     await page.locator('#news-title').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
     assert.equal(await page.locator('[data-pr-map-preview] img').count(), 1);
+    assert.equal(await page.locator('[data-pr-map-enable]').count(), 1);
+    assert.equal(await page.locator('[data-pr-map-enable]').evaluate(e=>e.tagName), 'BUTTON');
+    assert.equal(await page.locator('[data-pr-map]').getAttribute('data-pr-map-style'), 'map-style.json');
+    assert.ok((await page.locator('[data-pr-languages] summary').textContent()).trim() === 'Français');
     assert.equal(await page.locator('[data-pr-map-enable]').getAttribute('data-pr-map-preview'), '');
     assert.equal(await page.locator('[data-pr-video-link] img').count(), 1);
+    for(const width of [900,2100]){
+      await page.setViewportSize({width,height:900});
+      const hero=await page.locator('.hero').evaluate(el=>{
+        const blocks=[...el.children].map(x=>x.getBoundingClientRect());
+        return {left:blocks[0].left,right:blocks[0].right,artLeft:blocks[1].left,artTop:blocks[1].top,textTop:blocks[0].top};
+      });
+      assert.ok(hero.artLeft >= hero.right - 3 && Math.abs(hero.artTop-hero.textTop) < 3,
+        'hero illustration must appear alongside text at width '+width);
+    }
+    await page.setViewportSize({width:390,height:900});
+    const mobileHero=await page.locator('.hero').evaluate(el=>{
+      const blocks=[...el.children].map(x=>x.getBoundingClientRect());
+      return {textBottom:blocks[0].bottom,artTop:blocks[1].top};
+    });
+    assert.ok(mobileHero.artTop>=mobileHero.textBottom-3,'portrait hero should stack');
     const headerBefore = await page.locator('[data-pr-header]').evaluate(e=>e.getBoundingClientRect().height);
     await page.evaluate(()=>window.scrollTo(0,1500));
     await page.waitForTimeout(250);
