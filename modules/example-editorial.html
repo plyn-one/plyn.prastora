@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sample editorial · Prastora modules</title>
+<meta name="description" content="A visually distinct editorial site using only the Prastora news module.">
+<link rel="canonical" href="https://example.test/editorialdemo">
+<link rel="stylesheet" href="../core.css"><link rel="stylesheet" href="news.css">
+<style>
+body{margin:0;background:#faf2e3;color:#352d25;font-family:Georgia,serif}
+main{padding-bottom:5rem}.cover{padding:clamp(3rem,9vw,9rem) 5%;background:#e5cbb0}
+.cover h1{max-width:12ch;font-size:clamp(3rem,9vw,7.5rem);font-weight:400;letter-spacing:-.06em;line-height:1}
+.ink{height:clamp(12rem,35vw,28rem);background:linear-gradient(130deg,#294b4e 0 42%,#a35e37 43% 65%,#e5cbb0 66%)}
+.reading{max-width:72rem;margin:4rem auto;padding:0 4%;display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:3rem}
+.reading p{font-size:1.15rem;line-height:1.8}.aside{font-size:clamp(1.4rem,3vw,2.5rem);line-height:1.3;border-top:4px solid}
+[data-pr-news]{margin:3rem auto;max-width:72rem;padding-inline:4%;--pr-news-border:#ad896d}
+@media(max-width:48rem){.reading{grid-template-columns:1fr}}
+</style>
+</head><body><div data-l="page">
+<main><section class="cover"><p>EDITORIAL / SAMPLE TWO</p><h1>A different visual identity.</h1>
+<p>One optional news module, no header, form, map, video or JavaScript.</p></section>
+<div class="ink" role="img" aria-label="Abstract geometric art in teal, amber and sand"></div>
+<section class="reading"><article><h2>Composition remains the site's choice</h2>
+<p>This publication is deliberately different from the service demonstration.
+The layout system provides its elements without dictating the editorial voice.</p>
+<p>In a browser test, look for readable typography, no horizontal overflow,
+correct ordering and predictable focus.</p></article>
+<aside class="aside" aria-label="Editorial statement">Shared machinery should not mean identical pages.</aside></section>
+<section><div data-pr-news>
+<article class="pr-news__item"><time datetime="2026-11-21">21 November 2026</time>
+<h2><a href="#story">A sample story</a></h2><p>News cards share a semantic module.</p></article>
+<article class="pr-news__item"><time datetime="2026-11-20">20 November 2026</time>
+<h2><a href="#story">Another sample story</a></h2><p>Content belongs to the site's backend.</p></article>
+</div></section></main>
+</div></body></html>

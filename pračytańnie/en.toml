@@ -28,6 +28,8 @@
 "file:modules/map.js" = "optional site module modules/map.js"
 "file:modules/video.md" = "how to use the optional module in modules/video.md"
 "file:modules/map.md" = "how to use the optional module in modules/map.md"
+"file:modules/example-service.html" = "independently styled sample site for checking the optional modules"
+"file:modules/example-editorial.html" = "independently styled sample site for checking the optional modules"
 "file:modules/README.md" = "draft site module: modules/README.md"
 "file:variants.mjs" = "builds core.css from the frames of a variant, CONNECT.md and README.md from src/ with the version of the release, which lives in it only, the published tree site/ with a folder for each release tag written from that tag, and a lab page for each variant"
 "dir:lab" = "the lab: variants of frames compared on the same page"
