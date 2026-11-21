@@ -372,6 +372,7 @@ async function renderedLayout(pg) {
 // CSS shape images use CORS: file URLs are not a same-origin web site, even when the image exists.
 // Serve the page and its linked local core from one temporary loopback origin, without changing either.
 async function servePages(pages) {
+  if (!pages.length) return { url: page => page, close: async () => {} };
   const files = pages.flatMap(page => {
     const href = stylesheetOf(page);
     return [resolve(page), ...(/^https?:/.test(href) ? [] : [resolve(dirname(page), href)])];
@@ -404,14 +405,18 @@ async function servePages(pages) {
   };
 }
 
-const local = await servePages(pages);
+if (useHtml && pages.some(p => /^https?:\/\//.test(p))) {
+  console.error('--html requires a local source file, not a deployed URL');
+  process.exit(2);
+}
+const local = await servePages(pages.filter(p => !/^https?:\/\//.test(p)));
 const browser = await chromium.launch().catch(async error => { await local.close(); throw error; });
 const reports = [];
 try {
   for (const page of pages) {
     const EDGES = await framesOf(page);
     const FRAMES = extended ? EDGES : EDGES.filter(f => f.u === 'portrait' || f.u === 'landscape');
-    const url = local.url(page);
+    const url = /^https?:\/\//.test(page) ? page : local.url(page);
     const found = new Map();
     const note = (i, where) => { const k = i.rule + '|' + i.at; if (!found.has(k)) found.set(k, { ...i, where: [] }); found.get(k).where.push(where); };
 
@@ -433,7 +438,7 @@ try {
           const edge = !extended || w === lo || w === hi;
           if (edge) for (const i of r.issues) if (scheme === 'light' || i.rule !== 'vocabulary') note(i, `${u} ${w}px${scheme === 'dark' ? ' dark' : ''}`);
           if (edge && r.body < 9.5) note({ rule: 'body-text-small', at: 'body', detail: `${r.body.toFixed(1)} px` }, `${u} ${w}px`);
-          if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
+          if (edge && shots && scheme === 'light') await pg.screenshot({ path: `${shots}/${/^https?:\/\//.test(page) ? new URL(page).hostname + '-remote' : basename(page, '.html')}-${u}-${w}.png`, fullPage: true });
           if (useAxe && w === lo && (u === 'portrait' || u === 'landscape')) {
             for (const issue of await axeAudit(pg)) note(issue, `${u} ${w}px ${scheme} axe`);
           }
@@ -472,7 +477,7 @@ try {
     const sheets = await pg.evaluate(() => document.querySelectorAll('[data-l=sheet]').length);
     const printed = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
     if (sheets && printed !== sheets) note({ rule: 'print-pages', at: 'body', detail: `${sheets} sheets print on ${printed} pages` }, 'print');
-    if (shots) await pg.screenshot({ path: `${shots}/${basename(page, '.html')}-print.png`, fullPage: true });
+    if (shots) await pg.screenshot({ path: `${shots}/${/^https?:\/\//.test(page) ? new URL(page).hostname + '-remote' : basename(page, '.html')}-print.png`, fullPage: true });
     await ctx.close();
 
     const problems = [...found.values()].map(p => ({ rule: p.rule, at: p.at, detail: p.detail, where: p.where.length > 6 ? [...p.where.slice(0, 6), `+${p.where.length - 6}`] : p.where, fix: p.fix ?? FIX[p.rule] }));
