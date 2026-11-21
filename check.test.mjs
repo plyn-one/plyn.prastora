@@ -76,8 +76,9 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
     await t.test('site mode permits branded HTML without changing strict checks', async () => {
       await writeFile(join(pageDir, 'brand.css'), 'body { color: #123456 }');
       const branded = page('art/vase%20shape.svg')
-        .replace('</head>', '<link rel="stylesheet" href="brand.css"></head>')
-        .replace('<body>', '<body class="brand" data-backend="ramonak">')
+        .replace('</head>', '<meta name="description" content="Site checker regression"><link rel="canonical" href="https://example.test/regression"><link rel="stylesheet" href="brand.css"></head>')
+        .replace('<body>', '<body class="brand" data-backend="ramonak"><main>')
+        .replace('</body>', '</main></body>')
         .replace('<p>', '<p style="color:#123456">');
       await writeFile(join(pageDir, 'branded.html'), branded);
       const strict = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html')], { cwd: root, timeout: 60000 }).catch(e => e);
@@ -85,6 +86,11 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       assert.ok(JSON.parse(strict.stdout).problems.some(p => p.rule === 'vocabulary'));
       const result = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded.html'), '--site'], { cwd: root, timeout: 60000 });
       assert.equal(JSON.parse(result.stdout).ok, true, result.stdout);
+      const invalid = branded.replace('<link rel="canonical" href="https://example.test/regression">', '');
+      await writeFile(join(pageDir, 'branded-bad-seo.html'), invalid);
+      const badSeo = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-bad-seo.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.equal(badSeo.code, 1);
+      assert.ok(JSON.parse(badSeo.stdout).problems.some(p => p.rule === 'site-seo'));
     });
     await t.test('a missing CSS-only outline fails with a repair instruction', async () => {
       let result;
