@@ -1,0 +1,7 @@
+/* Whole optimized poster is the click target; no separate play button. */
+[data-pr-video]{margin:0;max-width:100%}
+[data-pr-video] .pr-video__link{position:relative;display:block;aspect-ratio:16/9;background:#142126;color:#fff;overflow:hidden;border-radius:.5rem}
+[data-pr-video] .pr-video__link img{display:block;width:100%;height:100%;object-fit:cover}
+[data-pr-video] .pr-video__link:focus-visible{outline:4px solid var(--pr-focus,#bd6419);outline-offset:4px}
+[data-pr-video] iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+[data-pr-video] figcaption{margin-top:.5rem}
