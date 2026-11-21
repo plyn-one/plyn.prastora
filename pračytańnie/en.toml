@@ -30,6 +30,8 @@
 "file:modules/map.md" = "how to use the optional module in modules/map.md"
 "file:modules/example-service.html" = "independently styled sample site for checking the optional modules"
 "file:modules/example-editorial.html" = "independently styled sample site for checking the optional modules"
+"file:modules/news-illustration.svg" = "browser preview supporting illustration or keyboard guidance"
+"file:modules/keyboard-guide.js" = "browser preview supporting illustration or keyboard guidance"
 "file:modules/modules.test.mjs" = "Playwright checks selected module loading, keyboard and no-script fallbacks, and external requests only after action"
 "dir:site/try/1119-modules" = "temporary published browser-test build from the source of the optional modules"
 "file:site/try/1119-modules/header.css" = "generated public preview from module source for browser review"

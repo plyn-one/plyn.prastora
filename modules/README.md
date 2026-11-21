@@ -25,6 +25,8 @@ The form action above is illustrative: Ramonak sites use `/_ramonak/form/<name>`
 
 Two deliberately different sample site templates: [service](example-service.html) and [editorial](example-editorial.html). They require browser verification; they are not evidence of passed checks.
 
+News cards use a frame-composed `data-l=canvas` container, and each article selects `data-x`, `data-xp` and `data-xw` explicitly. Minimal content is title, date and summary. Image, category, author, reading time or additional actions are optional fields supplied by the site. The CSS module does not choose a CSS auto-fit grid. The service demo contains a test-only keyboard focus guide. Two compositions deliberately use different styling but both use Prastora frame coordinates.
+
 Browser regression source: `node --test modules/modules.test.mjs` with Playwright and Chromium installed. It is not proof of execution until results are recorded.
 
 Required before release: automated regression for the components, two visually distinct sample sites, keyboard/mobile checks and independently verified no-load behavior for unused modules. Video and MapLibre are optional click-to-load modules described in [video.md](video.md) and [map.md](map.md); their browser checks are still pending.

@@ -1,7 +1,10 @@
-[data-pr-news]{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:var(--pr-news-gap,1.5rem)}
-[data-pr-news] .pr-news__item{min-width:0;display:flex;flex-direction:column;gap:.75rem;padding:var(--pr-news-padding,1.25rem);border:1px solid var(--pr-news-border,#a5afb0);border-radius:var(--pr-news-radius,.65rem)}
-[data-pr-news] .pr-news__item :is(h2,h3,p){margin:0}
-[data-pr-news] .pr-news__item time{font-variant-numeric:tabular-nums;font-size:.9em}
-[data-pr-news] .pr-news__item img{max-width:100%;height:auto}
-[data-pr-news] .pr-news__item>a:last-child{margin-top:auto}
-[data-pr-news] a:focus-visible{outline:3px solid var(--pr-focus,#bd6419);outline-offset:3px}
+/* Presentation only. Composition is specified by Prastora data-l=canvas and data-x/data-xp/data-xw. */
+[data-pr-news] .pr-news__item{min-width:0;display:flex;flex-direction:column;gap:.75rem;padding:var(--pr-news-padding,1.25rem);border:1px solid var(--pr-news-border,#a5afb0);border-radius:var(--pr-news-radius,.65rem);background:var(--pr-news-bg,transparent);color:inherit}
+[data-pr-news] .pr-news__item :is(h2,h3,p,figure){margin:0;min-width:0}
+[data-pr-news] .pr-news__image{display:block;inline-size:100%;aspect-ratio:16/9;object-fit:cover;border-radius:calc(var(--pr-news-radius,.65rem) / 2)}
+[data-pr-news] .pr-news__meta{display:flex;flex-wrap:wrap;gap:.35rem .75rem;align-items:baseline;font-size:.82em;line-height:1.35;color:var(--pr-news-muted,currentColor);opacity:.82}
+[data-pr-news] .pr-news__category{font-weight:750;letter-spacing:.04em;text-transform:uppercase}
+[data-pr-news] time{font-variant-numeric:tabular-nums}
+[data-pr-news] .pr-news__summary{line-height:1.5}
+[data-pr-news] .pr-news__byline{font-size:.85em;opacity:.8}
+[data-pr-news] .pr-news__item a:focus-visible{outline:3px solid var(--pr-focus,#bd6419);outline-offset:3px}

@@ -168,6 +168,8 @@ kola = "usie"
 "file:modules/map.md" = { faza = "dadzienaść", rola = "sens" }
 "file:modules/example-service.html" = { faza = "ściah", rola = "prajava" }
 "file:modules/example-editorial.html" = { faza = "ściah", rola = "prajava" }
+"file:modules/news-illustration.svg" = { faza = "ściah", rola = "sens" }
+"file:modules/keyboard-guide.js" = { faza = "ściah", rola = "sens" }
 "file:modules/modules.test.mjs" = { faza = "ściah", rola = "sens" }
 "dir:site/try/1119-modules" = { faza = "dadzienaść", rola = "prajava" }
 "file:site/try/1119-modules/header.css" = { faza = "asadak", rola = "prajava" }

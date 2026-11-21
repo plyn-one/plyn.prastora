@@ -1,33 +1,56 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sample editorial · Prastora modules</title>
-<meta name="description" content="A visually distinct editorial site using only the Prastora news module.">
-<link rel="canonical" href="https://example.test/editorialdemo">
+<title>Prastora · Editorial frame composition</title>
+<meta name="description" content="An individual editorial design composed in Prastora frame-specific columns.">
+<link rel="canonical" href="https://plyn-prastora.pages.dev/try/1119-modules/example-editorial.html">
 <link rel="stylesheet" href="../core.css"><link rel="stylesheet" href="news.css">
 <style>
-body{margin:0;background:#faf2e3;color:#352d25;font-family:Georgia,serif}
-main{padding-bottom:5rem}.cover{padding:clamp(3rem,9vw,9rem) 5%;background:#e5cbb0}
-.cover h1{max-width:12ch;font-size:clamp(3rem,9vw,7.5rem);font-weight:400;letter-spacing:-.06em;line-height:1}
-.ink{height:clamp(12rem,35vw,28rem);background:linear-gradient(130deg,#294b4e 0 42%,#a35e37 43% 65%,#e5cbb0 66%)}
-.reading{max-width:72rem;margin:4rem auto;padding:0 4%;display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:3rem}
-.reading p{font-size:1.15rem;line-height:1.8}.aside{font-size:clamp(1.4rem,3vw,2.5rem);line-height:1.3;border-top:4px solid}
-[data-pr-news]{margin:3rem auto;max-width:72rem;padding-inline:4%;--pr-news-border:#ad896d}
-@media(max-width:48rem){.reading{grid-template-columns:1fr}}
-</style>
-</head><body><div data-l="page">
-<main><section class="cover"><p>EDITORIAL / SAMPLE TWO</p><h1>A different visual identity.</h1>
-<p>One optional news module, no header, form, map, video or JavaScript.</p></section>
-<div class="ink" role="img" aria-label="Abstract geometric art in teal, amber and sand"></div>
-<section class="reading"><article><h2>Composition remains the site's choice</h2>
-<p>This publication is deliberately different from the service demonstration.
-The layout system provides its elements without dictating the editorial voice.</p>
-<p>In a browser test, look for readable typography, no horizontal overflow,
-correct ordering and predictable focus.</p></article>
-<aside class="aside" aria-label="Editorial statement">Shared machinery should not mean identical pages.</aside></section>
-<section><div data-pr-news>
-<article class="pr-news__item"><time datetime="2026-11-21">21 November 2026</time>
-<h2><a href="#story">A sample story</a></h2><p>News cards share a semantic module.</p></article>
-<article class="pr-news__item"><time datetime="2026-11-20">20 November 2026</time>
-<h2><a href="#story">Another sample story</a></h2><p>Content belongs to the site's backend.</p></article>
-</div></section></main>
-</div></body></html>
+body{background:#f8eee0;color:#382c23;font-family:Georgia,serif;--pr-news-border:#a48568;--pr-news-bg:#fffbf3}
+[data-l=page]{gap:0}
+.editorial-hero{background:#e6cbb0;padding-block:3rem}
+.editorial-hero h1{font-size:var(--t4);font-weight:400;line-height:1.08}
+.ink{block-size:12rem;inline-size:100%;background:linear-gradient(125deg,#254950 0 45%,#ac6842 46% 70%,#e5cba8 71%);border-radius:.5rem}
+.editorial-band{padding-block:3rem}
+.aside{font-size:1.6rem;line-height:1.28;border-top:.15rem solid currentColor;padding-block-start:.7rem}
+[data-pr-news] .pr-news__image{border-radius:.2rem}
+</style></head>
+<body><div data-l="page">
+<main>
+<section data-l="canvas" class="editorial-hero">
+<div data-x="1-8" data-xp="1-4" data-xw="2-8" data-l="stack">
+<p>EDITORIAL · NO NAVIGATION / NO JAVASCRIPT</p>
+<h1>A different visual identity.</h1>
+<p>Same Prastora frame canvas, different colors, typography and composition.</p>
+</div>
+<div data-x="9-12" data-xp="1-4" data-xw="9-11"><div class="ink" role="img" aria-label="Decorative teal, sand and amber geometric arrangement"></div></div>
+</section>
+<section data-l="canvas" class="editorial-band">
+<article data-x="1-8" data-xp="1-4" data-xw="2-8" data-l="stack">
+<h2>What the editorial page tests</h2>
+<p>Without headers, menus, map controls or JavaScript, a site can use the same layout vocabulary and reuse a news-card module. The composition is explicitly set for each frame, not by a fluid CSS grid.</p>
+<p>Check the reading width on a very wide screen. It should not collapse to a narrow sliver or unexpectedly rearrange its prose.</p>
+</article>
+<aside class="aside" data-x="10-12" data-xp="1-4" data-xw="9-11">One framework, more than one visual language.</aside>
+</section>
+<section class="editorial-band" aria-labelledby="editorial-news-title">
+<h2 id="editorial-news-title">Latest articles</h2>
+<div data-pr-news data-l="canvas" data-space="tight">
+<article class="pr-news__item" data-x="1-4" data-xp="1-4" data-xw="1-4">
+<img class="pr-news__image" src="news-illustration.svg" alt="">
+<div class="pr-news__meta"><span class="pr-news__category">Culture</span><time datetime="2026-11-21">21 Nov 2026</time></div>
+<h3><a href="#editorial-news-title">A story with a photograph</a></h3>
+<p class="pr-news__summary">Editorial variation: image, category, date and summary.</p>
+</article>
+<article class="pr-news__item" data-x="5-8" data-xp="1-4" data-xw="5-8">
+<div class="pr-news__meta"><time datetime="2026-11-20">20 Nov 2026</time></div>
+<h3><a href="#editorial-news-title">A small article with no image</a></h3>
+<p class="pr-news__summary">Headline, date and description remain the recognizable core.</p>
+</article>
+<article class="pr-news__item" data-x="9-12" data-xp="1-4" data-xw="9-12">
+<div class="pr-news__meta"><span class="pr-news__category">Essay</span><time datetime="2026-11-19">19 Nov 2026</time></div>
+<h3><a href="#editorial-news-title">A longer reflective essay</a></h3>
+<p class="pr-news__summary">Author and reading time are site-selected options.</p>
+<p class="pr-news__byline">Example author · 8 min read</p>
+</article>
+</div></section>
+</main></div></body></html>
