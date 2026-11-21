@@ -66,6 +66,7 @@ test('site module selection, native fallback and on-demand third-party resources
     await page.locator('[data-pr-languages] a[hreflang=fr]').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
     assert.equal(await page.locator('[data-pr-languages] .pr-language__current').textContent(), 'Français');
+    await page.locator('#focus-first').focus();
     await page.locator('[data-pr-languages] summary').focus();
     const focusStatus = await page.locator('#focus-feedback').textContent();
     assert.match(focusStatus, /Сейчас выделен: Français\./);
