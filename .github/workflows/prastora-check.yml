@@ -43,3 +43,19 @@ jobs:
           path: prastora-reports/
           retention-days: 7
           if-no-files-found: warn
+
+  site-mode-diagnostic:
+    name: site-mode-diagnostic
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Site-mode regression isolated
+        run: node --test --test-name-pattern="site mode permits branded HTML" check.test.mjs
