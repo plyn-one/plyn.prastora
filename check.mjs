@@ -232,9 +232,9 @@ function inspect({ VOCAB, siteMode }) {
     if (!shown(el)) continue;
     const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
     // what lies inside a block sent out to the window edge belongs partly to the margin, not to the canvas
-    if (!el.parentElement?.closest('[data-out]')) boxes.push([path(el), (r.left - x0) / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
+    if (!siteMode && !el.parentElement?.closest('[data-out]')) boxes.push([path(el), (r.left - x0) / rem, (r.top + scrollY) / rem, r.width / rem, r.height / rem]);
     const p = el.parentElement;
-    if (p && p !== document.body && cs.position === 'static' && !scrolls(p) && !el.closest('[data-out], [data-bleed], [data-reelp]')) {
+    if (!siteMode && p && p !== document.body && cs.position === 'static' && !scrolls(p) && !el.closest('[data-out], [data-bleed], [data-reelp]')) {
       const q = p.getBoundingClientRect();
       if (r.right > q.right + 1.5 || r.left < q.left - 1.5) add('escapes-parent', el, `${Math.round(r.left)}–${Math.round(r.right)} outside ${Math.round(q.left)}–${Math.round(q.right)}`);
     }

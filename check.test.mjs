@@ -95,8 +95,12 @@ const close=ctx.close.bind(ctx);ctx.close=async(...a)=>{for(const p of ctx.pages
       const overflow = branded.replace('<main>', '<main style="min-width:2400px">');
       await writeFile(join(pageDir, 'branded-overflow.html'), overflow);
       const badGeometry = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-overflow.html'), '--site'], { cwd: root, timeout: 60000 }).catch(e => e);
-      assert.equal(badGeometry.code, 1);
-      assert.ok(JSON.parse(badGeometry.stdout).problems.some(p => p.rule === 'page-scroll-x'));
+      const siteOverflow = JSON.parse(badGeometry.stdout);
+      assert.equal(badGeometry.code, undefined, 'intentional horizontal scrolling is a site composition choice');
+      assert.ok(!siteOverflow.problems.some(p => p.rule === 'page-scroll-x' || p.rule === 'escapes-parent'));
+      // Core mode still detects page-level overflow outside the Prastora canvas.
+      const coreOverflow = await execute(process.execPath, [join(root, 'check.mjs'), join(pageDir, 'branded-overflow.html')], { cwd: root, timeout: 60000 }).catch(e => e);
+      assert.ok(JSON.parse(coreOverflow.stdout).problems.some(p => p.rule === 'page-scroll-x'));
     });
     await t.test('a missing CSS-only outline fails with a repair instruction', async () => {
       let result;
