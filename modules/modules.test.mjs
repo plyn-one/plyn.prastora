@@ -23,7 +23,7 @@ test('site module selection, native fallback and on-demand third-party resources
     }
     try {
       const data = await readFile(path);
-      const type = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript' }[extname(path)] || 'application/octet-stream';
+      const type = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg':'image/svg+xml' }[extname(path)] || 'application/octet-stream';
       response.writeHead(200, { 'Content-Type': type }).end(data);
     } catch { response.writeHead(404).end(); }
   });
@@ -54,6 +54,20 @@ test('site module selection, native fallback and on-demand third-party resources
     assert.equal(await page.locator('[data-pr-news] .pr-news__image').count(), 2);
     await page.locator('[data-pr-languages] summary').click();
     assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), '');
+    assert.equal(await page.locator('[data-pr-languages] ul').evaluate(el => getComputedStyle(el).position), 'absolute');
+    await page.locator('[data-pr-languages] a[hreflang=fr]').click();
+    assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
+    assert.equal(await page.locator('[data-pr-languages] summary').textContent(), 'Français (sample) · Languages');
+    await page.locator('[data-pr-languages] summary').click();
+    await page.locator('#news-title').click();
+    assert.equal(await page.locator('[data-pr-languages]').getAttribute('open'), null);
+    assert.equal(await page.locator('[data-pr-map-preview] img').count(), 1);
+    assert.equal(await page.locator('[data-pr-video-link] img').count(), 1);
+    const headerBefore = await page.locator('[data-pr-header]').evaluate(e=>e.getBoundingClientRect().height);
+    await page.evaluate(()=>window.scrollTo(0,1500));
+    await page.waitForTimeout(250);
+    const headerAfter = await page.locator('[data-pr-header]').evaluate(e=>e.getBoundingClientRect().height);
+    assert.ok(Math.abs(headerBefore-headerAfter) < 0.1, 'header height must not change when scrolling');
 
     await page.goto(origin + '/modules/example-editorial.html');
     await page.waitForLoadState('networkidle');
@@ -94,8 +108,9 @@ test('site module selection, native fallback and on-demand third-party resources
     const mapRequest = page.waitForEvent('request', req => req.url().includes('unpkg.com/maplibre-gl@5.0.0'));
     await page.locator('[data-pr-map-enable]').click();
     assert.match((await mapRequest).url(), /maplibre-gl/);
-    await page.waitForFunction(() => document.querySelector('[data-pr-map-status]')?.textContent.includes('Map unavailable.'));
-    assert.match(await page.locator('[data-pr-map-status]').textContent(), /Map unavailable/);
+    await page.waitForFunction(() => document.querySelector('[data-pr-map-status]')?.textContent.includes('Interactive map unavailable'));
+    assert.match(await page.locator('[data-pr-map-status]').textContent(), /Interactive map unavailable/);
+    assert.equal(await page.locator('[data-pr-map-preview]').isVisible(), true);
     assert.equal(await page.locator('[data-pr-map] a[href^="https://www.openstreetmap.org/"]').count(), 1);
 
     await page.goto(origin + '/modules/example-service.html');
