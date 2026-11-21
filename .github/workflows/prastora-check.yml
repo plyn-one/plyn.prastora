@@ -88,3 +88,27 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium
       - run: node --test modules/modules.test.mjs
+
+  core-groups-diagnostic:
+    name: core-${{ matrix.group.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        group:
+          - { name: resources, pattern: 'stylesheet|relative-URL|CSS-only|alpha image' }
+          - { name: urls, pattern: 'HTTP URL|remote core' }
+          - { name: keyboard, pattern: 'keyboard:|keyboard traversal' }
+          - { name: optional, pattern: 'missing optional|axe-core reports|real Nu' }
+          - { name: minified, pattern: 'every minified core' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node --test --test-name-pattern="${{ matrix.group.pattern }}" check.test.mjs
