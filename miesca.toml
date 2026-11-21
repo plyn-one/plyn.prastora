@@ -182,6 +182,9 @@ kola = "usie"
 "file:site/try/1119-modules/news-illustration.svg" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/keyboard-guide.js" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/languages.css" = { faza = "asadak", rola = "prajava" }
+"file:site/try/1119-modules/languages.js" = { faza = "asadak", rola = "prajava" }
+"file:site/try/1119-modules/map-preview.svg" = { faza = "asadak", rola = "prajava" }
+"file:site/try/1119-modules/video-poster.svg" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/video.css" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/video.js" = { faza = "asadak", rola = "prajava" }
 "file:site/try/1119-modules/map.css" = { faza = "asadak", rola = "prajava" }
