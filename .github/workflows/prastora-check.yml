@@ -130,4 +130,5 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - run: node --test --test-name-pattern="keyboard: ${{ matrix.case }}," check.test.mjs
+      - run: |
+          node --test --test-name-pattern="keyboard: ${{ matrix.case }}," check.test.mjs
